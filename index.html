@@ -128,11 +128,9 @@
                     (filterParam === 'down' && !MVVehicleId.includes(vehicleId)) ||
                     (!MVVehicleId.includes(vehicleId) && !SerdangVehicleId.includes(vehicleId))
                 ) {
-                	  console.log(`Skipping Vehicle: ${vehicleId}, directionFilter: ${filterParam}`);
+                	  console.log(`             Skipping Vehicle: ${vehicleId}`);
                     return; // Skip vehicles not matching the filter criteria
-                }
-        
-                console.log(`Plotting Vehicle: ${vehicleId}, Position: (${latitude}, ${longitude}), directionFilter: ${filterParam}`);
+                }        
         
                 // Determine the distance from the correct station based on vehicle ID
                 const idNumber = parseInt(vehicleId.replace('weekday_', ''), 10);
@@ -154,6 +152,7 @@
         
                 // Round distance to 2 decimal places
                 distance = distance.toFixed(2);
+                console.log(`Plotting Vehicle: ${vehicleId}, Position: (${latitude}, ${longitude}) at ${distance} KM`);
         
                 // Create a marker with an SVG arrow icon based on even/odd vehicle ID
                 const arrowIcon = L.divIcon({
@@ -164,8 +163,6 @@
                     iconSize: [24, 24],
                     iconAnchor: [12, 12]
                 });
-
-
  
                 const marker = L.marker([latitude, longitude], {
                     icon: arrowIcon
@@ -184,7 +181,6 @@
             });
         }
         
-
         // Function to fetch data from the API
         async function fetchData() {
             try {
@@ -201,14 +197,12 @@
                 vehicles.forEach(vehicle => {
                     const vehicleId = vehicle.vehicle.id;
                     const { latitude, longitude } = vehicle.position;
-                    console.log(`Vehicle ID: ${vehicleId}, Latitude: ${latitude}, Longitude: ${longitude}`);
                 });
 
                 // Plot the vehicles on the map
                 plotVehicles(vehicles);
-
             } catch (error) {
-                console.error('Error fetching data:', error);
+                console.error('Error fetching data from API:', error);
             }
         }
 
@@ -233,10 +227,10 @@
         // Call the function to get the current location on page load
         getCurrentLocation();
 
-        // Refresh data every 10 seconds
+        // Refresh data every 1 minute, because that is how often the API is updated.
         setInterval(() => {
             fetchData();
-        }, 10000);
+        }, 60100);
 
     </script>
 </body>
