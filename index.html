@@ -155,15 +155,16 @@
                 // Round distance to 2 decimal places
                 distance = distance.toFixed(2);
         
-// Create a marker with an SVG icon based on even/odd vehicle ID
-const arrowIcon = L.divIcon({
-    html: idNumber % 2 === 0 
-        ? '<div style="font-size: 24px; color: blue;">⬆️</div>'  // Use a thick upward arrow image for even vehicle ID
-        : '<div style="font-size: 24px; color: red;">⬇️</div>',   // Use a thick downward arrow image for odd vehicle ID
-    className: 'vehicle-arrow-icon',
-    iconSize: [24, 24], // Adjust size as needed
-    iconAnchor: [12, 12] // Center the icon
-});
+                // Create a marker with an SVG arrow icon based on even/odd vehicle ID
+                const arrowIcon = L.divIcon({
+                    html: idNumber % 2 === 0 
+                        ? `<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill="blue" viewBox="0 0 24 24"><path d="M12 2l7 12h-14z"/></svg>`  // Upward arrow in blue
+                        : `<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 24 24"><path d="M12 22l7-12h-14z"/></svg>`,  // Downward arrow in red
+                    className: 'vehicle-arrow-icon',
+                    iconSize: [24, 24],
+                    iconAnchor: [12, 12]
+                });
+
 
  
                 const marker = L.marker([latitude, longitude], {
