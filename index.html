@@ -1,16 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head>	
     <meta charset="UTF-8">
+    <title>Vehicle Map</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KTM Serdang-Midvalley route on weekdays</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <style>
-        #map { height: 600px; }
-    </style>
+        /* Ensure font fallback for better Unicode character support */
+        body {
+            font-family: 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+        }
+
+        /* Customize the arrow icon font */
+        .vehicle-arrow-icon {
+            font-family: 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+        }
+        
+        #map { height: 600px; }  
+    </style>	
+
 </head>
 <body>
-    <h1>Active Trains</h1>
+    <h3>Active Trains</h3>
     <div id="map"></div>
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
@@ -145,15 +156,17 @@
                 distance = distance.toFixed(2);
         
                 // Create a marker with an arrow icon based on even/odd vehicle ID
-                const arrowIcon = L.divIcon({
-                    html: idNumber % 2 === 0 
-                        ? '<div style="font-size: 24px; color: blue;">&#x1F881;</div>'  // Upward arrow 🢁 for even vehicle ID
-                        : '<div style="font-size: 24px; color: red;">&#x1F883;</div>',   // Downward arrow 🢃 for odd vehicle ID
-                    className: 'vehicle-arrow-icon',
-                    iconSize: [24, 24], // Adjust size as needed
-                    iconAnchor: [12, 12] // Center the icon
-                });
-        
+// Create a marker with an arrow icon based on even/odd vehicle ID
+const arrowIcon = L.divIcon({
+    html: idNumber % 2 === 0 
+        ? '<div style="font-size: 24px; color: blue;">&#x1F881;</div>'  // Upward arrow 🢁 for even vehicle ID
+        : '<div style="font-size: 24px; color: red;">&#x1F883;</div>',   // Downward arrow 🢃 for odd vehicle ID
+    className: 'vehicle-arrow-icon',
+    iconSize: [24, 24], // Adjust size as needed
+    iconAnchor: [12, 12] // Center the icon
+});
+
+ 
                 const marker = L.marker([latitude, longitude], {
                     icon: arrowIcon
                 }).addTo(map);
