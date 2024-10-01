@@ -155,12 +155,11 @@
                 // Round distance to 2 decimal places
                 distance = distance.toFixed(2);
         
-                // Create a marker with an arrow icon based on even/odd vehicle ID
-// Create a marker with an arrow icon based on even/odd vehicle ID
+// Create a marker with an SVG icon based on even/odd vehicle ID
 const arrowIcon = L.divIcon({
     html: idNumber % 2 === 0 
-        ? '<div style="font-size: 24px; color: blue;">&#x1F881;</div>'  // Upward arrow 🢁 for even vehicle ID
-        : '<div style="font-size: 24px; color: red;">&#x1F883;</div>',   // Downward arrow 🢃 for odd vehicle ID
+        ? '<div style="font-size: 24px; color: blue;">⬆️</div>'  // Use a thick upward arrow image for even vehicle ID
+        : '<div style="font-size: 24px; color: red;">⬇️</div>',   // Use a thick downward arrow image for odd vehicle ID
     className: 'vehicle-arrow-icon',
     iconSize: [24, 24], // Adjust size as needed
     iconAnchor: [12, 12] // Center the icon
