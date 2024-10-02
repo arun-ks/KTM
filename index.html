@@ -2,11 +2,10 @@
 <html lang="en">
 <head>	
     <meta charset="UTF-8">
-    <title>Vehicle Map</title>
+    <title>KTM Train Map</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <style>
-        /* Ensure font fallback for better Unicode character support */
         body {
             font-family: 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
         }
@@ -18,7 +17,6 @@
         
         #map { height: 600px; }  
     </style>	
-
 </head>
 <body>
     <h3>Active Trains</h3>
@@ -26,33 +24,19 @@
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
-        // Vehicle IDs and Departure Times for MV and Serdang stations
-        const MVVehicleId =     ["weekday_2003", "weekday_2007", "weekday_2011", "weekday_2013", "weekday_2015", "weekday_2017", "weekday_2019", "weekday_2021", "weekday_2025", "weekday_2027", "weekday_2031", "weekday_2035", "weekday_2039", "weekday_2045", "weekday_2049", "weekday_2053", "weekday_2603", "weekday_2057", "weekday_2059", "weekday_2061", "weekday_2063", "weekday_2067", "weekday_2071"];
-        const MVDepartureTime = ["05:39",        "06:40",        "07:35",         "08:05",        "08:35",        "09:08",        "09:35",        "10:05",        "10:35",        "11:35",        "12:40",        "13:45",        "14:45",        "15:45",        "16:45",        "17:35",        "NONE",        "18:10",        "18:40",        "19:20",        "20:35",        "21:48",        "22:48"];
+        // Vehicle IDs and Departure Times for MV and Serdang stations  2002-2071
+
+        const SerdangVehicleId =     ["weekday_2002", "weekday_2004", "weekday_2008", "weekday_2010", "weekday_2012", "weekday_2014", "weekday_2016", "weekday_2018", "weekday_2020", "weekday_2024", "weekday_2028", "weekday_2032", "weekday_2036", "weekday_2040", "weekday_2046", "weekday_2048", "weekday_2050", "weekday_2054", "weekday_2058", "weekday_2062", "weekday_2066", "weekday_2070"];
+        const SerdangDepartureTime = ["06:30",        "06:55",        "07:25",        "07:58",        "08:30",        "09:02",        "09:32",        "10:08",        "11:03",        "12:18",        "13:18",        "14:18",        "15:23",        "16:28",        "17:18",        "17:48",        "18:28",        "19:13",        "20:03",        "21:06",        "22:16",        "22:48"];
+
+        const MVVehicleId =     ["weekday_2003", "weekday_2007", "weekday_2011", "weekday_2013", "weekday_2015", "weekday_2017", "weekday_2019", "weekday_2021", "weekday_2025", "weekday_2027", "weekday_2031", "weekday_2035", "weekday_2039", "weekday_2045", "weekday_2049", "weekday_2053", "weekday_2057", "weekday_2059", "weekday_2061", "weekday_2063", "weekday_2067", "weekday_2071"];
+        const MVDepartureTime = ["05:39",        "06:40",        "07:35",         "08:05",        "08:35",        "09:08",        "09:35",        "10:05",        "10:35",        "11:35",        "12:40",        "13:45",        "14:45",        "15:45",        "16:45",        "17:35",       "18:10",        "18:40",        "19:20",        "20:35",        "21:48",        "22:48"];        
+      
+        const SerdangKTMInfo = { name:'Serdang KTM',    colour:'blue',   direction:'up',   location: [3.023277436768209, 101.71580855814486], svgPathd: 'M12 2l7 12h-14z' };
+        const MVKTMInfo =      { name:'Mid Valley KTM', colour:'red',    direction:'down', location: [3.118741643119998, 101.67891120835036], svgPathd: 'M12 22l7-12h-14z'};
+        const DummyKTMInfo =   { name:'Dummy',          colour:'green',  direction:'side', location: [0.00             , 0.69              ], svgPathd: 'M12 21l7-12h-14z' };
+        DummyKTMInfo.location = [(SerdangKTMInfo.location[0] + MVKTMInfo.location[0])/2 , (SerdangKTMInfo.location[1] + MVKTMInfo.location[1])/2]
         
-        const SerdangVehicleId =     ["weekday_2002", "weekday_2004", "weekday_2602", "weekday_2008", "weekday_2010", "weekday_2012", "weekday_2014", "weekday_2016", "weekday_2018", "weekday_2020", "weekday_2024", "weekday_2028", "weekday_2032", "weekday_2036", "weekday_2040", "weekday_2046", "weekday_2048", "weekday_2050", "weekday_2054", "weekday_2058", "weekday_2062", "weekday_2066", "weekday_2070"];
-        const SerdangDepartureTime = ["06:30",        "06:55",        "NONE",         "07:25",        "07:58",        "08:30",        "09:02",        "09:32",        "10:08",        "11:03",        "12:18",        "13:18",        "14:18",        "15:23",        "16:28",        "17:18",        "17:48",        "18:28",        "19:13",        "20:03",        "21:06",        "22:16",        "22:48"];
-
-        // Define station coordinates
-        const SerdangKTMStation = [3.023277436768209, 101.71580855814486];
-        const MVKTMStation = [3.118741643119998, 101.67891120835036];
-        
-
-
-        // Initialize the map at the current location
-        const map = L.map('map').setView([3.0232, 101.716], 12);
-
-        // Add OpenStreetMap tile layer
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 18,
-        }).addTo(map);
-
-        // Function to determine marker color based on vehicle ID (even or odd)
-        function getMarkerColor(vehicleId) {
-            const idNumber = parseInt(vehicleId.replace('weekday_', ''), 10);
-            return idNumber % 2 === 0 ? 'blue' : 'red';
-        }
-
         // Haversine formula to calculate distance between two coordinates in km
         function calculateDistance(lat1, lon1, lat2, lon2) {
             const R = 6371; // Radius of the Earth in kilometers
@@ -66,99 +50,65 @@
             return R * c; // Distance in kilometers
         }
 
-        // Function to get the query parameter from the URL
-        function getQueryParam(param) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(param);
-        }
-        
-        // Get the filter parameter ('up' or 'down') from the URL
-        const filterParam = getQueryParam('filter');
-        
-        function plotStations() {
-            // Add marker for SerdangKTMStation as a blue circle
-            const serdangMarker = L.circleMarker(SerdangKTMStation, {
+       
+       function plotStationOnMap(stationKTMInfo) {
+            // Add marker & Bind tooltip
+            const stationMarker = L.circleMarker(stationKTMInfo.location, {
                 radius: 10,
-                fillColor: 'blue',
-                color: 'blue',
+                fillColor: stationKTMInfo.colour,
+                color: stationKTMInfo.colour, 
                 fillOpacity: 0.8
-            }).addTo(map);
-            
-            // Bind a tooltip to the SerdangKTMStation marker
-            serdangMarker.bindTooltip('Serdang KTM', {
+            }).addTo(map);            
+            stationMarker.bindTooltip(stationKTMInfo.name, {
                 permanent: true,
-                direction: 'top',
-                offset: [0, -10]
-            });
-            
-            // Add marker for MVKTMStation as a red circle
-            const mvMarker = L.circleMarker(MVKTMStation, {
-                radius: 10,
-                fillColor: 'red',
-                color: 'red',
-                fillOpacity: 0.8
-            }).addTo(map);
-            
-            // Bind a tooltip to the MVKTMStation marker
-            mvMarker.bindTooltip('Mid Valley KTM', {
-                permanent: true,
-                direction: 'top',
-                offset: [0, -10]
-            });
-       };        
-        
+                direction: 'left',
+                offset: [-10, 0]
+            });                
+
+       };       
+
         // Function to plot vehicles on the map (with the filtering)
-        function plotVehicles(vehicles) {
+       function plotVehicles(vehicles) {
             // Clear existing markers
             map.eachLayer(layer => {
                 if (layer instanceof L.Marker) {
                     map.removeLayer(layer);
                 }
             });
-            
-            plotStations();
         
             vehicles.forEach(vehicle => {
                 const { latitude, longitude } = vehicle.position;
                 const vehicleId = vehicle.vehicle.id;
-        
-                // Filter vehicles based on the URL query parameter
-                if (
-                    (filterParam === 'up' && !SerdangVehicleId.includes(vehicleId)) || 
-                    (filterParam === 'down' && !MVVehicleId.includes(vehicleId)) ||
-                    (!MVVehicleId.includes(vehicleId) && !SerdangVehicleId.includes(vehicleId))
-                ) {
-                	  console.log(`             Skipping Vehicle: ${vehicleId}`);
-                    return; // Skip vehicles not matching the filter criteria
-                }        
-        
-                // Determine the distance from the correct station based on vehicle ID
-                const idNumber = parseInt(vehicleId.replace('weekday_', ''), 10);
-                let distance;
-                let departureTime;
-        
-                if (MVVehicleId.includes(vehicleId)) {
-                    // MVVehicleId: calculate distance from MVKTMStation
-                    distance = calculateDistance(latitude, longitude, MVKTMStation[0], MVKTMStation[1]);
-                    departureTime = MVDepartureTime[MVVehicleId.indexOf(vehicleId)];
-                } else if (SerdangVehicleId.includes(vehicleId)) {
-                    // SerdangVehicleId: calculate distance from SerdangKTMStation
-                    distance = calculateDistance(latitude, longitude, SerdangKTMStation[0], SerdangKTMStation[1]);
-                    departureTime = SerdangDepartureTime[SerdangVehicleId.indexOf(vehicleId)];
-                } else {
-                    distance = 0;
-                    departureTime = "Unknown";
+              
+
+               
+                let departureTime;                
+                let myTrainKTMInfo;
+               
+                if( SerdangVehicleId.includes(vehicleId)) { 
+                      myTrainKTMInfo = SerdangKTMInfo;
+                      departureTime = SerdangDepartureTime[SerdangVehicleId.indexOf(vehicleId)];
                 }
-        
-                // Round distance to 2 decimal places
-                distance = distance.toFixed(2);
-                console.log(`Plotting Vehicle: ${vehicleId}, Position: (${latitude}, ${longitude}) at ${distance} KM`);
-        
-                // Create a marker with an SVG arrow icon based on even/odd vehicle ID
+                else {
+                    if( MVVehicleId.includes(vehicleId) )  { 
+                       myTrainKTMInfo = MVKTMInfo;
+                       departureTime  = MVDepartureTime[MVVehicleId.indexOf(vehicleId)];
+                    }
+                    else { 
+                      myTrainKTMInfo  = DummyKTMInfo;
+                      departureTime   = 'NA';
+                    }
+                }
+                   
+                // To plot train or to skip it
+                const vechicleIdNum = parseInt(vehicleId.replace('weekday_', ''), 10);   
+                if  ( ( filterParam === "up" || filterParam === "down")  &&  ( filterParam !==  myTrainKTMInfo.direction ) ) {                     	                      
+                	  console.log(`             Skipping Vehicle: ${vechicleIdNum} of ${myTrainKTMInfo.colour} colour , pointing to ${myTrainKTMInfo.direction} direction as filterParam is ${filterParam}`);
+                    return; 
+                }                   
+                
                 const arrowIcon = L.divIcon({
-                    html: idNumber % 2 === 0 
-                        ? `<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill="blue" viewBox="0 0 24 24"><path d="M12 2l7 12h-14z"/></svg>`  // Upward arrow in blue
-                        : `<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 24 24"><path d="M12 22l7-12h-14z"/></svg>`,  // Downward arrow in red
+                    html: `<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill=${myTrainKTMInfo.colour} viewBox="0 0 24 24"><path d="${myTrainKTMInfo.svgPathd}"/></svg>`,
                     className: 'vehicle-arrow-icon',
                     iconSize: [24, 24],
                     iconAnchor: [12, 12]
@@ -166,20 +116,31 @@
  
                 const marker = L.marker([latitude, longitude], {
                     icon: arrowIcon
-                }).addTo(map);
-        
-                // Populate the label with departure time, distance, and numeric vehicle ID
-                const numericId = vehicleId.replace('weekday_', ''); // Extract numeric part of vehicleId
-                const label = `${departureTime} - ${distance} km ( #${numericId})`;
-        
+                }).addTo(map);        
+                
+                
+                // Populate the train label 
+                let label;
+                let distance;
+                if ( departureTime === "NA" ) {
+                   label =   `( #${vechicleIdNum})` 
+                   distance = 'NA'
+                } else {
+	                	
+                   distance = calculateDistance(latitude, longitude, myTrainKTMInfo.location[0], myTrainKTMInfo.location[1]);
+                   distance = distance.toFixed(2);
+                   label    = `${departureTime} - ${distance} km ( #${vechicleIdNum})`;        
+                }
+                console.log(`Plotting Vehicle: ${vechicleIdNum}, Position: (${latitude}, ${longitude}) at ${distance} KM , in ${myTrainKTMInfo.colour} colour , pointing in ${myTrainKTMInfo.direction} direction`); 
+                                
                 marker.bindTooltip(label, {
                     permanent: true,   // Tooltip is always visible
-                    direction: 'top',  // Display tooltip above the marker
-                    offset: [0, -10],  // Offset the tooltip for better visibility
+                    direction: 'right',  // Display tooltip above the marker
+                    offset: [10, 0],  // Offset the tooltip for better visibility
                     className: 'vehicle-label' // Optional: custom class for styling
                 });
             });
-        }
+       }
         
         // Function to fetch data from the API
         async function fetchData() {
@@ -187,47 +148,34 @@
                 const response = await fetch('https://api.mtrec.name.my/api/position?agency=ktmb');
                 const data = await response.json();
 
-                // Log the complete response to understand its structure
                 console.log('API Response:', data);
-
-                // Access the correct structure if data is wrapped in an object
                 const vehicles = data.data || []; // assuming the actual array is inside 'data' key
 
-                // Log vehicle IDs and positions for debugging
-                vehicles.forEach(vehicle => {
-                    const vehicleId = vehicle.vehicle.id;
-                    const { latitude, longitude } = vehicle.position;
-                });
-
-                // Plot the vehicles on the map
                 plotVehicles(vehicles);
             } catch (error) {
                 console.error('Error fetching data from API:', error);
             }
         }
 
-        // Function to get the current location and set the map's view
-        function getCurrentLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(position => {
-                    const { latitude, longitude } = position.coords;
-                    map.setView([latitude, longitude], 12); // Set the map view to current location
-                    fetchData(); // Fetch data when location is obtained
-                }, () => {
-                    // Fallback to default location if geolocation fails
-                    console.error('Geolocation failed. Using default location.');
-                    fetchData(); // Fetch data with default location
-                });
-            } else {
-                console.error('Geolocation is not supported by this browser.');
-                fetchData(); // Fetch data with default location
-            }
-        }
 
-        // Call the function to get the current location on page load
-        getCurrentLocation();
+        // Get the filter parameter ('up' or 'down') from the URL
+        const urlParams   = new URLSearchParams(window.location.search);
+        const filterParam = urlParams.get('filter');
+        console.log(`filter parameter on URL is ${filterParam}`)
 
-        // Refresh data every 1 minute, because that is how often the API is updated.
+        // Initialize the map to First Location & add OpenStreetMap tile layer
+        const map = L.map('map').setView(DummyKTMInfo.location, 12);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+        }).addTo(map);
+        
+
+        plotStationOnMap (SerdangKTMInfo);
+        plotStationOnMap (MVKTMInfo);
+
+        fetchData(); // Fetch data when location is obtained
+        
+        // Refresh data every 60.1 seconds, because API is updated every minute
         setInterval(() => {
             fetchData();
         }, 60100);
