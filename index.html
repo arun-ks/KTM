@@ -15,18 +15,18 @@
         #map { height: 600px; }
     </style>	
 </head>
-<body>
-    <h3>Active Trains</h3>
+<body>    
+    <h3 id="trainCount">Active trains: Plotted: 0, Skipped: 0</h3>
     <div id="map"></div>
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
-        // Vehicle IDs and Departure Times for 2 KTM stations  2002-2071
-        const SerdangVehicleIdList =   ["weekday_2002", "weekday_2004", "weekday_2008", "weekday_2010", "weekday_2012", "weekday_2014", "weekday_2016", "weekday_2018", "weekday_2020", "weekday_2024", "weekday_2028", "weekday_2032", "weekday_2036", "weekday_2040", "weekday_2046", "weekday_2048", "weekday_2050", "weekday_2054", "weekday_2058", "weekday_2062", "weekday_2066", "weekday_2070"];
-        const SerdangDepartureTime =   ["06:30",        "06:55",        "07:25",        "07:58",        "08:30",        "09:02",        "09:32",        "10:08",        "11:03",        "12:18",        "13:18",        "14:18",        "15:23",        "16:28",        "17:18",        "17:48",        "18:28",        "19:13",        "20:03",        "21:06",        "22:16",        "22:48"];
+        // Vehicle IDs and Departure Times for 2 KTM stations as of 05-Oct, 2024. This has weekday(#2002-#2071) & weekend(#2206-#2271) trains 
+        const SerdangVehicleIdList =   ["weekday_2002", "weekday_2004", "weekday_2008", "weekday_2010", "weekday_2012", "weekday_2014", "weekday_2016", "weekday_2018", "weekday_2020", "weekday_2024", "weekday_2028", "weekday_2032", "weekday_2036", "weekday_2040", "weekday_2046", "weekday_2048", "weekday_2050", "weekday_2054", "weekday_2058", "weekday_2062", "weekday_2066", "weekday_2070", "weekend_2206", "weekend_2208", "weekend_2210", "weekend_2212", "weekend_2214", "weekend_2216", "weekend_2220", "weekend_2224", "weekend_2228", "weekend_2232", "weekend_2236", "weekend_2240", "weekend_2246", "weekend_2248", "weekend_2250", "weekend_2254", "weekend_2258", "weekend_2262", "weekend_2266", "weekend_2270" ];
+        const SerdangDepartureTime =   ["06:30",        "06:55",        "07:25",        "07:58",        "08:30",        "09:02",        "09:32",        "10:08",        "11:03",        "12:18",        "13:18",        "14:18",        "15:23",        "16:28",        "17:18",        "17:48",        "18:28",        "19:13",        "20:03",        "21:06",        "22:16",        "22:48",        "07:25",        "07:58",        "08:30",        "09:02",        "09:32",        "10:08",        "11:03",        "12:18",        "13:18",        "14:18",        "15:23",        "16:28",        "17:18",        "17:48",        "18:28",        "19:13",        "20:03",        "21:06",        "22:16",        "22:48"];        
 
-        const MidvalleyVehicleIdList = ["weekday_2003", "weekday_2007", "weekday_2011", "weekday_2013", "weekday_2015", "weekday_2017", "weekday_2019", "weekday_2021", "weekday_2025", "weekday_2027", "weekday_2031", "weekday_2035", "weekday_2039", "weekday_2045", "weekday_2049", "weekday_2053", "weekday_2057", "weekday_2059", "weekday_2061", "weekday_2063", "weekday_2067", "weekday_2071"];
-        const MidvalleyDepartureTime = ["05:39",        "06:40",        "07:35",         "08:05",        "08:35",        "09:08",        "09:35",        "10:05",        "10:35",        "11:35",        "12:40",        "13:45",        "14:45",        "15:45",        "16:45",        "17:35",       "18:10",        "18:40",        "19:20",        "20:35",        "21:48",        "22:48"];
+        const MidvalleyVehicleIdList = ["weekday_2003", "weekday_2007", "weekday_2011", "weekday_2013", "weekday_2015", "weekday_2017", "weekday_2019", "weekday_2021", "weekday_2025", "weekday_2027", "weekday_2031", "weekday_2035", "weekday_2039", "weekday_2045", "weekday_2049", "weekday_2053", "weekday_2057", "weekday_2059", "weekday_2061", "weekday_2063", "weekday_2067", "weekday_2071", "weekend_2207", "weekend_2211", "weekend_2213", "weekend_2215", "weekend_2219", "weekend_2223", "weekend_2225", "weekend_2229", "weekend_2233", "weekend_2237", "weekend_2243", "weekend_2247", "weekend_2251", "weekend_2253", "weekend_2257", "weekend_2259", "weekend_2261", "weekend_2265", "weekend_2271"];
+        const MidvalleyDepartureTime = ["05:39",        "06:40",        "07:35",         "08:05",        "08:35",        "09:08",        "09:35",        "10:05",        "10:35",        "11:35",        "12:40",        "13:45",        "14:45",        "15:45",        "16:45",        "17:35",       "18:10",        "18:40",        "19:20",        "20:35",        "21:48",        "22:48"       , "06:40",        "07:35",        "08:05",        "8:35",         "09:35",        "10:35",        "11:35",        "12:40",        "13:45",        "14:45",        "15:45",        "16:45",        "17:35",        "18:10",        "18:40",        "19:20",        "20:35",        "21:48",        "22:48"];       
 
         const SerdangKTMStationInfo =   { name:'Serdang KTM',    colour:'blue',   direction:'up',   location: [3.023277436768209, 101.71580855814486], svgPathd: 'M12 2l7 12h-14z'  };
         const MidvalleyKTMStationInfo = { name:'Mid Valley KTM', colour:'red',    direction:'down', location: [3.118741643119998, 101.67891120835036], svgPathd: 'M12 22l7-12h-14z' };
@@ -60,17 +60,29 @@
        };
 
        function plotVehiclesOnMap(vehicles) {
+            let plottedCount = 0;
+            let skippedCount = 0;
+            document.getElementById("trainCount").textContent = `Active trains: Plotted: ${plottedCount}, Skipped: ${skippedCount}`;
+
             // Clear existing markers
             map.eachLayer(layer => {
                 if (layer instanceof L.Marker) {
                     map.removeLayer(layer);
                 }
             });
+            
+            
 
             vehicles.forEach(vehicle => {
                 const { latitude, longitude } = vehicle.position;
                 const vehicleId = vehicle.vehicle.id;
-                const vechicleIdNum = parseInt(vehicleId.replace('weekday_', ''), 10);
+
+                let vehicleIdNum; 
+                if (vehicleId.includes('_')) {
+                    vehicleIdNum = vehicleId.split('_')[1]; 
+                } else {
+                    vehicleIdNum = parseInt(vehicleId);
+                }
 
                 let departureTime;
                 let myTrainKTMStationInfo;
@@ -92,9 +104,11 @@
 
                 // Skip Vechicle based on filter in URL
                 if  ( ( filterParam === "up" || filterParam === "down")  &&  ( filterParam !==  myTrainKTMStationInfo.direction ) ) {                     	
-                	  console.log(`             Skipping Vehicle: ${vechicleIdNum} of ${myTrainKTMStationInfo.colour} colour , pointing to ${myTrainKTMStationInfo.direction} direction as filterParam is ${filterParam}`);
+                	  console.log(`             Skipping Vehicle: #${vehicleIdNum} of ${myTrainKTMStationInfo.colour} colour, pointing to ${myTrainKTMStationInfo.direction} direction as filterParam is ${filterParam}`);
+                	  skippedCount++;
+                	  document.getElementById("trainCount").textContent = `Active trains: Plotted: ${plottedCount}, Skipped: ${skippedCount}`;
                     return;
-                }
+                }                
                 
                 // Create Icon & Its label
                 const arrowIcon = L.divIcon({
@@ -110,20 +124,23 @@
                 let label;
                 let distance;
                 if ( departureTime === "NA" ) {
-                   label    = `( #${vechicleIdNum})` ;
+                   label    = `( #${vehicleIdNum})` ;
                    distance = 'NA';
                 } else {	                	
                    distance = calculateDistance(latitude, longitude, myTrainKTMStationInfo.location[0], myTrainKTMStationInfo.location[1]);
                    distance = distance.toFixed(2);
-                   label    = `${departureTime} - ${distance} km ( #${vechicleIdNum})`;
+                   label    = `${departureTime} - ${distance} km ( #${vehicleIdNum})`;
                 }
-                console.log(`Plotting Vehicle: ${vechicleIdNum}, in ${myTrainKTMStationInfo.colour} colour , at Position: (${latitude}, ${longitude}) and ${distance} KM , pointing towards ${myTrainKTMStationInfo.direction}`);
+                console.log(`Plotting Vehicle: #${vehicleIdNum}, in ${myTrainKTMStationInfo.colour} colour , at Position: (${latitude}, ${longitude}) and ${distance} KM , pointing towards ${myTrainKTMStationInfo.direction}`);
                 marker.bindTooltip(label, {
                     permanent: true,          
                     direction: 'right',
                     offset: [10, 0],          
                     className: 'vehicle-label'
                 });
+                
+                plottedCount++;
+                document.getElementById("trainCount").textContent = `Active trains: Plotted: ${plottedCount}, Skipped: ${skippedCount}`;
             });
        }
 
