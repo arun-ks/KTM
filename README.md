@@ -7,7 +7,12 @@ The current version uses hardcoding, to to check how useful this is for a specif
 
 ## Usage
 Each active train is marked to show its direction (northbound or southbound) and show distance from KTM Serdang of KTM MidValley station (based on the direction).
-You can use URL parameter "?filter=up" to see only trains from [Serdang to Midvalley](https://arun-ks.github.io/KTM/?filter=up) or use "?filter=down" to see trains from [MidValley to Serdang](https://arun-ks.github.io/KTM/?filter=down). If any other filter is passed in URL(including no filter), then all trains will be shown.
+
+You can use URL parameter **filter** :
+- Use "?filter=up" to see only trains from [Serdang to Midvalley](https://arun-ks.github.io/KTM/?filter=up)
+- Use "?filter=down" to see trains from [MidValley to Serdang](https://arun-ks.github.io/KTM/?filter=down)
+- Use "?filter=both" to see trains from [Serdang to Midvalley or from Midvalley to Serdang](https://arun-ks.github.io/KTM/?filter=both)
+If any other filter is passed in URL(including no filter), then all reported KTMB trains will be shown.
 
 The icons for trains are coloured as per the colour of the starting station. If the trains are not part of "Batu Caves - Pulau Sebang" route, then they have a separate colour.
 
