@@ -16,7 +16,7 @@
     </style>	
 </head>
 <body>    
-    <h3 id="trainCount">Active trains: Plotted: 0, Skipped: 0</h3>
+    <h3 id="trainCount">Active trains </h3>
     <div id="map"></div>
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
@@ -60,9 +60,7 @@
        };
 
        function plotVehiclesOnMap(vehicles) {
-            let plottedCount = 0;
-            let skippedCount = 0;            
-            document.getElementById("trainCount").textContent = `Active trains: Plotted: ${plottedCount}, Skipped: ${skippedCount}`;
+            let upCount = 0,downCount = 0,naCount = 0; 
 
             // Clear existing markers
             map.eachLayer(layer => {
@@ -86,15 +84,18 @@
                 if( SerdangKTMVehicleIdList.includes(vehicleIdNum)) {
                       myTrainKTMStationInfo = SerdangKTMStationInfo;
                       departureTime  = SerdangKTMDepartureTime[SerdangKTMVehicleIdList.indexOf(vehicleIdNum)];
+                      upCount++;
                 }
                 else {
                     if( MidvalleyKTMVehicleIdList.includes(vehicleIdNum) )  {
                        myTrainKTMStationInfo = MidvalleyKTMStationInfo;
                        departureTime  = MidvalleyKTMDepartureTime[MidvalleyKTMVehicleIdList.indexOf(vehicleIdNum)];
+                       downCount++;
                     }
                     else {
                       myTrainKTMStationInfo  = DummyKTMStationInfo;
                       departureTime   = 'NA';
+                      naCount++;
                     }
                 }
 
@@ -105,8 +106,7 @@
                       (filterParam === "both" &&  myTrainKTMStationInfo.direction === "na" )
                    ) {                     	
                         	  console.log(`             Skipping Vehicle: #${vehicleIdNum} of ${myTrainKTMStationInfo.colour} colour, pointing to ${myTrainKTMStationInfo.direction} direction as filterParam is ${filterParam}`);
-                        	  skippedCount++;
-                        	  document.getElementById("trainCount").textContent = `Active trains: Plotted: ${plottedCount}, Skipped: ${skippedCount}`;
+                           	document.getElementById("trainCount").textContent = `Trains- Up:${upCount}, Down:${downCount}, Others:${naCount}`;
                             return;
                 }                
                 
@@ -129,7 +129,7 @@
                 } else {	                	
                    distance = calculateDistance(latitude, longitude, myTrainKTMStationInfo.location[0], myTrainKTMStationInfo.location[1]);
                    distance = distance.toFixed(2);
-                   label    = `${departureTime} - ${distance} km ( #${vehicleIdNum})`;
+                   label    = `${departureTime}( #${vehicleIdNum}) - ${distance} km`;
                 }
                 marker.bindTooltip(label, {
                     permanent: true,          
@@ -138,10 +138,8 @@
                     className: 'vehicle-label'
                 });
                 
-                console.log(`Plotting Vehicle: #${vehicleIdNum}, in ${myTrainKTMStationInfo.colour} colour , at Position: (${latitude}, ${longitude}) and ${distance} KM , pointing towards ${myTrainKTMStationInfo.direction}`);
-                plottedCount++;
-                document.getElementById("trainCount").textContent = `Active trains: Plotted: ${plottedCount}, Skipped: ${skippedCount}`;
-            });
+                console.log(`Plotting Vehicle: #${vehicleIdNum}, in ${myTrainKTMStationInfo.colour} colour , at Position: (${latitude}, ${longitude}) and ${distance} KM , pointing towards ${myTrainKTMStationInfo.direction}`);                
+                document.getElementById("trainCount").textContent = `Trains- Up:${upCount}, Down:${downCount}, Others:${naCount}`;            });
        }
 
         // Function to fetch data from MTREC API
