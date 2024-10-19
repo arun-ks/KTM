@@ -28,9 +28,12 @@
         const MidvalleyKTMVehicleIdList = [ "2003",  "2007",  "2011",  "2013",  "2015",  "2017",  "2019",  "2021",  "2025",  "2027",  "2031",  "2035",  "2039",  "2045",  "2049",  "2053",   "2057",  "2059",  "2061",  "2063",  "2067",  "2071",                   "2207",  "2211",  "2213",  "2215",  "2219",  "2223",  "2225",  "2229",  "2233",  "2237",  "2243",  "2247",  "2251",  "2253",  "2257",  "2259",  "2261",  "2265",  "2271"];
         const MidvalleyKTMDepartureTime = ["05:39", "06:40", "07:35",  "08:05", "08:35", "09:08", "09:35", "10:05", "10:35", "11:35", "12:40", "13:45", "14:45", "15:45", "16:45", "17:35", "18:10", "18:40", "19:20", "20:35", "21:48", "22:48",                  "06:40", "07:35", "08:05", "8:35",  "09:35", "10:35", "11:35", "12:40", "13:45", "14:45", "15:45", "16:45", "17:35", "18:10", "18:40", "19:20", "20:35", "21:48", "22:48"];       
 
-        const SerdangKTMStationInfo =   { name:'Serdang KTM',    colour:'blue',   direction:'up',   location: [3.023277436768209, 101.71580855814486], svgPathd: 'M12 2l7 12h-14z'  };
-        const MidvalleyKTMStationInfo = { name:'Mid Valley KTM', colour:'red',    direction:'down', location: [3.118741643119998, 101.67891120835036], svgPathd: 'M12 22l7-12h-14z' };
-        const DummyKTMStationInfo =     { name:'Dummy',          colour:'green',  direction:'na',   location: [0.00             , 0.00              ], svgPathd: 'M2 2 H10 V10 H2 Z'};
+
+        const SerdangKTMStationInfo   = { name:'Serdang KTM',    stationId:19900, colour:'blue',     direction:'up',   location: [3.023277436768209, 101.71580855814486], svgPathd: 'M12 2l7 12h-14z'  };
+        const MidvalleyKTMStationInfo = { name:'Mid Valley KTM', stationId:19205, colour:'red',      direction:'down', location: [3.118741643119998, 101.67891120835036], svgPathd: 'M12 22l7-12h-14z' };
+        const KLSentralKTMStationInfo = { name:'KL SentralKTM',  stationId:19100, colour:'#f97e89',     direction:'down', location: [3.134256547358604, 101.68603801684128], svgPathd: ''};
+        const KajangKTMStationInfo    = { name:'Kajang KTM',     stationId:20400, colour:'#8b81fb',direction:'up',   location: [2.984945129982691, 101.79086083911693], svgPathd: ''};        
+        const DummyKTMStationInfo =     { name:'Dummy',          stationId:00000, colour:'green',    direction:'na',   location: [0.00             , 0.00              ], svgPathd: ''};
 
         // Haversine formula to calculate distance between two coordinates in km
         function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -52,11 +55,17 @@
                 color: stationKTMStationInfo.colour,
                 fillOpacity: 0.8
             }).addTo(map);
-            stationMarker.bindTooltip(stationKTMStationInfo.name, {
-                permanent: true,
-                direction: 'left',
-                offset: [-10, 0]
-            });
+            let label = stationKTMStationInfo.name;
+            
+           
+            label    = `<a href="https://myrailtime.ktmb.com.my/timetable?origin=${stationKTMStationInfo.stationId}" target="_blank">${stationKTMStationInfo.name}</a>`;
+            stationMarker.bindPopup(label, {
+                  permanent: false,
+                  direction: 'left',
+                  offset: [-10, 0],
+                  className: 'custom-popup'  // Optional: for custom styling
+            }).openPopup();        
+            
        };
 
        function plotVehiclesOnMap(vehicles) {
@@ -169,6 +178,9 @@
         }).addTo(map);
         plotStationOnMap (SerdangKTMStationInfo);
         plotStationOnMap (MidvalleyKTMStationInfo);
+        plotStationOnMap (KLSentralKTMStationInfo);
+        plotStationOnMap (KajangKTMStationInfo);
+
 
         fetchData(); // Main Function to fetch data 
                 
