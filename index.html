@@ -55,8 +55,7 @@
                 color: stationKTMStationInfo.colour,
                 fillOpacity: 0.8
             }).addTo(map);
-            let label = stationKTMStationInfo.name;
-            
+            let label = stationKTMStationInfo.name;           
            
             label    = `<a href="https://myrailtime.ktmb.com.my/timetable?origin=${stationKTMStationInfo.stationId}" target="_blank">${stationKTMStationInfo.name}</a>`;
             stationMarker.bindPopup(label, {
@@ -68,9 +67,9 @@
             
        };
 
-       function plotVehicleOnMap(vehicleIdNum, departureTime, latitude, longitude,baseKTMStationInfo) {        
+       function plotVehicleOnMap(vehicleIdNum, departureTime, latitude, longitude,stationKTMStationInfo) {        
                 const arrowIcon = L.divIcon({
-                    html: `<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill=${baseKTMStationInfo.colour} viewBox="0 0 24 24"><path d="${baseKTMStationInfo.svgPathd}"/></svg>`,
+                    html: `<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill=${stationKTMStationInfo.colour} viewBox="0 0 24 24"><path d="${stationKTMStationInfo.svgPathd}"/></svg>`,
                     className: 'vehicle-arrow-icon',
                     iconSize: [24, 24],
                     iconAnchor: [12, 12]
@@ -82,10 +81,10 @@
                 let label;
                 let distance;
                 if ( departureTime === "NA" ) {
-                   label    = `( #${vehicleIdNum})` ;
-                   distance = 'NA';
+                	 distance = 'NA';
+                   label    = `( #${vehicleIdNum})`;
                 } else {	                	
-                   distance = calculateDistance(latitude, longitude, baseKTMStationInfo.location[0], baseKTMStationInfo.location[1]);
+                   distance = calculateDistance(latitude, longitude, stationKTMStationInfo.location[0], stationKTMStationInfo.location[1]);
                    distance = distance.toFixed(2);
                    label    = `${departureTime}( #${vehicleIdNum}) - ${distance} km`;
                 }
@@ -95,8 +94,7 @@
                     offset: [10, 0],          
                     className: 'vehicle-label'
                 });
-                console.log(`Plotting Vehicle: #${vehicleIdNum}, in ${baseKTMStationInfo.colour} colour , at Position: (${latitude}, ${longitude}) and ${distance} KM , pointing towards ${baseKTMStationInfo.direction}`);                
-                
+                console.log(`Plotting Vehicle: #${vehicleIdNum}, in ${stationKTMStationInfo.colour} colour , at Position: (${latitude}, ${longitude}) and ${distance} KM , pointing towards ${stationKTMStationInfo.direction}`);                               
        }
 
 
@@ -142,15 +140,15 @@
                       if (filterParam === "up" || filterParam === "down" || filterParam === "both" ) { plotThisTrain = false;}
                     }
                 }
-
+               document.getElementById("trainCount").textContent = `Trains- Up:${upCount}, Down:${downCount}, Others:${naCount}`;  
+               
                 if (plotThisTrain === true) {                     	
     	                 plotVehicleOnMap(vehicleIdNum, departureTime, latitude, longitude,myTrainKTMStationInfo) 
     	          }       
     	          else {
-                  	  console.log(`             Skipping Vehicle: #${vehicleIdNum} of ${myTrainKTMStationInfo.colour} colour, pointing to ${myTrainKTMStationInfo.direction} direction as filterParam is ${filterParam}`);
+                  	  console.log(`\tSkipping Vehicle: #${vehicleIdNum} of ${myTrainKTMStationInfo.colour} colour, pointing to ${myTrainKTMStationInfo.direction} direction as filterParam is ${filterParam}`);
                 }                
-                
-               document.getElementById("trainCount").textContent = `Trains- Up:${upCount}, Down:${downCount}, Others:${naCount}`;            
+          
             });
        }
 
@@ -185,8 +183,7 @@
         const filterParam = urlParams.get('filter');
         console.log(`filter parameter on URL is ${filterParam}`)
 
-
-        fetchData(); // Main Function to fetch data 
+        fetchData(); // <== Main Function to fetch data & Plot
                 
         setInterval(() => {
             fetchData();
