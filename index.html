@@ -22,12 +22,38 @@
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
         // Vehicle IDs and Departure Times for 2 KTM stations as of 05-Oct, 2024. This has weekday(#2002-#2071) & weekend(#2206-#2271) trains 
-        const SerdangKTMVehicleIdList =   [ "2002",  "2004",  "2008",  "2010",  "2012",  "2014",  "2016",  "2018",  "2020",  "2024",  "2028",  "2032",  "2036",  "2040",  "2046",  "2048",  "2050",  "2054",  "2058",  "2062",  "2066",  "2070",                    "2206",  "2208",  "2210",  "2212",  "2214",  "2216",  "2220",  "2224",  "2228",  "2232",  "2236",  "2240",  "2246",  "2248",  "2250",  "2254",  "2258",  "2262",  "2266",  "2270" ];
-        const SerdangKTMDepartureTime =   ["06:30", "06:55", "07:25", "07:58", "08:30", "09:02", "09:32", "10:08", "11:03", "12:18", "13:18", "14:18", "15:23", "16:28", "17:18", "17:48", "18:28", "19:13", "20:03", "21:06", "22:16", "22:48",                   "07:25", "07:58", "08:30", "09:02", "09:32", "10:08", "11:03", "12:18", "13:18", "14:18", "15:23", "16:28", "17:18", "17:48", "18:28", "19:13", "20:03", "21:06", "22:16", "22:48"];        
-
-        const MidvalleyKTMVehicleIdList = [ "2003",  "2007",  "2011",  "2013",  "2015",  "2017",  "2019",  "2021",  "2025",  "2027",  "2031",  "2035",  "2039",  "2045",  "2049",  "2053",   "2057",  "2059",  "2061",  "2063",  "2067",  "2071",                   "2207",  "2211",  "2213",  "2215",  "2219",  "2223",  "2225",  "2229",  "2233",  "2237",  "2243",  "2247",  "2251",  "2253",  "2257",  "2259",  "2261",  "2265",  "2271"];
-        const MidvalleyKTMDepartureTime = ["05:39", "06:40", "07:35",  "08:05", "08:35", "09:08", "09:35", "10:05", "10:35", "11:35", "12:40", "13:45", "14:45", "15:45", "16:45", "17:35", "18:10", "18:40", "19:20", "20:35", "21:48", "22:48",                  "06:40", "07:35", "08:05", "8:35",  "09:35", "10:35", "11:35", "12:40", "13:45", "14:45", "15:45", "16:45", "17:35", "18:10", "18:40", "19:20", "20:35", "21:48", "22:48"];       
-
+        const SerdangKTMTrains = [
+            { vehicleId: 2002, departureTime: "06:30" },    { vehicleId: 2004, departureTime: "06:55" },    { vehicleId: 2008, departureTime: "07:25" },
+            { vehicleId: 2010, departureTime: "07:58" },    { vehicleId: 2012, departureTime: "08:30" },    { vehicleId: 2014, departureTime: "09:02" },
+            { vehicleId: 2016, departureTime: "09:32" },    { vehicleId: 2018, departureTime: "10:08" },    { vehicleId: 2020, departureTime: "11:03" },
+            { vehicleId: 2024, departureTime: "12:18" },    { vehicleId: 2028, departureTime: "13:18" },    { vehicleId: 2032, departureTime: "14:18" },
+            { vehicleId: 2036, departureTime: "15:23" },    { vehicleId: 2040, departureTime: "16:28" },    { vehicleId: 2046, departureTime: "17:18" },
+            { vehicleId: 2048, departureTime: "17:48" },    { vehicleId: 2050, departureTime: "18:28" },    { vehicleId: 2054, departureTime: "19:13" },
+            { vehicleId: 2058, departureTime: "20:03" },    { vehicleId: 2062, departureTime: "21:06" },    { vehicleId: 2066, departureTime: "22:16" },
+            { vehicleId: 2070, departureTime: "22:48" },    { vehicleId: 2206, departureTime: "07:25" },    { vehicleId: 2208, departureTime: "07:58" },
+            { vehicleId: 2210, departureTime: "08:30" },    { vehicleId: 2212, departureTime: "09:02" },    { vehicleId: 2214, departureTime: "09:32" },
+            { vehicleId: 2216, departureTime: "10:08" },    { vehicleId: 2220, departureTime: "11:03" },    { vehicleId: 2224, departureTime: "12:18" },
+            { vehicleId: 2228, departureTime: "13:18" },    { vehicleId: 2232, departureTime: "14:18" },    { vehicleId: 2236, departureTime: "15:23" },
+            { vehicleId: 2240, departureTime: "16:28" },    { vehicleId: 2246, departureTime: "17:18" },    { vehicleId: 2248, departureTime: "17:48" },
+            { vehicleId: 2250, departureTime: "18:28" },    { vehicleId: 2254, departureTime: "19:13" },    { vehicleId: 2258, departureTime: "20:03" },
+            { vehicleId: 2262, departureTime: "21:06" },    { vehicleId: 2266, departureTime: "22:16" },    { vehicleId: 2270, departureTime: "22:48" }
+        ];
+        const MidvalleyKTMTrains = [
+            { vehicleId: 2003, departureTime: "05:39" },    { vehicleId: 2007, departureTime: "06:40" },    { vehicleId: 2011, departureTime: "07:35" },
+            { vehicleId: 2013, departureTime: "08:05" },    { vehicleId: 2015, departureTime: "08:35" },    { vehicleId: 2017, departureTime: "09:08" },
+            { vehicleId: 2019, departureTime: "09:35" },    { vehicleId: 2021, departureTime: "10:05" },    { vehicleId: 2025, departureTime: "10:35" },
+            { vehicleId: 2027, departureTime: "11:35" },    { vehicleId: 2031, departureTime: "12:40" },    { vehicleId: 2035, departureTime: "13:45" },
+            { vehicleId: 2039, departureTime: "14:45" },    { vehicleId: 2045, departureTime: "15:45" },    { vehicleId: 2049, departureTime: "16:45" },
+            { vehicleId: 2053, departureTime: "17:35" },    { vehicleId: 2057, departureTime: "18:10" },    { vehicleId: 2059, departureTime: "18:40" },
+            { vehicleId: 2061, departureTime: "19:20" },    { vehicleId: 2063, departureTime: "20:35" },    { vehicleId: 2067, departureTime: "21:48" },
+            { vehicleId: 2071, departureTime: "22:48" },    { vehicleId: 2207, departureTime: "06:40" },    { vehicleId: 2211, departureTime: "07:35" },
+            { vehicleId: 2213, departureTime: "08:05" },    { vehicleId: 2215, departureTime: "08:35" },    { vehicleId: 2219, departureTime: "09:35" },
+            { vehicleId: 2223, departureTime: "10:35" },    { vehicleId: 2225, departureTime: "11:35" },    { vehicleId: 2229, departureTime: "12:40" },
+            { vehicleId: 2233, departureTime: "13:45" },    { vehicleId: 2237, departureTime: "14:45" },    { vehicleId: 2243, departureTime: "15:45" },
+            { vehicleId: 2247, departureTime: "16:45" },    { vehicleId: 2251, departureTime: "17:35" },    { vehicleId: 2253, departureTime: "18:10" },
+            { vehicleId: 2257, departureTime: "18:40" },    { vehicleId: 2259, departureTime: "19:20" },    { vehicleId: 2261, departureTime: "20:35" },
+            { vehicleId: 2265, departureTime: "21:48" },    { vehicleId: 2271, departureTime: "22:48" }
+        ];
 
         const SerdangKTMStationInfo   = { name:'Serdang KTM',    stationId:19900, colour:'blue',     direction:'up',   location: [3.023277436768209, 101.71580855814486], svgPathd: 'M12 2l7 12h-14z'  };
         const MidvalleyKTMStationInfo = { name:'Mid Valley KTM', stationId:19205, colour:'red',      direction:'down', location: [3.118741643119998, 101.67891120835036], svgPathd: 'M12 22l7-12h-14z' };
@@ -49,15 +75,13 @@
         }
 
        function plotStationOnMap(stationKTMStationInfo) {
-            const stationMarker = L.circleMarker(stationKTMStationInfo.location, {
+            let stationMarker = L.circleMarker(stationKTMStationInfo.location, {
                 radius: 10,
                 fillColor: stationKTMStationInfo.colour,
                 color: stationKTMStationInfo.colour,
                 fillOpacity: 0.8
             }).addTo(map);
-            let label = stationKTMStationInfo.name;           
-           
-            label    = `<a href="https://myrailtime.ktmb.com.my/timetable?origin=${stationKTMStationInfo.stationId}" target="_blank">${stationKTMStationInfo.name}</a>`;
+            let label = `<a href="https://myrailtime.ktmb.com.my/timetable?origin=${stationKTMStationInfo.stationId}" target="_blank">${stationKTMStationInfo.name}</a>`;
             stationMarker.bindPopup(label, {
                   permanent: false,
                   direction: 'left',
@@ -97,7 +121,6 @@
                 console.log(`Plotting Vehicle: #${vehicleIdNum}, in ${stationKTMStationInfo.colour} colour , at Position: (${latitude}, ${longitude}) and ${distance} KM , pointing towards ${stationKTMStationInfo.direction}`);                               
        }
 
-
        function classifyVehiclesForPlotting(vehicles) {
             let upCount = 0,downCount = 0,naCount = 0; 
 
@@ -110,9 +133,9 @@
 
             vehicles.forEach(vehicle => {
                 const { latitude, longitude } = vehicle.position;
-                let vehicleIdNum; 
+                let vehicleIdNum = 0; 
                 if (vehicle.vehicle.id.includes('_')) {
-                    vehicleIdNum = vehicle.vehicle.id.split('_')[1]; 
+                    vehicleIdNum = parseInt(vehicle.vehicle.id.split('_')[1]); 
                 } else {
                     vehicleIdNum = parseInt(vehicle.vehicle.id);
                 }
@@ -120,16 +143,18 @@
                 let departureTime;
                 let myTrainKTMStationInfo;
                 let plotThisTrain = true;
-                if( SerdangKTMVehicleIdList.includes(vehicleIdNum)) {
+                const findMyKTMTrain = SerdangKTMTrains.find(train => train.vehicleId === vehicleIdNum);    
+                if( findMyKTMTrain ) {
                       myTrainKTMStationInfo = SerdangKTMStationInfo;
-                      departureTime  = SerdangKTMDepartureTime[SerdangKTMVehicleIdList.indexOf(vehicleIdNum)];
+                      departureTime  = findMyKTMTrain.departureTime;
                       upCount++;
                       if (filterParam === "down" ) { plotThisTrain = false;}
                 }
                 else {
-                    if( MidvalleyKTMVehicleIdList.includes(vehicleIdNum) )  {
+                	  const findMyKTMTrain = MidvalleyKTMTrains.find(train => train.vehicleId === vehicleIdNum);
+                    if( findMyKTMTrain )  {
                        myTrainKTMStationInfo = MidvalleyKTMStationInfo;
-                       departureTime  = MidvalleyKTMDepartureTime[MidvalleyKTMVehicleIdList.indexOf(vehicleIdNum)];
+                       departureTime  = findMyKTMTrain.departureTime;
                        downCount++;
                        if (filterParam === "up" ) { plotThisTrain = false;}
                     }
@@ -140,7 +165,7 @@
                       if (filterParam === "up" || filterParam === "down" || filterParam === "both" ) { plotThisTrain = false;}
                     }
                 }
-               document.getElementById("trainCount").textContent = `Trains- Up:${upCount}, Down:${downCount}, Others:${naCount}`;  
+                document.getElementById("trainCount").textContent = `Trains- Up:${upCount}, Down:${downCount}, Others:${naCount}`;  
                
                 if (plotThisTrain === true) {                     	
     	                 plotVehicleOnMap(vehicleIdNum, departureTime, latitude, longitude,myTrainKTMStationInfo) 
@@ -187,7 +212,7 @@
                 
         setInterval(() => {
             fetchData();
-        }, 60100);            // Refresh data every 60.1 seconds, because API is updated every minute
+        }, 60100);            // Refresh data every 60.1 seconds, because API is updated every 60 seconds
     </script>
 </body>
 </html>
