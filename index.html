@@ -53,15 +53,43 @@
             { vehicleId: 2247, departureTime: "16:45" },    { vehicleId: 2251, departureTime: "17:35" },    { vehicleId: 2253, departureTime: "18:10" },
             { vehicleId: 2257, departureTime: "18:40" },    { vehicleId: 2259, departureTime: "19:20" },    { vehicleId: 2261, departureTime: "20:35" },
             { vehicleId: 2265, departureTime: "21:48" },    { vehicleId: 2271, departureTime: "22:48" }
-        ];
+        ]; 
 
-        const SerdangKTMStationInfo   = { name:'Serdang KTM',    stationId:19900, colour:'blue',     direction:'up',   location: [3.023277436768209, 101.71580855814486], svgPathd: 'M12 2l7 12h-14z'  };
-        const MidvalleyKTMStationInfo = { name:'Mid Valley KTM', stationId:19205, colour:'red',      direction:'down', location: [3.118741643119998, 101.67891120835036], svgPathd: 'M12 22l7-12h-14z' };
-        const KLSentralKTMStationInfo = { name:'KL SentralKTM',  stationId:19100, colour:'#f97e89',  direction:'down', location: [3.134256547358604, 101.68603801684128], svgPathd: ''};
-        const KajangKTMStationInfo    = { name:'Kajang KTM',     stationId:20400, colour:'#8b81fb'  ,direction:'up',   location: [2.984945129982691, 101.79086083911693], svgPathd: ''};        
-        const DummyKTMStationInfo =     { name:'Dummy KTM',      stationId:00000, colour:'green',    direction:'na',   location: [0.00             , 0.00              ], svgPathd: 'M2 2 H10 V10 H2 Z'};
 
-        // Haversine formula to calculate distance between two coordinates in km
+        const KTMStations = {
+             'Dummy KTM'         :  {stationId:00000, colour: 'green',  direction:'na'  , location: [0.00, 0.00]         , svgPathd: 'M2 2 H10 V10 H2 Z' },             
+             'Pulau Sebang KTM'  :  {stationId:25100, colour:'#8b81fb', direction:'na'  , location: [2.46396,102.2263080], svgPathd: ''},
+             'Rembau KTM'        :  {stationId:23900, colour:'#8b81fb', direction:'na'  , location: [2.593055,102.094653], svgPathd: ''},
+             'Sungai Gadut KTM'  :  {stationId:23100, colour:'#8b81fb', direction:'na'  , location: [2.660898,101.996158], svgPathd: ''},
+             'Senawang KTM'      :  {stationId:22900, colour:'#8b81fb', direction:'na'  , location: [2.690138,101.972336], svgPathd: ''},
+             'Seremban KTM'      :  {stationId:22700, colour:'#8b81fb', direction:'na'  , location: [2.719169,101.940792], svgPathd: ''},
+             'Tiroi KTM'         :  {stationId:22400, colour:'#8b81fb', direction:'na'  , location: [2.741459,101.871914], svgPathd: ''},
+             'Labu KTM'          :  {stationId:22000, colour:'#8b81fb', direction:'na'  , location: [2.754501,101.826656], svgPathd: ''},
+             'Nilai KTM'         :  {stationId:21500, colour:'#8b81fb', direction:'na'  , location: [2.802356,101.799303], svgPathd: ''},
+             'Batang Benar KTM'  :  {stationId:21300, colour:'#8b81fb', direction:'na'  , location: [2.829904,101.826655], svgPathd: ''},
+             'Bangi KTM'         :  {stationId:20900, colour:'#8b81fb', direction:'na'  , location: [2.904467,101.785943], svgPathd: ''},
+             'UKM KTM'           :  {stationId:20500, colour:'#8b81fb', direction:'na'  , location: [2.939775,101.787623], svgPathd: ''},
+             'Kajang 2 KTM'      :  {stationId:20402, colour:'#8b81fb', direction:'na'  , location: [2.962640,101.792070], svgPathd: ''},
+             'Kajang KTM'        :  {stationId:20400, colour:'#8b81fb', direction:'na'  , location: [2.983222,101.790669], svgPathd: ''},
+             'Serdang KTM'       :  {stationId:19900, colour:'blue'   , direction:'up'  , location: [3.023404,101.716056], svgPathd: 'M12 2l7 12h-14z' },
+             'BTS KTM'           :  {stationId:19600, colour:'#ecf851', direction:'na'  , location: [3.076229,101.711119], svgPathd: ''},
+             'Salak Selatan KTM' :  {stationId:19400, colour:'#ecf851', direction:'na'  , location: [3.098413,101.705055], svgPathd: ''},
+             'Seputeh KTM'       :  {stationId:19300, colour:'#ecf851', direction:'na'  , location: [3.113612,101.681474], svgPathd: ''},
+             'Midvalley KTM'     :  {stationId:19205, colour:'red'    , direction:'down', location: [3.119211,101.678865], svgPathd: 'M12 22l7-12h-14z'},
+             'KL Sentral KTM'    :  {stationId:19100, colour:'#f97e89', direction:'na'  , location: [3.134167,101.686111], svgPathd: ''},
+             'Kuala Lumpur KTM'  :  {stationId:19000, colour:'#f97e89', direction:'na'  , location: [3.139444,101.693333], svgPathd: ''},
+             'Bank Negara KTM'   :  {stationId:18900, colour:'#f97e89', direction:'na'  , location: [3.155105,101.693118], svgPathd: ''},
+             'Putra KTM'         :  {stationId:18800, colour:'#f97e89', direction:'na'  , location: [3.165399,101.691101], svgPathd: ''},
+             'Sentul KTM'        :  {stationId:50000, colour:'#f97e89', direction:'na'  , location: [3.183581,101.688802], svgPathd: ''},
+             'Batu Kentonmen KTM':  {stationId:50300, colour:'#f97e89', direction:'na'  , location: [3.198485,101.681138], svgPathd: ''},
+             'Kampung Batu KTM'  :  {stationId:50400, colour:'#f97e89', direction:'na'  , location: [3.204892,101.675584], svgPathd: ''},
+             'Taman Wahyu KTM'   :  {stationId:50500, colour:'#f97e89', direction:'na'  , location: [3.214510,101.672178], svgPathd: ''},
+             'Batu Caves KTM'    :  {stationId:50600, colour:'#f97e89', direction:'na'  , location: [3.237796,101.681215], svgPathd: ''}
+         };   
+
+
+
+       // Haversine formula to calculate distance between two coordinates in km
         function calculateDistance(lat1, lon1, lat2, lon2) {
             const R = 6371; // Radius of the Earth in kilometers
             const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -74,20 +102,24 @@
             return R * c; // Distance in kilometers
         }
 
-       function plotStationOnMap(stationKTMStationInfo) {
-            let stationMarker = L.circleMarker(stationKTMStationInfo.location, {
-                radius: 10,
-                fillColor: stationKTMStationInfo.colour,
-                color: stationKTMStationInfo.colour,
-                fillOpacity: 0.8
-            }).addTo(map);
-            let label = `<a href="https://myrailtime.ktmb.com.my/timetable?origin=${stationKTMStationInfo.stationId}" target="_blank">${stationKTMStationInfo.name}</a>`;
-            stationMarker.bindPopup(label, {
-                  permanent: false,
-                  direction: 'left',
-                  offset: [-10, 0],
-                  className: 'custom-popup' 
-            }); //.openPopup();        
+       function plotStationsOnMap() {
+       	     for (const [stationName, stationInfo] of Object.entries(KTMStations)) {
+                if (stationName !== 'Dummy KTM') {
+                     let stationMarker = L.circleMarker(stationInfo.location, {
+                         radius: 10,
+                         fillColor: stationInfo.colour,
+                         color: stationInfo.colour,
+                         fillOpacity: 0.8
+                     }).addTo(map);
+                     let label = `<a href="https://myrailtime.ktmb.com.my/timetable?origin=${stationInfo.stationId}" target="_blank">${stationName}</a>`;
+                     stationMarker.bindPopup(label, {
+                           permanent: false,
+                           direction: 'left',
+                           offset: [-10, 0],
+                           className: 'custom-popup' 
+                     }); //.openPopup();        
+                }
+            }
             
        };
 
@@ -145,7 +177,7 @@
                 let plotThisTrain = true;
                 const findMyKTMTrain = SerdangKTMTrains.find(train => train.vehicleId === vehicleIdNum);    
                 if( findMyKTMTrain ) {
-                      myTrainKTMStationInfo = SerdangKTMStationInfo;
+                      myTrainKTMStationInfo = KTMStations['Serdang KTM'];
                       departureTime  = findMyKTMTrain.departureTime;
                       upCount++;
                       if (filterParam === "down" ) { plotThisTrain = false;}
@@ -153,13 +185,13 @@
                 else {
                 	  const findMyKTMTrain = MidvalleyKTMTrains.find(train => train.vehicleId === vehicleIdNum);
                     if( findMyKTMTrain )  {
-                       myTrainKTMStationInfo = MidvalleyKTMStationInfo;
+                       myTrainKTMStationInfo = KTMStations['Midvalley KTM'];
                        departureTime  = findMyKTMTrain.departureTime;
                        downCount++;
                        if (filterParam === "up" ) { plotThisTrain = false;}
                     }
                     else {
-                      myTrainKTMStationInfo  = DummyKTMStationInfo;
+                      myTrainKTMStationInfo  = KTMStations['Dummy KTM'];
                       departureTime   = 'NA';
                       naCount++;
                       if (filterParam === "up" || filterParam === "down" || filterParam === "both" ) { plotThisTrain = false;}
@@ -178,16 +210,13 @@
        }
 
        // Initialize the map to Location between 2 stations & add OpenStreetMap tile layer        
-        DummyKTMStationInfo.location = [(SerdangKTMStationInfo.location[0] + MidvalleyKTMStationInfo.location[0])/2 , (SerdangKTMStationInfo.location[1] + MidvalleyKTMStationInfo.location[1])/2]                 
-        const map = L.map('map').setView(DummyKTMStationInfo.location, 12);
+        KTMStations['Dummy KTM'].location = [ (KTMStations['Serdang KTM'].location[0] + KTMStations['Midvalley KTM'].location[0])/2, 
+                                              (KTMStations['Serdang KTM'].location[1] + KTMStations['Midvalley KTM'].location[1])/2];
+        const map = L.map('map').setView(KTMStations['Dummy KTM'].location, 12);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 18,
         }).addTo(map);
-        plotStationOnMap (SerdangKTMStationInfo);
-        plotStationOnMap (MidvalleyKTMStationInfo);
-        plotStationOnMap (KLSentralKTMStationInfo);
-        plotStationOnMap (KajangKTMStationInfo);        	
-
+        plotStationsOnMap();
 
         // Function to fetch data from MTREC API
         async function fetchData() {
