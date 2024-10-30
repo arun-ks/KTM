@@ -20,7 +20,7 @@
     <div id="map"></div>
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script>
+    <script>    	
         // Vehicle IDs and Departure Times for 2 KTM stations as of 05-Oct, 2024. This has weekday(#2002-#2071) & weekend(#2206-#2271) trains 
         const SerdangKTMTrains = [
             { vehicleId: 2002, departureTime: "06:30" },    { vehicleId: 2004, departureTime: "06:55" },    { vehicleId: 2008, departureTime: "07:25" },
@@ -37,7 +37,7 @@
             { vehicleId: 2240, departureTime: "16:28" },    { vehicleId: 2246, departureTime: "17:18" },    { vehicleId: 2248, departureTime: "17:48" },
             { vehicleId: 2250, departureTime: "18:28" },    { vehicleId: 2254, departureTime: "19:13" },    { vehicleId: 2258, departureTime: "20:03" },
             { vehicleId: 2262, departureTime: "21:06" },    { vehicleId: 2266, departureTime: "22:16" },    { vehicleId: 2270, departureTime: "22:48" }
-        ];
+        ];        
         const MidvalleyKTMTrains = [
             { vehicleId: 2003, departureTime: "05:39" },    { vehicleId: 2007, departureTime: "06:40" },    { vehicleId: 2011, departureTime: "07:35" },
             { vehicleId: 2013, departureTime: "08:05" },    { vehicleId: 2015, departureTime: "08:35" },    { vehicleId: 2017, departureTime: "09:08" },
@@ -86,7 +86,6 @@
              'Taman Wahyu KTM'   :  {stationId:50500, colour:'#f97e89', direction:'na'  , location: [3.214510,101.672178], svgPathd: ''},
              'Batu Caves KTM'    :  {stationId:50600, colour:'#f97e89', direction:'na'  , location: [3.237796,101.681215], svgPathd: ''}
          };   
-
 
 
        // Haversine formula to calculate distance between two coordinates in km
