@@ -211,7 +211,7 @@
        // Initialize the map to Location between 2 stations & add OpenStreetMap tile layer        
         KTMStations['Dummy KTM'].location = [ (KTMStations['Serdang KTM'].location[0] + KTMStations['Midvalley KTM'].location[0])/2, 
                                               (KTMStations['Serdang KTM'].location[1] + KTMStations['Midvalley KTM'].location[1])/2];
-        const map = L.map('map').setView(KTMStations['Dummy KTM'].location, 12);
+        const map = L.map('map').setView(KTMStations['Dummy KTM'].location, 11);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 18,
         }).addTo(map);
