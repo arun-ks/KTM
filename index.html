@@ -17,11 +17,8 @@
 </head>
 <body>    
 
-    <h3>Trains- <a href='index.html?filter=up'>Up</a>:<span id="trainCountUp"></span>, <a href="index.html?filter=down">Down</a>:<span id="trainCountDown"></span>, Others:<span id="trainCountNa"></span></h3>
-
-
+    <h3>Trains- <a href='index.html?filter=up'>Up</a>:<span id="trainCountUp">0</span>, <a href="index.html?filter=down">Down</a>:<span id="trainCountDown">0</span>, <a href="index.html?filter=botha">Others</a>:<span id="trainCountNa">0</span></h3>
     <div id="map"></div>
-
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>  
     <script> 
         // Vehicle IDs and Departure Times for 2 KTM stations as of 05-Oct, 2024. This has weekday(#2002-#2071) & weekend(#2206-#2271) trains 
@@ -104,7 +101,7 @@
             return R * c; // Distance in kilometers
         }
 
-       function plotStationsOnMap() {
+       function plotStationsOnMap(myMap) {
        	     for (const [stationName, stationInfo] of Object.entries(KTMStations)) {
                 if (stationName !== 'Dummy KTM') {
                      let stationMarker = L.circleMarker(stationInfo.location, {
@@ -112,7 +109,7 @@
                          fillColor: stationInfo.colour,
                          color: stationInfo.colour,
                          fillOpacity: 0.8
-                     }).addTo(map);
+                     }).addTo(myMap);
                      let label = `<a href="https://myrailtime.ktmb.com.my/timetable?origin=${stationInfo.stationId}" target="_blank">${stationName}</a>`;
                      stationMarker.bindPopup(label, {
                            permanent: false,
@@ -223,7 +220,7 @@
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 18,
         }).addTo(map);
-        plotStationsOnMap();
+        plotStationsOnMap(map);
 
         // Function to fetch data from MTREC API
         // API       : https://www.mtrec.name.my/api.html  
@@ -231,7 +228,11 @@
         async function fetchMtrecApiData() {
             try {
                 const response = await fetch('https://api.mtrec.name.my/api/position?agency=ktmb');
-                const data = await response.json();
+                //const data = await response.json();
+                const data0 = '{"IP_Address":"124.195.34.253","status":200,"message":"Request successful","timestamp":1731426363,"data":[{"trip":{"tripId":"weekday_2179"},"position":{"latitude":3.076805,"longitude":101.56307,"bearing":0,"speed":28},"timestamp":"1731426354","vehicle":{"id":"weekday_2179","label":"EMU35"}},{"trip":{"tripId":"weekday_2182"},"position":{"latitude":3.219058,"longitude":101.566505,"bearing":0,"speed":49},"timestamp":"1731426353","vehicle":{"id":"weekday_2182","label":"SCS38"}},{"trip":{"tripId":"weekday_2166"},"position":{"latitude":3.693775,"longitude":101.50893,"bearing":0,"speed":0},"timestamp":"1731426351","vehicle":{"id":"weekday_2166","label":"SCS19"}},{"trip":{"tripId":"weekday_2067"},"position":{"latitude":2.702462,"longitude":101.95729,"bearing":0,"speed":86},"timestamp":"1731426350","vehicle":{"id":"weekday_2067","label":"SCS28"}},{"trip":{"tripId":"weekday_2183"},"position":{"latitude":3.150335,"longitude":101.374446,"bearing":0,"speed":67},"timestamp":"1731426297","vehicle":{"id":"weekday_2018","label":"SCS10"}}]}';
+                const data1 = '{ "IP_Address":"124.195.34.253", "status":200, "message":"Requestsuccessful", "timestamp":1731426722, "data":[ { "trip":{ "tripId":"weekday_2071" }, "position":{ "latitude":3.22884, "longitude":101.67314, "bearing":0, "speed":48 }, "timestamp":"1731426677", "vehicle":{ "id":"weekday_2071", "label":"SCS07" } }, { "trip":{ "tripId":"weekday_2183" }, "position":{ "latitude":3.08582, "longitude":101.66302, "bearing":0, "speed":16 }, "timestamp":"1731426677", "vehicle":{ "id":"weekday_2183", "label":"SCS10" } }, { "trip":{ "tripId":"weekday_2179" }, "position":{ "latitude":3.05981, "longitude":101.53568, "bearing":0, "speed":64 }, "timestamp":"1731426674", "vehicle":{ "id":"weekday_2179", "label":"EMU35" } }, { "trip":{ "tripId":"weekday_2182" }, "position":{ "latitude":3.239373, "longitude":101.560295, "bearing":0, "speed":0 }, "timestamp":"1731426633", "vehicle":{ "id":"weekday_2182", "label":"SCS38" } } ] }';
+                
+                data=data1;
 
                 console.log((new Date()).toLocaleTimeString(),' (API Response) :', data);
                 const vehicles = data.data || []; 
