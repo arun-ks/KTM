@@ -17,8 +17,10 @@
 </head>
 <body>    
 
-    <h3>Trains- <a href='index.html?filter=up'>Up</a>:<span id="trainCountUp">0</span>, <a href="index.html?filter=down">Down</a>:<span id="trainCountDown">0</span>, <a href="index.html?filter=botha">Others</a>:<span id="trainCountNa">0</span></h3>
+    <h4>Trains- <a href='index.html?filter=up'>Up</a>:<span id="trainCountUp">0</span>, <a href="index.html?filter=down">Down</a>:<span id="trainCountDown">0</span>, <a href="index.html?filter=botha">Others</a>:<span id="trainCountNa">0</span></h>    
     <div id="map"></div>
+    <button id="toggleButton" onclick="toggleTrainScheduleTableVisibility()">Show Schedule</button>
+    
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>  
     <script> 
         // Vehicle IDs and Departure Times for 2 KTM stations as of 05-Oct, 2024. This has weekday(#2002-#2071) & weekend(#2206-#2271) trains 
@@ -97,14 +99,25 @@
                 maxZoom: 18,
             }).addTo(map);
             return map;
+            
+            //Use flyTo() which is similar to setView()
         }
         
-        function initializePage(){
+        function initializePageParameters(){
                //Get the filter parameter ('up', 'down', 'both' or anything else) from the URL
                const urlParams   = new URLSearchParams(window.location.search);
                const filterParam = urlParams.get('filter');
-               console.log(`filter parameter on URL is ${filterParam}`)
-               return filterParam;
+               const focusVehicleIdParamRaw = urlParams.get('focusVehicleId');
+               let focusVehicleIdParam = 0;
+               
+               if (!isNaN(focusVehicleIdParamRaw) )
+                   focusVehicleIdParam= parseInt(focusVehicleIdParamRaw, 10);
+                else
+	                 	focusVehicleIdParam = 0;                 
+               
+               
+               console.log(`filter parameter on URL is ${filterParam} , and focusVehicleId is ${focusVehicleIdParam} `);
+               return { filterParam, focusVehicleIdParam};
         }
 
         function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -182,8 +195,8 @@
             });
 
             vehicles.forEach(vehicle => {
-                const { latitude, longitude } = vehicle.position;
                 let vehicleIdNum = 0; 
+                
                 if (vehicle.vehicle.id.includes('_')) {
                     vehicleIdNum = parseInt(vehicle.vehicle.id.split('_')[1]); 
                 } else {
@@ -219,13 +232,21 @@
                 document.getElementById("trainCountUp").textContent = `${upCount}`;  
                 document.getElementById("trainCountDown").textContent = `${downCount}`;  
                 document.getElementById("trainCountNa").textContent = `${naCount}`;  
-               
+                
+                if (focusVehicleIdParam > 0 ) 
+                   if (focusVehicleIdParam !== vehicleIdNum) {
+               	         plotThisTrain = false;
+                   }               
+                   else {
+                   	 console.log(`\tTrying to panTo Location for Vehicle: #${vehicleIdNum} which is at ${vehicle.position.latitude}, ${vehicle.position.longitude} `);	                   	
+	                   	map.flyTo([vehicle.position.latitude, vehicle.position.longitude]);             	//, 14, { animation: true }) ; 
+                   }
                
                 if (plotThisTrain === true) {                     	
-    	                 plotVehicleOnMap(vehicleIdNum, departureTime, latitude, longitude,myTrainKTMStationInfo) 
+    	                 plotVehicleOnMap(vehicleIdNum, departureTime, vehicle.position.latitude, vehicle.position.longitude,myTrainKTMStationInfo) ; 
     	          }       
     	          else {
-                  	  console.log(`\tSkipping Vehicle: #${vehicleIdNum} of ${myTrainKTMStationInfo.colour} colour, pointing to ${myTrainKTMStationInfo.direction} direction as filterParam is ${filterParam}`);
+                  	  console.log(`\tSkipping Vehicle: #${vehicleIdNum} of ${myTrainKTMStationInfo.colour} colour, pointing to ${myTrainKTMStationInfo.direction} direction as filterParam is ${filterParam} and focusVehicleId is ${focusVehicleIdParam}`);
                 }                
           
             });
@@ -238,9 +259,6 @@
             try {
                 const response = await fetch('https://api.mtrec.name.my/api/position?agency=ktmb');
                 const data = await response.json();
-                const data0 = '{"IP_Address":"124.195.34.253","status":200,"message":"Request successful","timestamp":1731426363,"data":[{"trip":{"tripId":"weekday_2179"},"position":{"latitude":3.076805,"longitude":101.56307,"bearing":0,"speed":28},"timestamp":"1731426354","vehicle":{"id":"weekday_2179","label":"EMU35"}},{"trip":{"tripId":"weekday_2182"},"position":{"latitude":3.219058,"longitude":101.566505,"bearing":0,"speed":49},"timestamp":"1731426353","vehicle":{"id":"weekday_2182","label":"SCS38"}},{"trip":{"tripId":"weekday_2166"},"position":{"latitude":3.693775,"longitude":101.50893,"bearing":0,"speed":0},"timestamp":"1731426351","vehicle":{"id":"weekday_2166","label":"SCS19"}},{"trip":{"tripId":"weekday_2067"},"position":{"latitude":2.702462,"longitude":101.95729,"bearing":0,"speed":86},"timestamp":"1731426350","vehicle":{"id":"weekday_2067","label":"SCS28"}},{"trip":{"tripId":"weekday_2183"},"position":{"latitude":3.150335,"longitude":101.374446,"bearing":0,"speed":67},"timestamp":"1731426297","vehicle":{"id":"weekday_2018","label":"SCS10"}}]}';
-                //data=data0;
-
                 console.log((new Date()).toLocaleTimeString(),' (API Response) :', data);
                 const vehicles = data.data || []; 
                 classifyVehiclesForPlotting(vehicles);
@@ -248,19 +266,84 @@
                 console.error('Error fetching data from API:', error);
             }
        }
+
+       function showTrainScheduleTable(trains, stationName) {
+              const isWeekend = [0, 6].includes(new Date().getDay());
+              const typeOfDay = isWeekend ? "Weekend" : "Weekday";
+            
+              const trainsForTypeOfDay = trains.filter(train => train.typeOfDay === typeOfDay);          
+              const currentDate = new Date();
+            
+              // Create table if there is none
+              let table = document.querySelector("#trainScheduleTable");
+              if (!table) {
+                  table = document.createElement("table");
+                  table.id = "trainScheduleTable";
+                  table.style.borderCollapse = "collapse";
+                  document.body.appendChild(table);
+              }
+            
+              const row = document.createElement("tr");
+              const stationCell = document.createElement("td");
+              stationCell.textContent = stationName;
+              stationCell.style.fontSize = "small";
+              stationCell.style.border = "1px solid black"; 
+              row.appendChild(stationCell);
+            
+              trainsForTypeOfDay.forEach(train => {
+                  const cell = document.createElement("td");
+                  cell.style.fontSize = "small";                   // Use x-small for smaller font
+                  cell.style.border = "1px solid black"; 
+            
+                  const textNode = document.createTextNode(`${train.departureTime} (`);
+                  const vehicleLink = document.createElement("a");
+                  vehicleLink.href = `${window.location.pathname}?focusVehicleId=${train.vehicleId}`;
+                  vehicleLink.textContent = `#${train.vehicleId}`;            
+                  cell.appendChild(textNode);
+                  cell.appendChild(vehicleLink);
+                  cell.appendChild(document.createTextNode(")"));
+            
+
+                  const [hours, minutes] = train.departureTime.split(":").map(Number);
+                  const departureDate = new Date(currentDate);
+                  departureDate.setHours(hours, minutes, 0, 0);
+                  let diffMinutes = (departureDate - currentDate) / (1000 * 60);
+                  if (diffMinutes < 0 && diffMinutes >= -60) {
+                      cell.style.backgroundColor = "lightcoral";
+                  } else if (diffMinutes >= 0 && diffMinutes <= 120) {
+                      cell.style.backgroundColor = "lightgreen";
+                  }            
+                  row.appendChild(cell);
+              });
+            
+               table.appendChild(row);
+       }
+       
+       function toggleTrainScheduleTableVisibility() {
+           const table = document.querySelector("#trainScheduleTable");
+           const button = document.querySelector("#toggleButton");
+           if (table.style.display === "none") {
+               table.style.display = "table";
+               button.textContent = "Hide Schedule";
+           } else {
+               table.style.display = "none";
+               button.textContent = "Show Schedule";
+           }
+       }
+
+      
+       const { filterParam, focusVehicleIdParam } = initializePageParameters(); 
+       const map = initializeMap();
+       plotStationsOnMap(map);
+       showTrainScheduleTable(SerdangKTMTrains, "Serdang");
+       showTrainScheduleTable(MidvalleyKTMTrains, "Mid Valley");
+    
         
-        
-        
-        
-        const filterParam = initializePage();        
-        const map = initializeMap();
-        plotStationsOnMap(map);
-        
-        fetchMtrecApiData(); // <== Main Function to fetch data & Plot    
+       fetchMtrecApiData(); // <== Main Function to fetch data & Plot    
                     
-        setInterval(() => {
+       setInterval(() => {
             fetchMtrecApiData();
-        }, 60100);            // Refresh data every 60.1 seconds, because API is updated every 60 seconds
+       }, 60100);            // Refresh data every 60.1 seconds, because API is updated every 60 seconds
     </script>
 </body>
 </html>
