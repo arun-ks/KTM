@@ -14,7 +14,7 @@
         }
         #map { height: 600px; }
         
-        #countdown {
+        #Xcountdown {
             position: fixed;
             top: 10px;
             right: 10px;
@@ -28,10 +28,16 @@
     </style>	
 </head>
 <body>    
-	  <div id="countdown">Next refresh in: 60s</div>
-    <h4>Trains- <a href='index.html?filter=up'>Up</a>:<span id="trainCountUp">0</span>, <a href="index.html?filter=down">Down</a>:<span id="trainCountDown">0</span>, <a href="index.html?filter=botha">Others</a>:<span id="trainCountNa">0</span></h4>    
-    <div id="map"></div>
+	  <div id="Xcountdown">Next refresh in: 60s</div>
+    <b>Trains:</b>
+    <a href="index.html?filter=botha">Total</a>:<span id="trainCountNa">0</span>,
+    <a href='index.html?filter=up'>Up</a>:<span id="trainCountUp">0</span>,
+    <a href="index.html?filter=down">Down</a>:<span id="trainCountDown">0</span>.    	         
+    Refresh in <span id="countdown">60s</span>
     <button id="toggleButton" onclick="toggleTrainScheduleTableVisibility()">Show Schedule</button>    
+    
+    <div id="map"></div>
+    
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>  
     <script>  // Data Structures
         // Vehicle IDs and Departure Times for 2 KTM stations as of 05-Oct, 2024. This has weekday(#2002-#2071) & weekend(#2206-#2271) trains 
@@ -243,7 +249,8 @@
               
                 document.getElementById("trainCountUp").textContent = `${upCount}`;  
                 document.getElementById("trainCountDown").textContent = `${downCount}`;  
-                document.getElementById("trainCountNa").textContent = `${naCount}`;  
+                allCount = naCount + upCount + downCount;
+                document.getElementById("trainCountNa").textContent = `${allCount}`;  
                 
                 if (focusVehicleIdParam > 0 ) 
                    if (focusVehicleIdParam !== vehicleIdNum) {
@@ -337,6 +344,7 @@
            const button = document.querySelector("#toggleButton");
            if (table.style.display === "none") {
                table.style.display = "table";
+               table.scrollIntoView({ behavior: "smooth", block: "start" });  // Scroll to table
                button.textContent = "Hide Schedule";
            } else {
                table.style.display = "none";
@@ -352,13 +360,14 @@
        showTrainScheduleTable(MidvalleyKTMTrains, "Mid Valley");
        
         let countdown = 60;
-        const countdownElement = document.getElementById("countdown");    
+        //const countdownElement = document.getElementById("countdown");    
         
        fetchMtrecApiData(); // <== Main Function to fetch data & Plot    
                     
        setInterval(() => {
             countdown -= 1;
-            countdownElement.textContent = `Next refresh in: ${countdown}s`;       
+             document.getElementById("countdown").textContent =`${countdown}s`; 
+            //countdownElement.textContent = `${countdown}s`;       
             if (countdown <= 0) {
                 fetchMtrecApiData();  // Refresh data every 60.1 seconds, because API is updated every 60 seconds
             }
