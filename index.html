@@ -13,16 +13,27 @@
             font-family: 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
         }
         #map { height: 600px; }
+        
+        #countdown {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            font-size: 14px;
+            color: #333;
+            background-color: #f0f0f0;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
     </style>	
 </head>
 <body>    
-
-    <h4>Trains- <a href='index.html?filter=up'>Up</a>:<span id="trainCountUp">0</span>, <a href="index.html?filter=down">Down</a>:<span id="trainCountDown">0</span>, <a href="index.html?filter=botha">Others</a>:<span id="trainCountNa">0</span></h>    
+	  <div id="countdown">Next refresh in: 60s</div>
+    <h4>Trains- <a href='index.html?filter=up'>Up</a>:<span id="trainCountUp">0</span>, <a href="index.html?filter=down">Down</a>:<span id="trainCountDown">0</span>, <a href="index.html?filter=botha">Others</a>:<span id="trainCountNa">0</span></h4>    
     <div id="map"></div>
-    <button id="toggleButton" onclick="toggleTrainScheduleTableVisibility()">Show Schedule</button>
-    
+    <button id="toggleButton" onclick="toggleTrainScheduleTableVisibility()">Show Schedule</button>    
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>  
-    <script> 
+    <script>  // Data Structures
         // Vehicle IDs and Departure Times for 2 KTM stations as of 05-Oct, 2024. This has weekday(#2002-#2071) & weekend(#2206-#2271) trains 
         const SerdangKTMTrains = [
             { vehicleId: 2002, departureTime: "06:30", typeOfDay: "Weekday"},    { vehicleId: 2004, departureTime: "06:55", typeOfDay: "Weekday" },    { vehicleId: 2008, departureTime: "07:25", typeOfDay: "Weekday" },
@@ -56,7 +67,8 @@
             { vehicleId: 2257, departureTime: "18:40", typeOfDay: "Weekend"},    { vehicleId: 2259, departureTime: "19:20", typeOfDay: "Weekend" },    { vehicleId: 2261, departureTime: "20:35", typeOfDay: "Weekend" },
             { vehicleId: 2265, departureTime: "21:48", typeOfDay: "Weekend"},    { vehicleId: 2271, departureTime: "22:48", typeOfDay: "Weekend" }                                                                
         ]; 
-
+    </script> 
+    <script> // Functions
 
         const KTMStations = {
              'Dummy KTM'         :  {stationId:00000, colour: 'green',  direction:'na'  , location: [0.00, 0.00]         , svgPathd: 'M2 2 H10 V10 H2 Z' },             
@@ -256,6 +268,7 @@
        	     // Function to fetch data from MTREC API
              // API       : https://www.mtrec.name.my/api.html  
              // DataSets  : https://developer.data.gov.my/static-api/data-catalogue
+            countdown = 60;
             try {
                 const response = await fetch('https://api.mtrec.name.my/api/position?agency=ktmb');
                 const data = await response.json();
@@ -337,13 +350,20 @@
        plotStationsOnMap(map);
        showTrainScheduleTable(SerdangKTMTrains, "Serdang");
        showTrainScheduleTable(MidvalleyKTMTrains, "Mid Valley");
-    
+       
+        let countdown = 60;
+        const countdownElement = document.getElementById("countdown");    
         
        fetchMtrecApiData(); // <== Main Function to fetch data & Plot    
                     
        setInterval(() => {
-            fetchMtrecApiData();
-       }, 60100);            // Refresh data every 60.1 seconds, because API is updated every 60 seconds
+            countdown -= 1;
+            countdownElement.textContent = `Next refresh in: ${countdown}s`;       
+            if (countdown <= 0) {
+                fetchMtrecApiData();  // Refresh data every 60.1 seconds, because API is updated every 60 seconds
+            }
+       }, 1000); 
+       
     </script>
 </body>
 </html>
