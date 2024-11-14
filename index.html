@@ -12,23 +12,10 @@
         .vehicle-arrow-icon {
             font-family: 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
         }
-        #map { height: 600px; }
-        
-        #Xcountdown {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            font-size: 14px;
-            color: #333;
-            background-color: #f0f0f0;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-weight: bold;
-        }
+        #map { height: 600px; }       
     </style>	
 </head>
 <body>    
-	  <div id="Xcountdown">Next refresh in: 60s</div>
     <b>Trains:</b>
     <a href="index.html?filter=botha">Total</a>:<span id="trainCountNa">0</span>,
     <a href='index.html?filter=up'>Up</a>:<span id="trainCountUp">0</span>,
@@ -359,15 +346,12 @@
        showTrainScheduleTable(SerdangKTMTrains, "Serdang");
        showTrainScheduleTable(MidvalleyKTMTrains, "Mid Valley");
        
-        let countdown = 60;
-        //const countdownElement = document.getElementById("countdown");    
-        
+       let countdown = 60;      
        fetchMtrecApiData(); // <== Main Function to fetch data & Plot    
                     
        setInterval(() => {
             countdown -= 1;
              document.getElementById("countdown").textContent =`${countdown}s`; 
-            //countdownElement.textContent = `${countdown}s`;       
             if (countdown <= 0) {
                 fetchMtrecApiData();  // Refresh data every 60.1 seconds, because API is updated every 60 seconds
             }
