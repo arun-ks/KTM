@@ -294,14 +294,34 @@
                   const cell = document.createElement("td");
                   cell.style.fontSize = "small";                   // Use x-small for smaller font
                   cell.style.border = "1px solid black";
+  //                cell.style.whiteSpace = "normal";
 
-                  const textNode = document.createTextNode(`${train.departureTime} (`);
-                  const vehicleLink = document.createElement("a");
-                  vehicleLink.href = `${window.location.pathname}?focusVehicleId=${train.vehicleId}`;
-                  vehicleLink.textContent = `#${train.vehicleId}`;
-                  cell.appendChild(textNode);
-                  cell.appendChild(vehicleLink);
-                  cell.appendChild(document.createTextNode(")"));
+
+cell.appendChild(document.createTextNode(`${train.departureTime} `));
+cell.appendChild(document.createElement("br"));
+cell.appendChild(document.createTextNode("("));
+const vehicleLink = document.createElement("a");
+vehicleLink.href = `${window.location.pathname}?focusVehicleId=${train.vehicleId}`;
+vehicleLink.textContent = `${train.vehicleId}`;
+cell.appendChild(vehicleLink);
+cell.appendChild(document.createTextNode(")"));
+
+//cell.style.whiteSpace = "normal";
+
+
+                                                                     
+                                                                     
+                                                                     
+                                                                     
+                                                                     
+                                                                     
+
+                  //const vehicleLink = document.createElement("a");
+                  //vehicleLink.href = `${window.location.pathname}?focusVehicleId=${train.vehicleId}`;
+                  //vehicleLink.textContent = `#${train.vehicleId}`;
+                  //cell.appendChild(textNode);
+                  //cell.appendChild(vehicleLink);
+                  //cell.appendChild(document.createTextNode(")"));
 
 
                   const [hours, minutes] = train.departureTime.split(":").map(Number);
