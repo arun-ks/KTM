@@ -20,7 +20,7 @@
     <a href="index.html?filter=botha">Total</a>:<span id="trainCountNa">0</span>,
     <a href='index.html?filter=up'>Up</a>:<span id="trainCountUp">0</span>,
     <a href="index.html?filter=down">Down</a>:<span id="trainCountDown">0</span>.    	
-    Refresh in <span id="countdown">60s</span>
+    <button id="countdownButton" onclick="fetchMtrecApiData()">Refresh in 60s</button>
     <button id="toggleButton" onclick="toggleTrainScheduleTableVisibility()">Show Schedule</button>
     
     <div id="map"></div>
@@ -73,7 +73,7 @@
              'Nilai KTM'         :  {stationId:21500, colour:'#8b81fb', direction:'na'  , location: [2.802356,101.799303], svgPathd: ''},
              'Batang Benar KTM'  :  {stationId:21300, colour:'#8b81fb', direction:'na'  , location: [2.829904,101.826655], svgPathd: ''},
              'Bangi KTM'         :  {stationId:20900, colour:'#8b81fb', direction:'na'  , location: [2.904467,101.785943], svgPathd: ''},
-             'UKM KTM'           :  {stationId:20500, colour:'#8b81fb', direction:'na'  , location: [2.939775,101.787623], svgPathd: ''},
+             'UKM KTM'           :  {stationId:20500, colour:'magenta', direction:'na'  , location: [2.939775,101.787623], svgPathd: ''},
              'Kajang 2 KTM'      :  {stationId:20402, colour:'#8b81fb', direction:'na'  , location: [2.962640,101.792070], svgPathd: ''},
              'Kajang KTM'        :  {stationId:20400, colour:'#8b81fb', direction:'na'  , location: [2.983222,101.790669], svgPathd: ''},
              'Serdang KTM'       :  {stationId:19900, colour:'blue'   , direction:'up'  , location: [3.023404,101.716056], svgPathd: 'M12 2l7 12h-14z' },
@@ -84,7 +84,7 @@
              'KL Sentral KTM'    :  {stationId:19100, colour:'#f97e89', direction:'na'  , location: [3.134167,101.686111], svgPathd: ''},
              'Kuala Lumpur KTM'  :  {stationId:19000, colour:'#f97e89', direction:'na'  , location: [3.139444,101.693333], svgPathd: ''},
              'Bank Negara KTM'   :  {stationId:18900, colour:'#f97e89', direction:'na'  , location: [3.155105,101.693118], svgPathd: ''},
-             'Putra KTM'         :  {stationId:18800, colour:'#f97e89', direction:'na'  , location: [3.165399,101.691101], svgPathd: ''},
+             'Putra KTM'         :  {stationId:18800, colour:'magenta', direction:'na'  , location: [3.165399,101.691101], svgPathd: ''},
              'Sentul KTM'        :  {stationId:50000, colour:'#f97e89', direction:'na'  , location: [3.183581,101.688802], svgPathd: ''},
              'Batu Kentonmen KTM':  {stationId:50300, colour:'#f97e89', direction:'na'  , location: [3.198485,101.681138], svgPathd: ''},
              'Kampung Batu KTM'  :  {stationId:50400, colour:'#f97e89', direction:'na'  , location: [3.204892,101.675584], svgPathd: ''},
@@ -105,8 +105,6 @@
                 maxZoom: 18,
             }).addTo(map);
             return map;
-
-            //Use flyTo() which is similar to setView()
         }
 
         function initializePageParameters(){
@@ -274,14 +272,20 @@
               const trainsForTypeOfDay = trains.filter(train => train.typeOfDay === typeOfDay);
               const currentDate = new Date();
 
-              // Create table if there is none
+              // Create table if there is none. If it has 1 row, append next row to it. If it already had 2 rows then delete the table.
               let table = document.querySelector("#trainScheduleTable");
+              if (table) {              
+                  if (table.rows.length === 2) {
+                      table.remove();
+                      table = null;
+                  }
+              }
               if (!table) {
                   table = document.createElement("table");
                   table.id = "trainScheduleTable";
                   table.style.borderCollapse = "collapse";
                   document.body.appendChild(table);
-              }
+              }                            
 
               const row = document.createElement("tr");
               const stationCell = document.createElement("td");
@@ -294,36 +298,17 @@
                   const cell = document.createElement("td");
                   cell.style.fontSize = "small";                   // Use x-small for smaller font
                   cell.style.border = "1px solid black";
-  //                cell.style.whiteSpace = "normal";
+                  cell.style.whiteSpace = "normal";
 
-
-cell.appendChild(document.createTextNode(`${train.departureTime} `));
-cell.appendChild(document.createElement("br"));
-cell.appendChild(document.createTextNode("("));
-const vehicleLink = document.createElement("a");
-vehicleLink.href = `${window.location.pathname}?focusVehicleId=${train.vehicleId}`;
-vehicleLink.textContent = `${train.vehicleId}`;
-cell.appendChild(vehicleLink);
-cell.appendChild(document.createTextNode(")"));
-
-//cell.style.whiteSpace = "normal";
-
-
-                                                                     
-                                                                     
-                                                                     
-                                                                     
-                                                                     
-                                                                     
-
-                  //const vehicleLink = document.createElement("a");
-                  //vehicleLink.href = `${window.location.pathname}?focusVehicleId=${train.vehicleId}`;
-                  //vehicleLink.textContent = `#${train.vehicleId}`;
-                  //cell.appendChild(textNode);
-                  //cell.appendChild(vehicleLink);
-                  //cell.appendChild(document.createTextNode(")"));
-
-
+                  cell.appendChild(document.createTextNode(`${train.departureTime} `));
+                  cell.appendChild(document.createElement("br"));
+                  cell.appendChild(document.createTextNode("("));
+                  const vehicleLink = document.createElement("a");
+                  vehicleLink.href = `${window.location.pathname}?focusVehicleId=${train.vehicleId}`;
+                  vehicleLink.textContent = `${train.vehicleId}`;
+                  cell.appendChild(vehicleLink);
+                  cell.appendChild(document.createTextNode(")"));
+                                                                  
                   const [hours, minutes] = train.departureTime.split(":").map(Number);
                   const departureDate = new Date(currentDate);
                   departureDate.setHours(hours, minutes, 0, 0);
@@ -340,8 +325,16 @@ cell.appendChild(document.createTextNode(")"));
        }
 
        function toggleTrainScheduleTableVisibility() {
-           const table = document.querySelector("#trainScheduleTable");
+
+           let table = document.querySelector("#trainScheduleTable");
            const button = document.querySelector("#toggleButton");
+           if (!table) {
+           	   showTrainScheduleTable(SerdangKTMTrains, "Serdang0");
+               showTrainScheduleTable(MidvalleyKTMTrains, "Mid Valley0");
+               table = document.querySelector("#trainScheduleTable");
+               table.style.display = "none"
+            }
+           
            if (table.style.display === "none") {
                table.style.display = "table";
                table.scrollIntoView({ behavior: "smooth", block: "start" });  // Scroll to table
@@ -354,20 +347,23 @@ cell.appendChild(document.createTextNode(")"));
 
        const { filterParam, focusVehicleIdParam } = initializePageParameters();
        const map = initializeMap();
-       plotStationsOnMap(map);
-       showTrainScheduleTable(SerdangKTMTrains, "Serdang");
-       showTrainScheduleTable(MidvalleyKTMTrains, "Mid Valley");
+       plotStationsOnMap(map);       
 
        let countdown = 60;
        fetchMtrecApiData(); // <== Main Function to fetch data & Plot
 
+      
        setInterval(() => {
-            countdown -= 1;
-             document.getElementById("countdown").textContent =`${countdown}s`;
-            if (countdown <= 0) {
-                fetchMtrecApiData();  // Refresh data every 60.1 seconds, because API is updated every 60 seconds
-            }
+           countdown -= 1;
+           const button = document.getElementById("countdownButton");
+           button.textContent = `Refresh in ${countdown}s`; 
+           if (countdown <= 0) {
+               fetchMtrecApiData(); 
+           }
        }, 1000);
+       
+
+     
 
     </script>
 </body>
