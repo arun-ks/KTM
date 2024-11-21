@@ -62,35 +62,41 @@
         ];
  
         const KTMStations = {
-             'Dummy KTM'         :  {stationId:00000, colour: 'green',  direction:'na'  , location: [0.00, 0.00]         , svgPathd: 'M2 2 H10 V10 H2 Z' },
-             'Pulau Sebang KTM'  :  {stationId:25100, colour:'#8b81fb', direction:'na'  , location: [2.46396,102.2263080], svgPathd: ''},
-             'Rembau KTM'        :  {stationId:23900, colour:'#8b81fb', direction:'na'  , location: [2.593055,102.094653], svgPathd: ''},
-             'Sungai Gadut KTM'  :  {stationId:23100, colour:'#8b81fb', direction:'na'  , location: [2.660898,101.996158], svgPathd: ''},
-             'Senawang KTM'      :  {stationId:22900, colour:'#8b81fb', direction:'na'  , location: [2.690138,101.972336], svgPathd: ''},
-             'Seremban KTM'      :  {stationId:22700, colour:'#8b81fb', direction:'na'  , location: [2.719169,101.940792], svgPathd: ''},
-             'Tiroi KTM'         :  {stationId:22400, colour:'#8b81fb', direction:'na'  , location: [2.741459,101.871914], svgPathd: ''},
-             'Labu KTM'          :  {stationId:22000, colour:'#8b81fb', direction:'na'  , location: [2.754501,101.826656], svgPathd: ''},
-             'Nilai KTM'         :  {stationId:21500, colour:'#8b81fb', direction:'na'  , location: [2.802356,101.799303], svgPathd: ''},
-             'Batang Benar KTM'  :  {stationId:21300, colour:'#8b81fb', direction:'na'  , location: [2.829904,101.826655], svgPathd: ''},
-             'Bangi KTM'         :  {stationId:20900, colour:'#8b81fb', direction:'na'  , location: [2.904467,101.785943], svgPathd: ''},
-             'UKM KTM'           :  {stationId:20500, colour:'magenta', direction:'na'  , location: [2.939775,101.787623], svgPathd: ''},
-             'Kajang 2 KTM'      :  {stationId:20402, colour:'#8b81fb', direction:'na'  , location: [2.962640,101.792070], svgPathd: ''},
-             'Kajang KTM'        :  {stationId:20400, colour:'#8b81fb', direction:'na'  , location: [2.983222,101.790669], svgPathd: ''},
-             'Serdang KTM'       :  {stationId:19900, colour:'blue'   , direction:'up'  , location: [3.023404,101.716056], svgPathd: 'M12 2l7 12h-14z' },
-             'BTS KTM'           :  {stationId:19600, colour:'#ecf851', direction:'na'  , location: [3.076229,101.711119], svgPathd: ''},
-             'Salak Selatan KTM' :  {stationId:19400, colour:'#ecf851', direction:'na'  , location: [3.098413,101.705055], svgPathd: ''},
-             'Seputeh KTM'       :  {stationId:19300, colour:'#ecf851', direction:'na'  , location: [3.113612,101.681474], svgPathd: ''},
-             'Midvalley KTM'     :  {stationId:19205, colour:'red'    , direction:'down', location: [3.119211,101.678865], svgPathd: 'M12 22l7-12h-14z'},
-             'KL Sentral KTM'    :  {stationId:19100, colour:'#f97e89', direction:'na'  , location: [3.134167,101.686111], svgPathd: ''},
-             'Kuala Lumpur KTM'  :  {stationId:19000, colour:'#f97e89', direction:'na'  , location: [3.139444,101.693333], svgPathd: ''},
-             'Bank Negara KTM'   :  {stationId:18900, colour:'#f97e89', direction:'na'  , location: [3.155105,101.693118], svgPathd: ''},
-             'Putra KTM'         :  {stationId:18800, colour:'magenta', direction:'na'  , location: [3.165399,101.691101], svgPathd: ''},
-             'Sentul KTM'        :  {stationId:50000, colour:'#f97e89', direction:'na'  , location: [3.183581,101.688802], svgPathd: ''},
-             'Batu Kentonmen KTM':  {stationId:50300, colour:'#f97e89', direction:'na'  , location: [3.198485,101.681138], svgPathd: ''},
-             'Kampung Batu KTM'  :  {stationId:50400, colour:'#f97e89', direction:'na'  , location: [3.204892,101.675584], svgPathd: ''},
-             'Taman Wahyu KTM'   :  {stationId:50500, colour:'#f97e89', direction:'na'  , location: [3.214510,101.672178], svgPathd: ''},
-             'Batu Caves KTM'    :  {stationId:50600, colour:'#f97e89', direction:'na'  , location: [3.237796,101.681215], svgPathd: ''}
+             'Dummy KTM'         :  {stationId:00000, colour:'green'  , location: [0.00, 0.00]          },
+             'Pulau Sebang KTM'  :  {stationId:25100, colour:'#8b81fb', location: [2.46396,102.2263080] },
+             'Rembau KTM'        :  {stationId:23900, colour:'#8b81fb', location: [2.593055,102.094653] },
+             'Sungai Gadut KTM'  :  {stationId:23100, colour:'#8b81fb', location: [2.660898,101.996158] },
+             'Senawang KTM'      :  {stationId:22900, colour:'#8b81fb', location: [2.690138,101.972336] },
+             'Seremban KTM'      :  {stationId:22700, colour:'#8b81fb', location: [2.719169,101.940792] },
+             'Tiroi KTM'         :  {stationId:22400, colour:'#8b81fb', location: [2.741459,101.871914] },
+             'Labu KTM'          :  {stationId:22000, colour:'#8b81fb', location: [2.754501,101.826656] },
+             'Nilai KTM'         :  {stationId:21500, colour:'#8b81fb', location: [2.802356,101.799303] },
+             'Batang Benar KTM'  :  {stationId:21300, colour:'#8b81fb', location: [2.829904,101.826655] },
+             'Bangi KTM'         :  {stationId:20900, colour:'#8b81fb', location: [2.904467,101.785943] },
+             'UKM KTM'           :  {stationId:20500, colour:'magenta', location: [2.939775,101.787623] },
+             'Kajang 2 KTM'      :  {stationId:20402, colour:'#8b81fb', location: [2.962640,101.792070] },
+             'Kajang KTM'        :  {stationId:20400, colour:'#8b81fb', location: [2.983222,101.790669] },
+             'Serdang KTM'       :  {stationId:19900, colour:'blue'   , location: [3.023404,101.716056] },
+             'BTS KTM'           :  {stationId:19600, colour:'#ecf851', location: [3.076229,101.711119] },
+             'Salak Selatan KTM' :  {stationId:19400, colour:'#ecf851', location: [3.098413,101.705055] },
+             'Seputeh KTM'       :  {stationId:19300, colour:'#ecf851', location: [3.113612,101.681474] },
+             'Midvalley KTM'     :  {stationId:19205, colour:'red'    , location: [3.119211,101.678865] },
+             'KL Sentral KTM'    :  {stationId:19100, colour:'#f97e89', location: [3.134167,101.686111] },
+             'Kuala Lumpur KTM'  :  {stationId:19000, colour:'#f97e89', location: [3.139444,101.693333] },
+             'Bank Negara KTM'   :  {stationId:18900, colour:'#f97e89', location: [3.155105,101.693118] },
+             'Putra KTM'         :  {stationId:18800, colour:'magenta', location: [3.165399,101.691101] },
+             'Sentul KTM'        :  {stationId:50000, colour:'#f97e89', location: [3.183581,101.688802] },
+             'Batu Kentonmen KTM':  {stationId:50300, colour:'#f97e89', location: [3.198485,101.681138] },
+             'Kampung Batu KTM'  :  {stationId:50400, colour:'#f97e89', location: [3.204892,101.675584] },
+             'Taman Wahyu KTM'   :  {stationId:50500, colour:'#f97e89', location: [3.214510,101.672178] },
+             'Batu Caves KTM'    :  {stationId:50600, colour:'#f97e89', location: [3.237796,101.681215] }
          };
+         
+         const iconDesigns = {
+         	'up'   : { svgPathd: 'M12 2l7 12h-14z'   , colour:'blue'  },
+         	'down' : { svgPathd: 'M12 22l7-12h-14z'  , colour:'red'   },
+         	'na'   : { svgPathd: 'M2 2 H10 V10 H2 Z' , colour:'green'  }         	
+         }
 
     </script>
     <script> // Functions
@@ -156,9 +162,10 @@
             }
        }
 
-       function plotVehicleOnMap(vehicleIdNum, departureTime, latitude, longitude,stationKTMStationInfo) {
+       function plotVehicleOnMap(vehicleIdNum, departureTime, latitude, longitude, stationKTMStationInfo, direction) {
+       	        vehicleIconDesign= iconDesigns[direction];
                 const arrowIcon = L.divIcon({
-                    html: `<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill=${stationKTMStationInfo.colour} viewBox="0 0 24 24"><path d="${stationKTMStationInfo.svgPathd}"/></svg>`,
+                    html: `<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill=${vehicleIconDesign.colour} viewBox="0 0 24 24"><path d="${vehicleIconDesign.svgPathd}"/></svg>`,
                     className: 'vehicle-arrow-icon',
                     iconSize: [24, 24],
                     iconAnchor: [12, 12]
@@ -183,7 +190,7 @@
                     offset: [10, 0],
                     className: 'vehicle-label'
                 });
-                console.log(`Plotting Vehicle: #${vehicleIdNum}, pointing to ${stationKTMStationInfo.direction} at Position: (${latitude}, ${longitude}) and ${distance} KM }`);
+              console.log(`Plotting Vehicle: #${vehicleIdNum}, pointing to ${direction} at Position: (${latitude}, ${longitude}) and ${distance} KM`);
        }
 
        function classifyVehiclesForPlotting(vehicles) {
@@ -201,11 +208,13 @@
 
                 let departureTime;
                 let myTrainKTMStationInfo;
+                let direction;
                 let plotThisTrain = true;
                 const findMyKTMTrain = SerdangKTMTrains.find(train => train.vehicleId === vehicleIdNum);
                 if( findMyKTMTrain ) {
                       myTrainKTMStationInfo = KTMStations['Serdang KTM'];
                       departureTime  = findMyKTMTrain.departureTime;
+                      direction = 'up';
                       upCount++;
                       if (filterParam === "down" ) { plotThisTrain = false;}
                 }
@@ -214,12 +223,14 @@
                     if( findMyKTMTrain )  {
                        myTrainKTMStationInfo = KTMStations['Midvalley KTM'];
                        departureTime  = findMyKTMTrain.departureTime;
+                       direction = 'down'
                        downCount++;
                        if (filterParam === "up" ) { plotThisTrain = false;}
                     }
                     else {
                       myTrainKTMStationInfo  = KTMStations['Dummy KTM'];
                       departureTime   = 'NA';
+                      direction = 'na'
                       naCount++;
                       if (filterParam === "up" || filterParam === "down" || filterParam === "both" ) { plotThisTrain = false;}
                     }
@@ -240,10 +251,10 @@
                 }
 
                 if (plotThisTrain === true) {                     	
-    	                 plotVehicleOnMap(vehicleIdNum, departureTime, vehicle.position.latitude, vehicle.position.longitude,myTrainKTMStationInfo) ;
+    	                 plotVehicleOnMap(vehicleIdNum, departureTime, vehicle.position.latitude, vehicle.position.longitude,myTrainKTMStationInfo, direction) ;
     	          }
     	          else {
-                  	  console.log(`\tSkipping Vehicle: #${vehicleIdNum}, pointing to ${myTrainKTMStationInfo.direction} direction as filterParam is ${filterParam} and focusVehicleId is ${focusVehicleIdParam}`);
+                  	  console.log(`\tSkipping Vehicle: #${vehicleIdNum}, pointing to ${myTrainKTMStationInfo.direction} ie ${direction} direction as filterParam is ${filterParam} and focusVehicleId is ${focusVehicleIdParam}`);
                 }
             });
        }
@@ -329,8 +340,8 @@
            let table = document.querySelector("#trainScheduleTable");
            const button = document.querySelector("#toggleButton");
            if (!table) {
-           	   showTrainScheduleTable(SerdangKTMTrains, "Serdang0");
-               showTrainScheduleTable(MidvalleyKTMTrains, "Mid Valley0");
+           	   showTrainScheduleTable(SerdangKTMTrains, "Serdang");
+               showTrainScheduleTable(MidvalleyKTMTrains, "Mid Valley");
                table = document.querySelector("#trainScheduleTable");
                table.style.display = "none"
             }
@@ -361,6 +372,7 @@
                fetchMtrecApiData(); 
            }
        }, 1000);
+       //}, 100000000000);
        
 
      
