@@ -19,7 +19,9 @@
     <b>Trains:</b>
     <a href="index.html?filter=botha">Total</a>:<span id="trainCountNa">0</span>,
     <a href='index.html?filter=up'>Up</a>:<span id="trainCountUp">0</span>,
-    <a href="index.html?filter=down">Down</a>:<span id="trainCountDown">0</span>.    	
+    <a href="index.html?filter=down">Down</a>:<span id="trainCountDown">0</span>
+    <span id="trainCountFocus"></span>.  
+      	
     <button id="countdownButton" onclick="fetchMtrecApiData()">Refresh in 60s</button>
     <button id="toggleButton" onclick="toggleTrainScheduleTableVisibility()">Show Schedule</button>
     
@@ -27,40 +29,46 @@
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>  // Data Structures
-        // Vehicle IDs and Departure Times for 2 KTM stations as of 05-Oct, 2024. This has weekday(#2002-#2071) & weekend(#2206-#2271) trains
+        // Vehicle IDs and Departure Times for 2 KTM stations as of 02-Dec, 2024.  https://www.ktmb.com.my/TrainTime.html
+        //  This includes weekday(#2002-#2071) & weekend(#2206-#2271) trains
+        //  Up trains have even vehicleId while Down have odd.
+               
         const SerdangKTMTrains = [
-            { vehicleId: 2002, departureTime: "06:30", typeOfDay: "Weekday"},    { vehicleId: 2004, departureTime: "06:55", typeOfDay: "Weekday" },    { vehicleId: 2008, departureTime: "07:25", typeOfDay: "Weekday" },
-            { vehicleId: 2010, departureTime: "07:58", typeOfDay: "Weekday"},    { vehicleId: 2012, departureTime: "08:30", typeOfDay: "Weekday" },    { vehicleId: 2014, departureTime: "09:02", typeOfDay: "Weekday" },
-            { vehicleId: 2016, departureTime: "09:32", typeOfDay: "Weekday"},    { vehicleId: 2018, departureTime: "10:08", typeOfDay: "Weekday" },    { vehicleId: 2020, departureTime: "11:03", typeOfDay: "Weekday" },
-            { vehicleId: 2024, departureTime: "12:18", typeOfDay: "Weekday"},    { vehicleId: 2028, departureTime: "13:18", typeOfDay: "Weekday" },    { vehicleId: 2032, departureTime: "14:18", typeOfDay: "Weekday" },
-            { vehicleId: 2036, departureTime: "15:23", typeOfDay: "Weekday"},    { vehicleId: 2040, departureTime: "16:28", typeOfDay: "Weekday" },    { vehicleId: 2046, departureTime: "17:18", typeOfDay: "Weekday" },
-            { vehicleId: 2048, departureTime: "17:48", typeOfDay: "Weekday"},    { vehicleId: 2050, departureTime: "18:28", typeOfDay: "Weekday" },    { vehicleId: 2054, departureTime: "19:13", typeOfDay: "Weekday" },
-            { vehicleId: 2058, departureTime: "20:03", typeOfDay: "Weekday"},    { vehicleId: 2062, departureTime: "21:06", typeOfDay: "Weekday" },    { vehicleId: 2066, departureTime: "22:16", typeOfDay: "Weekday" },
-            { vehicleId: 2070, departureTime: "22:48", typeOfDay: "Weekday"},    { vehicleId: 2206, departureTime: "07:25", typeOfDay: "Weekend" },    { vehicleId: 2208, departureTime: "07:58", typeOfDay: "Weekend" },
-            { vehicleId: 2210, departureTime: "08:30", typeOfDay: "Weekend"},    { vehicleId: 2212, departureTime: "09:02", typeOfDay: "Weekend" },    { vehicleId: 2214, departureTime: "09:32", typeOfDay: "Weekend" },
-            { vehicleId: 2216, departureTime: "10:08", typeOfDay: "Weekend"},    { vehicleId: 2220, departureTime: "11:03", typeOfDay: "Weekend" },    { vehicleId: 2224, departureTime: "12:18", typeOfDay: "Weekend" },
-            { vehicleId: 2228, departureTime: "13:18", typeOfDay: "Weekend"},    { vehicleId: 2232, departureTime: "14:18", typeOfDay: "Weekend" },    { vehicleId: 2236, departureTime: "15:23", typeOfDay: "Weekend" },
-            { vehicleId: 2240, departureTime: "16:28", typeOfDay: "Weekend"},    { vehicleId: 2246, departureTime: "17:18", typeOfDay: "Weekend" },    { vehicleId: 2248, departureTime: "17:48", typeOfDay: "Weekend" },
-            { vehicleId: 2250, departureTime: "18:28", typeOfDay: "Weekend"},    { vehicleId: 2254, departureTime: "19:13", typeOfDay: "Weekend" },    { vehicleId: 2258, departureTime: "20:03", typeOfDay: "Weekend" },
-            { vehicleId: 2262, departureTime: "21:06", typeOfDay: "Weekend"},    { vehicleId: 2266, departureTime: "22:16", typeOfDay: "Weekend" },    { vehicleId: 2270, departureTime: "22:48", typeOfDay: "Weekend" }
+            { vehicleId: 2002, departureTime: "06:30", typeOfDay: "Weekday"}, { vehicleId: 2004, departureTime: "06:55", typeOfDay: "Weekday"}, { vehicleId: 2008, departureTime: "07:25", typeOfDay: "Weekday"},
+            { vehicleId: 2010, departureTime: "07:58", typeOfDay: "Weekday"}, { vehicleId: 2012, departureTime: "08:30", typeOfDay: "Weekday"}, { vehicleId: 2014, departureTime: "09:02", typeOfDay: "Weekday"},
+            { vehicleId: 2016, departureTime: "09:32", typeOfDay: "Weekday"}, { vehicleId: 2018, departureTime: "10:08", typeOfDay: "Weekday"}, { vehicleId: 2020, departureTime: "11:03", typeOfDay: "Weekday"},
+            { vehicleId: 2024, departureTime: "12:18", typeOfDay: "Weekday"}, { vehicleId: 2028, departureTime: "13:18", typeOfDay: "Weekday"}, { vehicleId: 2032, departureTime: "14:18", typeOfDay: "Weekday"},
+            { vehicleId: 2036, departureTime: "15:23", typeOfDay: "Weekday"}, { vehicleId: 2040, departureTime: "16:28", typeOfDay: "Weekday"}, { vehicleId: 2046, departureTime: "17:18", typeOfDay: "Weekday"},
+            { vehicleId: 2048, departureTime: "17:48", typeOfDay: "Weekday"}, { vehicleId: 2050, departureTime: "18:28", typeOfDay: "Weekday"}, { vehicleId: 2054, departureTime: "19:13", typeOfDay: "Weekday"},
+            { vehicleId: 2058, departureTime: "20:03", typeOfDay: "Weekday"}, { vehicleId: 2062, departureTime: "21:06", typeOfDay: "Weekday"}, { vehicleId: 2066, departureTime: "22:16", typeOfDay: "Weekday"},
+            { vehicleId: 2070, departureTime: "22:48", typeOfDay: "Weekday"}, { vehicleId: 2206, departureTime: "07:25", typeOfDay: "Weekend"}, { vehicleId: 2208, departureTime: "07:58", typeOfDay: "Weekend"},
+            { vehicleId: 2210, departureTime: "08:30", typeOfDay: "Weekend"}, { vehicleId: 2212, departureTime: "09:02", typeOfDay: "Weekend"}, { vehicleId: 2214, departureTime: "09:32", typeOfDay: "Weekend"},
+            { vehicleId: 2216, departureTime: "10:08", typeOfDay: "Weekend"}, { vehicleId: 2220, departureTime: "11:03", typeOfDay: "Weekend"}, { vehicleId: 2224, departureTime: "12:18", typeOfDay: "Weekend"},
+            { vehicleId: 2228, departureTime: "13:18", typeOfDay: "Weekend"}, { vehicleId: 2232, departureTime: "14:18", typeOfDay: "Weekend"}, { vehicleId: 2236, departureTime: "15:23", typeOfDay: "Weekend"},
+            { vehicleId: 2240, departureTime: "16:28", typeOfDay: "Weekend"}, { vehicleId: 2246, departureTime: "17:18", typeOfDay: "Weekend"}, { vehicleId: 2248, departureTime: "17:48", typeOfDay: "Weekend"},
+            { vehicleId: 2250, departureTime: "18:28", typeOfDay: "Weekend"}, { vehicleId: 2254, departureTime: "19:13", typeOfDay: "Weekend"}, { vehicleId: 2258, departureTime: "20:03", typeOfDay: "Weekend"},
+            { vehicleId: 2262, departureTime: "21:06", typeOfDay: "Weekend"}, { vehicleId: 2266, departureTime: "22:16", typeOfDay: "Weekend"}, { vehicleId: 2270, departureTime: "22:48", typeOfDay: "Weekend"}
+ 
         ];
         const MidvalleyKTMTrains = [
-            { vehicleId: 2003, departureTime: "05:39", typeOfDay: "Weekday"},    { vehicleId: 2007, departureTime: "06:40", typeOfDay: "Weekday" },    { vehicleId: 2011, departureTime: "07:35", typeOfDay: "Weekday" },
-            { vehicleId: 2013, departureTime: "08:05", typeOfDay: "Weekday"},    { vehicleId: 2015, departureTime: "08:35", typeOfDay: "Weekday" },    { vehicleId: 2017, departureTime: "09:08", typeOfDay: "Weekday" },
-            { vehicleId: 2019, departureTime: "09:35", typeOfDay: "Weekday"},    { vehicleId: 2021, departureTime: "10:05", typeOfDay: "Weekday" },    { vehicleId: 2025, departureTime: "10:35", typeOfDay: "Weekday" },
-            { vehicleId: 2027, departureTime: "11:35", typeOfDay: "Weekday"},    { vehicleId: 2031, departureTime: "12:40", typeOfDay: "Weekday" },    { vehicleId: 2035, departureTime: "13:45", typeOfDay: "Weekday" },
-            { vehicleId: 2039, departureTime: "14:45", typeOfDay: "Weekday"},    { vehicleId: 2045, departureTime: "15:45", typeOfDay: "Weekday" },    { vehicleId: 2049, departureTime: "16:45", typeOfDay: "Weekday" },
-            { vehicleId: 2053, departureTime: "17:35", typeOfDay: "Weekday"},    { vehicleId: 2057, departureTime: "18:10", typeOfDay: "Weekday" },    { vehicleId: 2059, departureTime: "18:40", typeOfDay: "Weekday" },
-            { vehicleId: 2061, departureTime: "19:20", typeOfDay: "Weekday"},    { vehicleId: 2063, departureTime: "20:35", typeOfDay: "Weekday" },    { vehicleId: 2067, departureTime: "21:48", typeOfDay: "Weekday" },
-            { vehicleId: 2071, departureTime: "22:48", typeOfDay: "Weekday"},    { vehicleId: 2207, departureTime: "06:40", typeOfDay: "Weekend" },    { vehicleId: 2211, departureTime: "07:35", typeOfDay: "Weekend" },
-            { vehicleId: 2213, departureTime: "08:05", typeOfDay: "Weekend"},    { vehicleId: 2215, departureTime: "08:35", typeOfDay: "Weekend" },    { vehicleId: 2219, departureTime: "09:35", typeOfDay: "Weekend" },
-            { vehicleId: 2223, departureTime: "10:35", typeOfDay: "Weekend"},    { vehicleId: 2225, departureTime: "11:35", typeOfDay: "Weekend" },    { vehicleId: 2229, departureTime: "12:40", typeOfDay: "Weekend" },
-            { vehicleId: 2233, departureTime: "13:45", typeOfDay: "Weekend"},    { vehicleId: 2237, departureTime: "14:45", typeOfDay: "Weekend" },    { vehicleId: 2243, departureTime: "15:45", typeOfDay: "Weekend" },
-            { vehicleId: 2247, departureTime: "16:45", typeOfDay: "Weekend"},    { vehicleId: 2251, departureTime: "17:35", typeOfDay: "Weekend" },    { vehicleId: 2253, departureTime: "18:10", typeOfDay: "Weekend" },
-            { vehicleId: 2257, departureTime: "18:40", typeOfDay: "Weekend"},    { vehicleId: 2259, departureTime: "19:20", typeOfDay: "Weekend" },    { vehicleId: 2261, departureTime: "20:35", typeOfDay: "Weekend" },
-            { vehicleId: 2265, departureTime: "21:48", typeOfDay: "Weekend"},    { vehicleId: 2271, departureTime: "22:48", typeOfDay: "Weekend" }
+            { vehicleId: 2003, departureTime: "05:39", typeOfDay: "Weekday"}, { vehicleId: 2007, departureTime: "06:40", typeOfDay: "Weekday"}, { vehicleId: 2011, departureTime: "07:35", typeOfDay: "Weekday"},
+            { vehicleId: 2013, departureTime: "08:05", typeOfDay: "Weekday"}, { vehicleId: 2015, departureTime: "08:35", typeOfDay: "Weekday"}, { vehicleId: 2017, departureTime: "09:08", typeOfDay: "Weekday"},
+            { vehicleId: 2019, departureTime: "09:35", typeOfDay: "Weekday"}, { vehicleId: 2021, departureTime: "10:05", typeOfDay: "Weekday"}, { vehicleId: 2025, departureTime: "10:35", typeOfDay: "Weekday"},
+            { vehicleId: 2027, departureTime: "11:35", typeOfDay: "Weekday"}, { vehicleId: 2031, departureTime: "12:40", typeOfDay: "Weekday"}, { vehicleId: 2035, departureTime: "13:45", typeOfDay: "Weekday"},
+            { vehicleId: 2039, departureTime: "14:45", typeOfDay: "Weekday"}, { vehicleId: 2045, departureTime: "15:45", typeOfDay: "Weekday"}, { vehicleId: 2049, departureTime: "16:45", typeOfDay: "Weekday"},
+            { vehicleId: 2053, departureTime: "17:35", typeOfDay: "Weekday"}, { vehicleId: 2057, departureTime: "18:10", typeOfDay: "Weekday"}, { vehicleId: 2059, departureTime: "18:40", typeOfDay: "Weekday"},
+            { vehicleId: 2061, departureTime: "19:20", typeOfDay: "Weekday"}, { vehicleId: 2063, departureTime: "20:35", typeOfDay: "Weekday"}, { vehicleId: 2067, departureTime: "21:48", typeOfDay: "Weekday"},
+            { vehicleId: 2071, departureTime: "22:48", typeOfDay: "Weekday"}, { vehicleId: 2207, departureTime: "06:40", typeOfDay: "Weekend"}, { vehicleId: 2211, departureTime: "07:35", typeOfDay: "Weekend"},
+            { vehicleId: 2213, departureTime: "08:05", typeOfDay: "Weekend"}, { vehicleId: 2215, departureTime: "08:35", typeOfDay: "Weekend"}, { vehicleId: 2219, departureTime: "09:35", typeOfDay: "Weekend"},
+            { vehicleId: 2223, departureTime: "10:35", typeOfDay: "Weekend"}, { vehicleId: 2225, departureTime: "11:35", typeOfDay: "Weekend"}, { vehicleId: 2229, departureTime: "12:40", typeOfDay: "Weekend"},
+            { vehicleId: 2233, departureTime: "13:45", typeOfDay: "Weekend"}, { vehicleId: 2237, departureTime: "14:45", typeOfDay: "Weekend"}, { vehicleId: 2243, departureTime: "15:45", typeOfDay: "Weekend"},
+            { vehicleId: 2247, departureTime: "16:45", typeOfDay: "Weekend"}, { vehicleId: 2251, departureTime: "17:35", typeOfDay: "Weekend"}, { vehicleId: 2253, departureTime: "18:10", typeOfDay: "Weekend"},
+            { vehicleId: 2257, departureTime: "18:40", typeOfDay: "Weekend"}, { vehicleId: 2259, departureTime: "19:20", typeOfDay: "Weekend"}, { vehicleId: 2261, departureTime: "20:35", typeOfDay: "Weekend"},
+            { vehicleId: 2265, departureTime: "21:48", typeOfDay: "Weekend"}, { vehicleId: 2271, departureTime: "22:48", typeOfDay: "Weekend"}
         ];
- 
+        
+        // Used color blue for Serdang(Up) & red for Midvalley(Down) trains, with a lighter shade used for stations in those directions
+        // Stations which are 20 minutes away from 2 stations are marked magenta 
         const KTMStations = {
              'Dummy KTM'         :  {stationId:00000, colour:'green'  , location: [0.00, 0.00]          },
              'Pulau Sebang KTM'  :  {stationId:25100, colour:'#8b81fb', location: [2.46396,102.2263080] },
@@ -101,7 +109,7 @@
     </script>
     <script> // Functions
     	
-        function initializeMap() {
+       function initializeMap() {
        	    // Initialize the map to Location between 2 stations & add OpenStreetMap tile layer
             // API reference https://leafletjs.com/reference.html
             KTMStations['Dummy KTM'].location = [ (KTMStations['Serdang KTM'].location[0] + KTMStations['Midvalley KTM'].location[0])/2,
@@ -110,10 +118,12 @@
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 18,
             }).addTo(map);
+            
+            plotStationsOnMap(map);
             return map;
-        }
+       }
 
-        function initializePageParameters(){
+       function initializePageParameters(){
                //Get the filter parameter ('up', 'down', 'both' or anything else) from the URL
                const urlParams   = new URLSearchParams(window.location.search);
                const filterParam = urlParams.get('filter');
@@ -127,9 +137,9 @@
 
                console.log(`filter parameter on URL is ${filterParam} , and focusVehicleId is ${focusVehicleIdParam} `);
                return { filterParam, focusVehicleIdParam};
-        }
+       }
 
-        function calculateDistance(lat1, lon1, lat2, lon2) {
+       function calculateDistance(lat1, lon1, lat2, lon2) {
    	       // Haversine formula to calculate distance between two coordinates in km
             const R = 6371; // Radius of the Earth in KM
             const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -140,7 +150,7 @@
                 Math.sin(dLon / 2) * Math.sin(dLon / 2);
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
             return R * c; // Distance in KM
-        }
+       }
 
        function plotStationsOnMap(myMap) {
        	     for (const [stationName, stationInfo] of Object.entries(KTMStations)) {
@@ -194,7 +204,8 @@
        }
 
        function classifyVehiclesForPlotting(vehicles) {
-            let upCount = 0,downCount = 0,naCount = 0;
+            let upCount = 0,downCount = 0,naCount = 0, focusCount = 0;
+            document.getElementById("trainCountFocus").textContent = "";
 
             // Clear existing markers
             map.eachLayer(layer => {
@@ -246,6 +257,8 @@
                	         plotThisTrain = false;
                    }
                    else {
+                   	    focusCount++;
+                   	    document.getElementById("trainCountFocus").textContent = `, Selected:${focusCount}`;
                    	    console.log(`\tTrying to panTo Location for Vehicle: #${vehicleIdNum} which is at ${vehicle.position.latitude}, ${vehicle.position.longitude} `);	                   	
 	                      map.flyTo([vehicle.position.latitude, vehicle.position.longitude]);             	//, 14, { animation: true }) ;
                 }
@@ -258,7 +271,6 @@
                 }
             });
        }
-
 
        async function fetchMtrecApiData() {
        	     // Function to fetch data from MTREC API
@@ -296,17 +308,19 @@
                   table.id = "trainScheduleTable";
                   table.style.borderCollapse = "collapse";
                   document.body.appendChild(table);
-              }                            
-
+              }     
+              
               const row = document.createElement("tr");
               const stationCell = document.createElement("td");
+              //const stationCell = isMobileDevice? document.createElement("tr"): document.createElement("td");
               stationCell.textContent = stationName;
               stationCell.style.fontSize = "small";
               stationCell.style.border = "1px solid black";
               row.appendChild(stationCell);
 
               trainsForTypeOfDay.forEach(train => {
-                  const cell = document.createElement("td");
+              	  const cell = document.createElement("td");
+                  //const cell = isMobileDevice? document.createElement("tr"): document.createElement("td");
                   cell.style.fontSize = "small";                   // Use x-small for smaller font
                   cell.style.border = "1px solid black";
                   cell.style.whiteSpace = "normal";
@@ -355,14 +369,20 @@
                button.textContent = "Show Schedule";
            }
        }
-
+       
+       function checkIfWebsiteOpenedInMobile() {
+       	   let regexp = /android|iphone|kindle|ipad/i;
+       	   return regexp.test(navigator.userAgent);      	
+       }
+       
+       //MAIN PROCESS STARTS HERE 
        const { filterParam, focusVehicleIdParam } = initializePageParameters();
        const map = initializeMap();
-       plotStationsOnMap(map);       
-
+       const isMobileDevice = checkIfWebsiteOpenedInMobile();
+       console.log (`Is mobile is ${isMobileDevice} as useragent is ${navigator.userAgent}`);
+              
        let countdown = 60;
-       fetchMtrecApiData(); // <== Main Function to fetch data & Plot
-
+       fetchMtrecApiData(); // <== Main Function to fetch data & Plot      
       
        setInterval(() => {
            countdown -= 1;
@@ -371,11 +391,7 @@
            if (countdown <= 0) {
                fetchMtrecApiData(); 
            }
-       }, 1000);
-       //}, 100000000000);
-       
-
-     
+       }, 1000);     
 
     </script>
 </body>
