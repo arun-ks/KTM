@@ -12,7 +12,10 @@ You can use URL parameter **filter** :
 - Use "?filter=up" to see only trains from [Serdang to Midvalley](https://arun-ks.github.io/KTM/?filter=up)
 - Use "?filter=down" to see trains from [MidValley to Serdang](https://arun-ks.github.io/KTM/?filter=down)
 - Use "?filter=both" to see trains from [Serdang to Midvalley or from Midvalley to Serdang](https://arun-ks.github.io/KTM/?filter=both)
-If any other filter is passed in URL(including no filter), then all reported KTMB trains will be shown.
+Any other value of filter, or even no value for it will [show all active KTM Trains](https://arun-ks.github.io/KTM/)
+
+You can use URL Parameter **focusVehicleId** to see data for 1 selected train
+- Use "?focusVehicleId=2059" to see location of specific [train#2059](https://arun-ks.github.io/KTM/?focusVehicleId=2059)
 
 The icons for trains are coloured as per the colour of the starting station. If the trains are not part of "Batu Caves - Pulau Sebang" route, then they have a separate colour.
 
