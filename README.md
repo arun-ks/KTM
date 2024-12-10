@@ -11,9 +11,9 @@ Each active train is marked to show its direction (northbound or southbound) and
 You can use URL parameter **filter** :
 - Use "?filter=up" to see only trains from [Serdang to Midvalley](https://arun-ks.github.io/KTM/?filter=up)
 - Use "?filter=down" to see trains from [MidValley to Serdang](https://arun-ks.github.io/KTM/?filter=down)
-- Use "?filter=both" to see trains from [Serdang to Midvalley or from Midvalley to Serdang](https://arun-ks.github.io/KTM/?filter=both)
+- Use "?filter=all" to see [all active KTM trains](https://arun-ks.github.io/KTM/?filter=all)
 
-Any other value of filter, or even no value for it will [show all active KTM Trains](https://arun-ks.github.io/KTM/)
+Any other value of filter, or even no value for it will [show trains in Serdang to Midvalley or from Midvalley to Serdang route](https://arun-ks.github.io/KTM/)
 
 You can use URL Parameter **focusVehicleId** to see data for 1 selected train
 - Use "?focusVehicleId=2059" to see location of specific [train#2059](https://arun-ks.github.io/KTM/?focusVehicleId=2059)
