@@ -23,7 +23,7 @@
 </head>
 <body>
     <b>Trains:</b>
-    <a href="index.html?filter=botha">Total</a>:<span id="trainCountNa">0</span>,
+    <a href="index.html?filter=both">Total</a>:<span id="trainCountBoth">0</span>,
     <a href='index.html?filter=up'>Up</a>:<span id="trainCountUp">0</span>,
     <a href="index.html?filter=down">Down</a>:<span id="trainCountDown">0</span>
     <span id="trainCountFocus"></span>.  
@@ -272,7 +272,7 @@
             let upCount = 0,downCount = 0,naCount = 0, focusCount = 0;
             document.getElementById("trainCountFocus").textContent = "";
 
-            // Clear existing markers
+            // Reset existing markers on maps & Active Train List
             map.eachLayer(layer => {
                 if (layer instanceof L.Marker) {
                     map.removeLayer(layer);
@@ -284,6 +284,17 @@
                 const vehicleIdNum = parseInt(vehicle.vehicle.id.split('_')[1] || vehicle.vehicle.id);
 
                 let baseKTMStationInfo;
+                
+                /* plotThisTrain Logic
+                     |Filter |  up-Train  | down-Train | na-Train|
+                     |-------|------------|------------|---------|
+                     |up     |  1         | 0          | 0       |
+                     |down   |  0         | 1          | 0       |
+                     |both   |  1         | 1          | 0       |
+                     |all    |  1         | 1          | 1       | a internal mode for debugging
+                     |ELSE   |  1         | 1          | 0       |
+                */                
+                
                 let plotThisTrain = true;
                 let activeKTMTrainInfo = KTMTrains.find(train => train.vehicleId === vehicleIdNum);
                 if( activeKTMTrainInfo ) {
@@ -301,13 +312,15 @@
                      activeKTMTrainInfo = KTMTrains.find(train => train.vehicleId === 9999);                    	
                      baseKTMStationInfo = KTMStations[activeKTMTrainInfo.baseStation];
                      naCount++;
-                     if (filterParam === "up" || filterParam === "down" || filterParam === "both" ) { plotThisTrain = false;}                   
+                     //if (filterParam === "up" || filterParam === "down" || filterParam === "both" ) { plotThisTrain = false;}                   
+                     if (filterParam !== "all" ) { plotThisTrain = false;}                   
                 }                
                 
                 document.getElementById("trainCountUp").textContent = `${upCount}`;
-                document.getElementById("trainCountDown").textContent = `${downCount}`;
-                allCount = naCount + upCount + downCount;
-                document.getElementById("trainCountNa").textContent = `${allCount}`;
+                document.getElementById("trainCountDown").textContent = `${downCount}`;                
+                bothCount = upCount + downCount;
+                allCount = naCount + bothCount;
+                document.getElementById("trainCountBoth").textContent = `${bothCount}`;
 
                 if (focusVehicleIdParam > 0 ) // If focusVehicleId Parameter is used then show just 1 vehicle
                    if (focusVehicleIdParam !== vehicleIdNum) {
@@ -400,8 +413,7 @@
                   vehicleLink.href = `${window.location.pathname}?focusVehicleId=${train.vehicleId}`;
                   vehicleLink.textContent = `${train.vehicleId}`;
                   cell.appendChild(vehicleLink);
-                  cell.appendChild(document.createTextNode(")"));
-                  
+                  cell.appendChild(document.createTextNode(")"));                  
                                                                   
                   const [hours, minutes] = train.departureTime.split(":").map(Number);
                   const departureDate = new Date(currentDate);
