@@ -264,6 +264,10 @@
                     className: 'vehicle-label',
                     interactive: true
                 });
+                
+                if ( vehicleIdNum == focusVehicleIdParam ) {
+                	        speakDistance(distance);
+                }
                 console.log(`Plotting Vehicle: #${vehicleIdNum}, direction:${activeKTMTrainInfo.direction} at Position:(${vehiclePosition.latitude}, ${vehiclePosition.longitude}) and ${distance} KM`);
        }
 
@@ -290,7 +294,7 @@
                      |up     |  1         | 0          | 0       |
                      |down   |  0         | 1          | 0       |
                      |both   |  1         | 1          | 0       |
-                     |all    |  1         | 1          | 1       | a internal mode for debugging
+                     |all    |  1         | 1          | 1       | Internal mode for debugging
                      |ELSE   |  1         | 1          | 0       |
                 */
 
@@ -320,7 +324,7 @@
                 allCount = naCount + bothCount;
                 document.getElementById("trainCountBoth").textContent = `${bothCount}`;
 
-                if (focusVehicleIdParam > 0 ) // If focusVehicleId Parameter is used then show just 1 vehicle
+                if (focusVehicleIdParam > 0 ) // If focusVehicleIdParam is used then show just 1 vehicle
                    if (focusVehicleIdParam !== vehicleIdNum) {
                	         plotThisTrain = false;
                    }
@@ -462,7 +466,24 @@
        function checkIfWebsiteOpenedInMobile() {
        	   let regexp = /android|iphone|kindle|ipad/i;
        	   return regexp.test(navigator.userAgent);      	
+       }       
+       
+       function speakDistance(distance) {
+           // Check if the browser supports speech synthesis
+           console.log("Speech synthesis for distance ${distance}.");
+           if ('speechSynthesis' in window) {
+               const message = new SpeechSynthesisUtterance(`The distance is ${distance.toFixed(2)} kilometers.`);
+               message.lang = 'en-US';  // Set language
+               message.rate = 1;        // Adjust speed if needed (0.5 - 2)
+               message.pitch = 1;       // Adjust pitch if needed (0 - 2)          
+               
+                              // Speak the message
+               window.speechSynthesis.speak(message);
+           } else {
+               console.log("Speech synthesis not supported in this browser.");
+           }
        }
+       
 
        //MAIN PROCESS STARTS HERE
        const map = initializeMap();
