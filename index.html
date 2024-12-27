@@ -265,7 +265,7 @@
                     interactive: true
                 });
                 
-                if ( vehicleIdNum == focusVehicleIdParam ) {
+                if ( vehicleIdNum === focusVehicleIdParam ) {
                 	        speakDistance(distance);
                 }
                 console.log(`Plotting Vehicle: #${vehicleIdNum}, direction:${activeKTMTrainInfo.direction} at Position:(${vehiclePosition.latitude}, ${vehiclePosition.longitude}) and ${distance} KM`);
@@ -470,14 +470,12 @@
        
        function speakDistance(distance) {
            // Check if the browser supports speech synthesis
-           console.log("Speech synthesis for distance ${distance}.");
            if ('speechSynthesis' in window) {
-               const message = new SpeechSynthesisUtterance(`The distance is ${distance.toFixed(2)} kilometers.`);
+           	   const message = new SpeechSynthesisUtterance(`The distance is ${distance} kilometers.`);
                message.lang = 'en-US';  // Set language
                message.rate = 1;        // Adjust speed if needed (0.5 - 2)
-               message.pitch = 1;       // Adjust pitch if needed (0 - 2)          
-               
-                              // Speak the message
+               message.pitch = 1;       // Adjust pitch if needed (0 - 2)                        
+               // Speak the message
                window.speechSynthesis.speak(message);
            } else {
                console.log("Speech synthesis not supported in this browser.");
@@ -502,7 +500,7 @@
                fetchMtrecApiData();
            }
        }, 1000);
-
+       
     </script>
 </body>
 </html>
