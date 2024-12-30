@@ -452,29 +452,19 @@
                table = document.querySelector("#trainScheduleTable");
                table.style.display = "none";
                
-               const tableLegend = document.createElement("table");    
+               const tableLegend = document.createElement("table");
                tableLegend.id = "trainScheduleLegend";
                tableLegend.style.borderCollapse = "collapse";
-               tableLegend.style.fontSize = "small"; 
-               tableLegend.style.border = "1px dotted black"; 
-               tableLegend.style.whiteSpace = "normal"; 
-               document.body.appendChild(tableLegend);                  
-               const row = document.createElement("tr");
-               const cellLegend = document.createElement("td");
-               cellLegend.textContent = "Legend: ";
-               row.appendChild(cellLegend);
-               const cellPast1Hr = document.createElement("td");
-               cellPast1Hr.style.backgroundColor = "lightcoral";
-               cellPast1Hr.textContent = " Train for now - 1 hr  ";
-               row.appendChild(cellPast1Hr);
-               const cellFuture2Hr = document.createElement("td");
-               cellFuture2Hr.style.backgroundColor = "lightgreen";
-               cellFuture2Hr.textContent = " Train for now +2 hr ";
-               row.appendChild(cellFuture2Hr);
-               const cellActiveTrain = document.createElement("td");
-               cellActiveTrain.textContent = " * Train is active ";
-               row.appendChild(cellActiveTrain);               
-               tableLegend.appendChild(row);               
+               tableLegend.innerHTML = `
+                   <tr>
+                       <td style="font-size: small; border: 1px dotted black; white-space: normal;">Legend: </td>
+                       <td style="background-color: lightcoral; font-size: small; border: 1px dotted black; white-space: normal;">Train for now - 1 hr</td>
+                       <td style="background-color: lightgreen; font-size: small; border: 1px dotted black; white-space: normal;">Train for now +2 hr</td>
+                       <td style="font-size: small; border: 1px dotted black; white-space: normal;"> * Train is active</td>
+
+                   </tr>
+               `;
+               document.body.appendChild(tableLegend);        
            };
            if (table.style.display === "none") {
                table.style.display = "table";
