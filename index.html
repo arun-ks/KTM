@@ -30,10 +30,10 @@
       	
     <button id="countdownButton" onclick="fetchMtrecApiData()">Refresh in 60s</button>
     <button id="toggleButton" onclick="toggleTrainScheduleTableVisibility()">Show Schedule</button>
-
     <div id="map"></div>
-
+ 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    
     <script>  // Data Structures
         // Vehicle IDs and Departure Times for 2 KTM stations as of 02-Dec, 2024.  https://www.ktmb.com.my/TrainTime.html
         //  This includes weekday(#2002-#2071) & weekend(#2206-#2271) trains
@@ -170,8 +170,8 @@
          }
 
     </script>
-    <script> // Functions
-    	
+    
+    <script> // Functions    
        function initializeMap() {
        	    // Initialize the map to Location between 2 stations & add OpenStreetMap tile layer
             // API reference https://leafletjs.com/reference.html
@@ -439,26 +439,51 @@
                      row.appendChild(cell);	
                   }
               });
-
               table.appendChild(row);
        }
 
        function toggleTrainScheduleTableVisibility() {
-           let table = document.querySelector("#trainScheduleTable");
+           let table = document.querySelector("#trainScheduleTable");           
+           let tableLegend = document.querySelector("#trainScheduleLegend");  
            const button = document.querySelector("#toggleButton");
            if (!table) {
            	   showTrainScheduleTable("Serdang KTM");
                showTrainScheduleTable("Midvalley KTM");
                table = document.querySelector("#trainScheduleTable");
-               table.style.display = "none"
-            }
-
+               table.style.display = "none";
+               
+               const tableLegend = document.createElement("table");    
+               tableLegend.id = "trainScheduleLegend";
+               tableLegend.style.borderCollapse = "collapse";
+               tableLegend.style.fontSize = "small"; 
+               tableLegend.style.border = "1px dotted black"; 
+               tableLegend.style.whiteSpace = "normal"; 
+               document.body.appendChild(tableLegend);                  
+               const row = document.createElement("tr");
+               const cellLegend = document.createElement("td");
+               cellLegend.textContent = "Legend: ";
+               row.appendChild(cellLegend);
+               const cellPast1Hr = document.createElement("td");
+               cellPast1Hr.style.backgroundColor = "lightcoral";
+               cellPast1Hr.textContent = " Train for now - 1 hr  ";
+               row.appendChild(cellPast1Hr);
+               const cellFuture2Hr = document.createElement("td");
+               cellFuture2Hr.style.backgroundColor = "lightgreen";
+               cellFuture2Hr.textContent = " Train for now +2 hr ";
+               row.appendChild(cellFuture2Hr);
+               const cellActiveTrain = document.createElement("td");
+               cellActiveTrain.textContent = " * Train is active ";
+               row.appendChild(cellActiveTrain);               
+               tableLegend.appendChild(row);               
+           };
            if (table.style.display === "none") {
                table.style.display = "table";
+               tableLegend.style.display = "table" ;
                table.scrollIntoView({ behavior: "smooth", block: "start" });  // Scroll to table
                button.textContent = "Hide Schedule";
            } else {
                table.style.display = "none";
+               tableLegend.style.display = "none" ;
                button.textContent = "Show Schedule";
            }
        }
@@ -482,7 +507,6 @@
            }
        }
        
-
        //MAIN PROCESS STARTS HERE
        const map = initializeMap();
        plotStationsOnMap();
