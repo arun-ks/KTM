@@ -432,7 +432,7 @@
                   }
 
                   // Show only the trains for last 1 hour & next 2 hours if the page is opened on a Mobile.
-                  if ( isMobileDevice && diffMinutes >= -60 && diffMinutes <= 120) {
+                  if ( isMobileDevice && ( train.isActive  ||(diffMinutes >= -60 && diffMinutes <= 120)) ) {
                   		row.appendChild(cell);
                   }
                   if ( !isMobileDevice) {
