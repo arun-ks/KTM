@@ -29,7 +29,7 @@
     <span id="trainCountFocus"></span>.
       	
     <button id="countdownButton" onclick="fetchMtrecApiData()">Refresh in 60s</button>
-    <button id="toggleButton" onclick="toggleTrainScheduleTableVisibility()">Show Schedule</button>
+    <button id="toggleButton" onclick="toggleTrainScheduleTableVisibility()">Hide Schedule</button>
     <div id="map"></div>
  
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
@@ -349,6 +349,7 @@
             	      document.getElementById("trainCountFocus").textContent = `,  No information on #${focusVehicleIdParam} `;	
             	  }
             }
+            toggleTrainScheduleTableVisibility();
        }
 
        async function fetchMtrecApiData() {
@@ -443,14 +444,14 @@
        }
 
        function toggleTrainScheduleTableVisibility() {
-           let table = document.querySelector("#trainScheduleTable");           
+           let tableSchedule = document.querySelector("#trainScheduleTable");           
            let tableLegend = document.querySelector("#trainScheduleLegend");  
            const button = document.querySelector("#toggleButton");
-           if (!table) {
+           if (!tableSchedule) {
            	   showTrainScheduleTable("Serdang KTM");
                showTrainScheduleTable("Midvalley KTM");
-               table = document.querySelector("#trainScheduleTable");
-               table.style.display = "none";
+               tableSchedule = document.querySelector("#trainScheduleTable");
+               tableSchedule.style.display = "none";
                
                const tableLegend = document.createElement("table");
                tableLegend.id = "trainScheduleLegend";
@@ -466,14 +467,17 @@
                `;
                document.body.appendChild(tableLegend);        
            };
-           if (table.style.display === "none") {
-               table.style.display = "table";
+           //if (tableSchedule.style.display === "none") {
+           if (displayScheduleFlag === true) {
+               tableSchedule.style.display = "table";
                tableLegend.style.display = "table" ;
-               table.scrollIntoView({ behavior: "smooth", block: "start" });  // Scroll to table
+               displayScheduleFlag = false;
+               tableSchedule.scrollIntoView({ behavior: "smooth", block: "start" });  // Scroll to table
                button.textContent = "Hide Schedule";
            } else {
-               table.style.display = "none";
+               tableSchedule.style.display = "none";
                tableLegend.style.display = "none" ;
+               displayScheduleFlag = true;
                button.textContent = "Show Schedule";
            }
        }
@@ -501,10 +505,12 @@
        const map = initializeMap();
        plotStationsOnMap();
        const { filterParam, focusVehicleIdParam } = initializePageParameters();
+       let displayScheduleFlag = true;
        const isMobileDevice = checkIfWebsiteOpenedInMobile();
 
        let countdown = 60;
        fetchMtrecApiData(); // <== Main Function to fetch data & Plot
+       
 
        setInterval(() => {
            countdown -= 1;
