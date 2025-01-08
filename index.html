@@ -19,6 +19,27 @@
             font-size: small;
             pointer-events: auto;
         }
+        
+       .custom-station-marker .marker-container {
+           width: 20px;
+           height: 20px;
+           border-radius: 50%;
+           display: flex;
+           align-items: center;
+           justify-content: center;
+           color: white;
+           font-size: 12px;
+           font-weight: bold;
+           border: 1px solid black; 
+           /*box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); Optional: adds a shadow */
+       }
+       
+       .custom-station-marker .marker-number {
+           line-height: 1;
+       }
+               
+        
+        
     </style>	
 </head>
 <body>
@@ -144,7 +165,7 @@
              'Nilai KTM'         :  {stationId:21500, colour:'#8b81fb', distanceInMins:45 ,  location: [2.802356,101.799303] },
              'Batang Benar KTM'  :  {stationId:21300, colour:'#8b81fb', distanceInMins:39 ,  location: [2.829904,101.826655] },
              'Bangi KTM'         :  {stationId:20900, colour:'#8b81fb', distanceInMins:26 ,  location: [2.904467,101.785943] },
-             'UKM KTM'           :  {stationId:20500, colour:'magenta', distanceInMins:18 ,  location: [2.939775,101.787623] },  //~20 minutes from base
+             'UKM KTM'           :  {stationId:20500, colour:'#8b81fb', distanceInMins:18 ,  location: [2.939775,101.787623] },  //~20 minutes from base
              'Kajang 2 KTM'      :  {stationId:20402, colour:'#8b81fb', distanceInMins:15 ,  location: [2.962640,101.792070] },
              'Kajang KTM'        :  {stationId:20400, colour:'#8b81fb', distanceInMins:12 ,  location: [2.983222,101.790669] },
              
@@ -157,7 +178,7 @@
              'KL Sentral KTM'    :  {stationId:19100, colour:'#f97e89', distanceInMins:7  ,  location: [3.134167,101.686111] },
              'Kuala Lumpur KTM'  :  {stationId:19000, colour:'#f97e89', distanceInMins:12 ,  location: [3.139444,101.693333] },
              'Bank Negara KTM'   :  {stationId:18900, colour:'#f97e89', distanceInMins:16 ,  location: [3.155105,101.693118] },
-             'Putra KTM'         :  {stationId:18800, colour:'magenta', distanceInMins:19 ,  location: [3.165399,101.691101] },  //~20 minutes from base
+             'Putra KTM'         :  {stationId:18800, colour:'#f97e89', distanceInMins:19 ,  location: [3.165399,101.691101] },  //~20 minutes from base
              'Sentul KTM'        :  {stationId:50000, colour:'#f97e89', distanceInMins:25 ,  location: [3.183581,101.688802] },
              'Batu Kentonmen KTM':  {stationId:50300, colour:'#f97e89', distanceInMins:29 ,  location: [3.198485,101.681138] },
              'Kampung Batu KTM'  :  {stationId:50400, colour:'#f97e89', distanceInMins:31 ,  location: [3.204892,101.675584] },
@@ -215,34 +236,41 @@
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
             return R * c;
        }
-
+       
        function plotStationsOnMap() {
        	     for (const [stationName, stationInfo] of Object.entries(KTMStations)) {
                 if (stationName !== 'Dummy KTM') {
-                     let stationMarker = L.circleMarker(stationInfo.location, {
-                         radius: 10,
-                         fillColor: stationInfo.colour,
-                         color: stationInfo.colour,
-                         fillOpacity: 0.8
-                     }).addTo(map);
-                     let label = `<a href="https://myrailtime.ktmb.com.my/timetable?origin=${stationInfo.stationId}" target="_blank">${stationName}</a>`;
-                     label += stationInfo.distanceInMins >=0 ? ` (+${stationInfo.distanceInMins} min)` : '';
-                     stationMarker.bindPopup(label, {
+                       const distanceText = stationInfo.distanceInMins >= 0 ? stationInfo.distanceInMins.toString().padStart(2, '0') : '--';                       
+                       const stationMarker = L.marker(stationInfo.location, {
+                           icon: L.divIcon({
+                               className: 'custom-station-marker',
+                               html: `<div class="marker-container" style="background-color: ${stationInfo.colour};">
+                                          <span class="marker-number">${distanceText}</span>
+                                      </div>`,
+                               iconSize: [16, 16],  
+                               iconAnchor: [8, 8],
+                           })
+                       }).addTo(map);
+                       
+                       let label = `<a href="https://myrailtime.ktmb.com.my/timetable?origin=${stationInfo.stationId}" target="_blank">${stationName}</a>`;
+                       label += stationInfo.distanceInMins >= 0 ? ` (+${stationInfo.distanceInMins} min)` : '';
+                       stationMarker.bindPopup(label, {
                            permanent: false,
                            direction: 'left',
                            offset: [-10, 0],
-                           className: 'custom-popup'
-                     }); //.openPopup();
+                           className: 'custom-popup',
+                       });
                 }
             }
        }
+
 
        function plotVehicleOnMap(vehicleIdNum, vehiclePosition, baseKTMStationInfo, activeKTMTrainInfo) {
        	        vehicleIconDesign= iconDesigns[activeKTMTrainInfo.direction];
                 const arrowIcon = L.divIcon({
                     html: `<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill=${vehicleIconDesign.colour} viewBox="0 0 24 24"><path d="${vehicleIconDesign.svgPathd}"/></svg>`,
                     className: 'vehicle-arrow-icon',
-                    iconSize: [24, 24],
+                    iconSize: [30, 30],
                     iconAnchor: [12, 12]
                 });
                 const marker = L.marker([vehiclePosition.latitude, vehiclePosition.longitude], {
@@ -266,6 +294,7 @@
                     className: 'vehicle-label',
                     interactive: true
                 });
+                marker.isDynamicMarker = true;
                 
                 if ( vehicleIdNum === focusVehicleIdParam ) {
                 	        speakDistance(distance);
@@ -279,10 +308,11 @@
 
             // Reset existing markers on maps & Active Train List
             map.eachLayer(layer => {
-                if (layer instanceof L.Marker) {
+                if (layer instanceof L.Marker && layer.isDynamicMarker) {                	
                     map.removeLayer(layer);
                 }
             });
+            
             KTMTrains.forEach(train => train.isActive = false);
 
             vehicles.forEach(vehicle => {
