@@ -147,11 +147,13 @@
              'UKM KTM'           :  {stationId:20500, colour:'magenta', distanceInMins:18 ,  location: [2.939775,101.787623] },  //~20 minutes from base
              'Kajang 2 KTM'      :  {stationId:20402, colour:'#8b81fb', distanceInMins:15 ,  location: [2.962640,101.792070] },
              'Kajang KTM'        :  {stationId:20400, colour:'#8b81fb', distanceInMins:12 ,  location: [2.983222,101.790669] },
+             
              'Serdang KTM'       :  {stationId:19900, colour:'blue'   , distanceInMins:0  ,  location: [3.023404,101.716056] },  //Base for up trains
              'BTS KTM'           :  {stationId:19600, colour:'#ecf851', distanceInMins:-1 ,  location: [3.076229,101.711119] },
              'Salak Selatan KTM' :  {stationId:19400, colour:'#ecf851', distanceInMins:-1 ,  location: [3.098413,101.705055] },
              'Seputeh KTM'       :  {stationId:19300, colour:'#ecf851', distanceInMins:-1 ,  location: [3.113612,101.681474] },
              'Midvalley KTM'     :  {stationId:19205, colour:'red'    , distanceInMins:0  ,  location: [3.119211,101.678865] },  //Base for down trains
+             
              'KL Sentral KTM'    :  {stationId:19100, colour:'#f97e89', distanceInMins:7  ,  location: [3.134167,101.686111] },
              'Kuala Lumpur KTM'  :  {stationId:19000, colour:'#f97e89', distanceInMins:12 ,  location: [3.139444,101.693333] },
              'Bank Negara KTM'   :  {stationId:18900, colour:'#f97e89', distanceInMins:16 ,  location: [3.155105,101.693118] },
@@ -338,7 +340,7 @@
     	                 plotVehicleOnMap(vehicleIdNum, vehicle.position, baseKTMStationInfo, activeKTMTrainInfo ) ;
     	          }
     	          else {
-                  	  console.log(`\tSkipping Vehicle: #${vehicleIdNum}, pointing to ${baseKTMStationInfo.direction} ie ${activeKTMTrainInfo.direction} direction as filterParam is ${filterParam} and focusVehicleId is ${focusVehicleIdParam}`);
+                  	  console.log(`\tSkipping Vehicle: #${vehicleIdNum}, pointing to ${activeKTMTrainInfo.direction} direction as filterParam is ${filterParam} and focusVehicleId is ${focusVehicleIdParam}`);
                 }
             });
             if ( focusVehicleIdParam > 0 && focusCount == 0 ) { // If we are in focus Mode & the focused Train has no data
