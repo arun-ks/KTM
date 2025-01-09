@@ -170,9 +170,9 @@
              'Kajang KTM'        :  {stationId:20400, colour:'#8b81fb', distanceInMins:12 ,  location: [2.983222,101.790669] },
              
              'Serdang KTM'       :  {stationId:19900, colour:'blue'   , distanceInMins:0  ,  location: [3.023404,101.716056] },  //Base for up trains
-             'BTS KTM'           :  {stationId:19600, colour:'#ecf851', distanceInMins:-1 ,  location: [3.076229,101.711119] },
-             'Salak Selatan KTM' :  {stationId:19400, colour:'#ecf851', distanceInMins:-1 ,  location: [3.098413,101.705055] },
-             'Seputeh KTM'       :  {stationId:19300, colour:'#ecf851', distanceInMins:-1 ,  location: [3.113612,101.681474] },
+             'BTS KTM'           :  {stationId:19600, colour:'#ffffcc', distanceInMins:-1 ,  location: [3.076229,101.711119] },
+             'Salak Selatan KTM' :  {stationId:19400, colour:'#ffffcc', distanceInMins:-1 ,  location: [3.098413,101.705055] },
+             'Seputeh KTM'       :  {stationId:19300, colour:'#ffffcc', distanceInMins:-1 ,  location: [3.113612,101.681474] },
              'Midvalley KTM'     :  {stationId:19205, colour:'red'    , distanceInMins:0  ,  location: [3.119211,101.678865] },  //Base for down trains
              
              'KL Sentral KTM'    :  {stationId:19100, colour:'#f97e89', distanceInMins:7  ,  location: [3.134167,101.686111] },
@@ -268,7 +268,7 @@
        function plotVehicleOnMap(vehicleIdNum, vehiclePosition, baseKTMStationInfo, activeKTMTrainInfo) {
        	        vehicleIconDesign= iconDesigns[activeKTMTrainInfo.direction];
                 const arrowIcon = L.divIcon({
-                    html: `<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill=${vehicleIconDesign.colour} viewBox="0 0 24 24"><path d="${vehicleIconDesign.svgPathd}"/></svg>`,
+                    html: `<svg width="30" height="30" xmlns="http://www.w3.org/2000/svg" fill=${vehicleIconDesign.colour} viewBox="0 0 30 30"><path d="${vehicleIconDesign.svgPathd}"/></svg>`,
                     className: 'vehicle-arrow-icon',
                     iconSize: [30, 30],
                     iconAnchor: [12, 12]
@@ -294,7 +294,7 @@
                     className: 'vehicle-label',
                     interactive: true
                 });
-                marker.isDynamicMarker = true;
+                marker.isDynamicMarker = true;  //This marker's locatin can move on next refresh
                 
                 if ( vehicleIdNum === focusVehicleIdParam ) {
                 	        speakDistance(distance);
@@ -306,7 +306,7 @@
             let upCount = 0,downCount = 0,naCount = 0, focusCount = 0;
             document.getElementById("trainCountFocus").textContent = "";
 
-            // Reset existing markers on maps & Active Train List
+            // Reset existing markers for active trains, without touching markers for Stations.
             map.eachLayer(layer => {
                 if (layer instanceof L.Marker && layer.isDynamicMarker) {                	
                     map.removeLayer(layer);
@@ -515,7 +515,7 @@
        }
 
        function checkIfWebsiteOpenedInMobile() {
-       	   let regexp = /android|iphone|kindle|ipad/i;
+       	   let regexp = /android|iphone|kindle|ipad|SamsungBrowser/i;
        	   return regexp.test(navigator.userAgent);      	
        }       
        
