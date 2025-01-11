@@ -360,7 +360,7 @@
                    else {
                    	    focusCount++;                   	
 	                      map.flyTo([vehicle.position.latitude, vehicle.position.longitude]);             	//, 14, { animation: true }) ;
-                        const nearestStations = findNearestStationsOnNorthAndSouth([vehicle.position.latitude, vehicle.position.longitude]);
+                        const nearestStations = findNearestStationsOnNorthAndSouth([vehicle.position.latitude, vehicle.position.longitude]  );
                         document.getElementById("trainCountFocus").textContent = `, #${vehicleIdNum} is ${nearestStations}`;
                 }
 
@@ -531,7 +531,7 @@
            }
        }
 
-       function findNearestStationsOnNorthAndSouth(vehiclePosition) {
+       function findNearestStationsOnNorthAndSouth(vehiclePosition ) {
            let nearestNorthStation = null;
            let nearestSouthStation = null;
 
@@ -552,9 +552,17 @@
                }
            }
 
-           const nearestStations = "Between: " +
-                                   (nearestNorthStation ? `${nearestNorthStation.name} (${nearestNorthStation.distanceInMins} mins away)` : "no northern station")  + " & " +
+           let nearestStations = "Between ";
+           if ( nearestNorthStation && nearestSouthStation) {
+           	 if (nearestNorthStation.distanceInMins < nearestSouthStation.distanceInMins) {
+           	 	  nearestStations += (nearestNorthStation ? `${nearestNorthStation.name} (${nearestNorthStation.distanceInMins} mins away)` : "no northern station")  + " & " +
                                    (nearestSouthStation ? `${nearestSouthStation.name} (${nearestSouthStation.distanceInMins} mins away)` : "no southern station");
+           	 }else {
+           	    nearestStations += (nearestSouthStation ? `${nearestSouthStation.name} (${nearestSouthStation.distanceInMins} mins away)` : "no southern station") + " & " +
+           	                       (nearestNorthStation ? `${nearestNorthStation.name} (${nearestNorthStation.distanceInMins} mins away)` : "no northern station");
+           	 }
+           }
+                                   
            //console.debug(nearestStations);
 
            return nearestStations;
