@@ -384,7 +384,13 @@
                 } else {	                	
                    distance = calculateDistanceInKM(vehiclePosition.latitude, vehiclePosition.longitude, baseKTMStationInfo.location[0], baseKTMStationInfo.location[1]);
                    distance = distance.toFixed(2);
-                   label    = `${activeKTMTrainInfo.departureTime}( <a href="${window.location.pathname}?focusVehicleId=${vehicleIdNum}" style="text-decoration: none; color: inherit;">#${vehicleIdNum}</a>) - ${distance} km.`;
+                   if ( vehicleIdNum === focusVehicleIdParam ) {                	        
+                	        label = `${activeKTMTrainInfo.departureTime}( <a href="${window.location.pathname}?focusVehicleId=${vehicleIdNum}" style="text-decoration: none; color: inherit;">#${vehicleIdNum}</a>) - ${distance} km, ${vehiclePosition.speed} km/h.`;
+                   }else {
+                   	      label = `${activeKTMTrainInfo.departureTime}( <a href="${window.location.pathname}?focusVehicleId=${vehicleIdNum}" style="text-decoration: none; color: inherit;">#${vehicleIdNum}</a>) - ${distance} km.`;                   	      
+                   }
+                   
+                   
                 }
                 marker.bindTooltip(label, {
                     permanent: true,
