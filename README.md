@@ -22,7 +22,7 @@ The icons for trains are coloured as per the colour of the starting station. If 
 
 
 ## Credits
-This uses the [KTM schedule](https://www.ktmb.com.my/TrainTime.html) and uses the wonderful APIs provided by [MTREC](https://www.mtrec.name.my/api.html) to show train locations.
+This uses the [KTM schedule](https://www.ktmb.com.my/TrainTime.html) and uses the [wonderful APIs](https://documenter.getpostman.com/view/40279048/2sAYBd67bZ) provided by [MTREC](https://www.mtrec.name.my/api.html) to show train locations.
 
 The page was inspired by [https://go.navig.me/my/ktmb](https://go.navig.me/my/ktmb) which is great, but is too generic to be of any use. Hence, the need for this tool.
 
