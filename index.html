@@ -12,7 +12,7 @@
         .vehicle-arrow-icon {
             font-family: 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
         }
-        #map { height: 600px; width: 98%; }
+        #map { height: 600px; width: 98%;  }
 
         .leaflet-tooltip.vehicle-label {
             white-space: nowrap;
@@ -48,8 +48,9 @@
     <a href='index.html?filter=up'>Up</a>:<span id="trainCountUp">0</span>,
     <a href="index.html?filter=down">Down</a>:<span id="trainCountDown">0</span>
     <span id="trainCountFocus"></span>.
+    <span id="system_status"></span>
       	
-    <button id="countdownButton" onclick="fetchMtrecApiData()">Refresh in 60s</button>
+    <button id="countdownButton" onclick="fetchMtrecTrainPositionApiData()">Refresh in 60s</button>
     <button id="toggleButton" onclick="toggleTrainScheduleTableVisibility()">Show Schedule</button>
     <div id="map"></div>
 
@@ -255,7 +256,7 @@
             }
        }
 
-       async function fetchMtrecApiData() {
+       async function fetchMtrecTrainPositionApiData() {
        	     // Function to fetch data from MTREC API
              // API       : https://www.mtrec.name.my/api.html
              // DataSets  : https://developer.data.gov.my/static-api/data-catalogue
@@ -269,6 +270,21 @@
             } catch (error) {
                 console.error('Error fetching data from API:', error);
             }
+       }
+       
+       async function fetchMtrecStatusMonitorApiData() {
+            try {
+                const response = await fetch('https://api.mtrec.name.my/api/monitor?service=position-api-ktmb');
+                const data = await response.json();
+                console.log((new Date()).toLocaleTimeString(),' (API Response) :', data);
+                const api_monitor_status = data.data.monitor_status;                
+                
+				        document.getElementById("system_status").innerHTML="Down"==api_monitor_status?
+				                `API Status<b><span style="color: red;">${api_monitor_status}</span></b>`:
+				                `API Status<b><span style="color: green;">${api_monitor_status}</span></b>`;                
+            } catch (error) {
+                console.error('Error fetching data from API:', error);
+            }		      	
        }
 
        function classifyVehiclesForPlotting(vehicles) {
@@ -580,14 +596,15 @@
        const isMobileDevice = checkIfWebsiteOpenedInMobile();
 
        let countdown = 60;
-       fetchMtrecApiData(); // <== Main Function to fetch data & Plot
+       fetchMtrecTrainPositionApiData(); // <== Main Function to fetch data & Plot
+       
 
        setInterval(() => {
            countdown -= 1;
            const button = document.getElementById("countdownButton");
            button.textContent = `Refresh in ${countdown}s`;
            if (countdown <= 0) {
-               fetchMtrecApiData();
+               fetchMtrecTrainPositionApiData();
            }
        }, 1000);
 
