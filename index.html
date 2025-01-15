@@ -323,25 +323,18 @@
                 	    }
                 }
                 else {
-                     activeKTMTrainInfo = KTMTrains.find(train => train.vehicleId === 9999);                    	
+                     activeKTMTrainInfo = KTMTrains.find(train => train.vehicleId === 9999);      //Use Dummy Train              	
                      baseKTMStationInfo = KTMStations[activeKTMTrainInfo.baseStation];
                      naCount++;
                      if (filterParam !== "all" ) { plotThisTrain = false;}
                 }
-
-                document.getElementById("trainCountUp").textContent = `${upCount}`;
-                document.getElementById("trainCountDown").textContent = `${downCount}`;
-                bothCount = upCount + downCount;
-                allCount = naCount + bothCount;
-                document.getElementById("trainCountBoth").textContent = `${bothCount}`;
 
                 if (focusVehicleIdParam > 0 ) // If focusVehicleIdParam is used then show just 1 vehicle
                    if (focusVehicleIdParam !== vehicleIdNum) {
                	         plotThisTrain = false;
                    }
                    else {
-                   	    focusCount++;                   	
-	                      map.flyTo([vehicle.position.latitude, vehicle.position.longitude]);             	//, 14, { animation: true }) ;
+                   	    focusCount++;                  		                      
                         const nearestStations = findNearestStationsOnNorthAndSouth([vehicle.position.latitude, vehicle.position.longitude]  );
                         document.getElementById("trainCountFocus").textContent = `, #${vehicleIdNum} is ${nearestStations}`;
                 }
@@ -353,6 +346,13 @@
                   	  console.log(`\tSkipping Vehicle: #${vehicleIdNum}, pointing to ${activeKTMTrainInfo.direction} direction as filterParam is ${filterParam} and focusVehicleId is ${focusVehicleIdParam}`);
                 }
             });
+            
+            document.getElementById("trainCountUp").textContent = `${upCount}`;
+            document.getElementById("trainCountDown").textContent = `${downCount}`;
+            bothCount = upCount + downCount;
+            allCount = naCount + bothCount;
+            document.getElementById("trainCountBoth").textContent = `${bothCount}`;
+                
             if ( focusVehicleIdParam > 0 && focusCount == 0 ) { // If we are in focus Mode & the focused Train has no data
             	  let focusKTMTrainInfo = KTMTrains.find(train => train.vehicleId === focusVehicleIdParam);
             	  if ( focusKTMTrainInfo ) {
@@ -361,6 +361,8 @@
             	      document.getElementById("trainCountFocus").textContent = `,  No information on #${focusVehicleIdParam} `;	
             	  }
             }
+            
+            
             toggleTrainScheduleTableVisibility();
        }
 
@@ -384,13 +386,15 @@
                 } else {	                	
                    distance = calculateDistanceInKM(vehiclePosition.latitude, vehiclePosition.longitude, baseKTMStationInfo.location[0], baseKTMStationInfo.location[1]);
                    distance = distance.toFixed(2);
-                   if ( vehicleIdNum === focusVehicleIdParam ) {                	        
-                	        label = `${activeKTMTrainInfo.departureTime}( <a href="${window.location.pathname}?focusVehicleId=${vehicleIdNum}" style="text-decoration: none; color: inherit;">#${vehicleIdNum}</a>) - ${distance} km, ${vehiclePosition.speed} km/h.`;
-                   }else {
-                   	      label = `${activeKTMTrainInfo.departureTime}( <a href="${window.location.pathname}?focusVehicleId=${vehicleIdNum}" style="text-decoration: none; color: inherit;">#${vehicleIdNum}</a>) - ${distance} km.`;                   	      
+                   label = `${activeKTMTrainInfo.departureTime}( <a href="${window.location.pathname}?focusVehicleId=${vehicleIdNum}" style="text-decoration: none; color: inherit;">#${vehicleIdNum}</a>) - ${distance} km`;
+                   if ( vehicleIdNum === focusVehicleIdParam ) {    
+                   	      map.flyTo([vehiclePosition.latitude, vehiclePosition.longitude]);  //, 14, { animation: true }) ;            	                           	      
+                	        label = `${label}, ${vehiclePosition.speed} km/h.`;
+                	        speakDistance(distance);
                    }
-                   
-                   
+                   else {
+                   	      label = `${label}.`;                   	      
+                   }                     
                 }
                 marker.bindTooltip(label, {
                     permanent: true,
@@ -399,11 +403,8 @@
                     className: 'vehicle-label',
                     interactive: true
                 });
-                marker.isDynamicMarker = true;  //This marker's locatin can move on next refresh
-
-                if ( vehicleIdNum === focusVehicleIdParam ) {
-                	        speakDistance(distance);
-                }
+                marker.isDynamicMarker = true;  //This marker's location can move on next refresh
+                
                 console.log(`Plotting Vehicle: #${vehicleIdNum}, direction:${activeKTMTrainInfo.direction} at Position:(${vehiclePosition.latitude}, ${vehiclePosition.longitude}) and ${distance} KM`);
        }
        
