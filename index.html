@@ -149,8 +149,6 @@
             { vehicleId: 2271, baseStation: "Midvalley KTM", departureTime: "22:48", typeOfDay: "Weekend", direction: "down", startStation: "Batu Caves KTM"  ,  isActive: false}
         ];
 
-
-
         // Used color blue for Serdang(Up) & red for Midvalley(Down) trains, with a lighter shade used for stations in those directions
         // Stations which are 20 minutes away from 2 stations are marked magenta
         // distanceInMins field is updated w.r.t. the 2 Base stations in the respective direction
@@ -194,11 +192,13 @@
     </script>
 
     <script> // Functions
-
-       function checkIfWebsiteOpenedInMobile() {
-       	   let regexp = /android|iphone|kindle|ipad|SamsungBrowser/i;
-       	   return regexp.test(navigator.userAgent);      	
-       }
+       function findDeviceTypeBeingUsed() {
+           const userAgent = navigator.userAgent || navigator.vendor || window.opera;           
+           if (/watch|samsungbrowser/i.test(userAgent.toLowerCase())) { return "Watch";} 
+           if (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase())) { return "Mobile"; }           
+           return "Desktop";       
+       }       
+       
 
        function initializePageParameters(){
                //Get the filter parameter ('up', 'down', 'both' , 'all' or anything else) from the URL
@@ -263,13 +263,13 @@
             countdown = 60;
             try {
                 const response = await fetch('https://api.mtrec.name.my/api/position?agency=ktmb');
-                const data = await response.json();
-                console.log((new Date()).toLocaleTimeString(),' (API Response) :', data);
+                const data = await response.json();              
+                console.log((new Date()).toLocaleTimeString(),'Count:', data.data.length,', (API Response) :', data);
                 const vehicles = data.data || [];
                 classifyVehiclesForPlotting(vehicles);
             } catch (error) {
                 console.error('Error fetching data from API:', error);
-            }
+            }            
        }
        
        async function fetchMtrecStatusMonitorApiData() {
@@ -321,29 +321,28 @@
                 	    	  	 downCount++;
                 	    	  	 if (filterParam === "up" ) { plotThisTrain = false;}
                 	    }
-                }
-                else {
+                } else {
                      activeKTMTrainInfo = KTMTrains.find(train => train.vehicleId === 9999);      //Use Dummy Train              	
                      baseKTMStationInfo = KTMStations[activeKTMTrainInfo.baseStation];
                      naCount++;
                      if (filterParam !== "all" ) { plotThisTrain = false;}
                 }
 
-                if (focusVehicleIdParam > 0 ) // If focusVehicleIdParam is used then show just 1 vehicle
-                   if (focusVehicleIdParam !== vehicleIdNum) {
-               	         plotThisTrain = false;
-                   }
-                   else {
+                if (focusVehicleIdParam > 0 ) { // If focusVehicleIdParam is used then show just 1 vehicle
+                   if (focusVehicleIdParam == vehicleIdNum) {
                    	    focusCount++;                  		                      
                         const nearestStations = findNearestStationsOnNorthAndSouth([vehicle.position.latitude, vehicle.position.longitude]  );
                         document.getElementById("trainCountFocus").textContent = `, #${vehicleIdNum} is ${nearestStations}`;
+                   } else {
+              	        plotThisTrain = false;
+                   }
                 }
-
-                if (plotThisTrain === true) {                     	
+                
+                if (plotThisTrain === true) { 
+                	     console.log(`Plotting Vehicle: #${vehicleIdNum}, direction ${activeKTMTrainInfo.direction} at Position:(${vehicle.position.latitude}, ${vehicle.position.longitude})`);                    	
     	                 plotVehicleOnMap(vehicleIdNum, vehicle.position, baseKTMStationInfo, activeKTMTrainInfo ) ;
-    	          }
-    	          else {
-                  	  console.log(`\tSkipping Vehicle: #${vehicleIdNum}, pointing to ${activeKTMTrainInfo.direction} direction as filterParam is ${filterParam} and focusVehicleId is ${focusVehicleIdParam}`);
+    	          } else {
+                  	  console.log(`\tSkipping Vehicle: #${vehicleIdNum}, direction ${activeKTMTrainInfo.direction} as filterParam is ${filterParam} and focusVehicleId is ${focusVehicleIdParam}`);
                 }
             });
             
@@ -401,8 +400,6 @@
                     interactive: true
                 });
                 marker.isDynamicMarker = true;  //This marker's location can move on next refresh
-                
-                console.log(`Plotting Vehicle: #${vehicleIdNum}, direction:${activeKTMTrainInfo.direction} at Position:(${vehiclePosition.latitude}, ${vehiclePosition.longitude}) and ${distance} KM`);
        }
        
        function unplotAllVechiclesOnMap() {
@@ -440,7 +437,6 @@
 
               const row = document.createElement("tr");
               const stationCell = document.createElement("td");
-              //const stationCell = isMobileDevice? document.createElement("tr"): document.createElement("td");
               stationCell.textContent = stationName;
               stationCell.style.fontSize = "small";
               stationCell.style.border = "1px solid black";
@@ -448,7 +444,6 @@
 
               trainsForStationAndTypeOfDay.forEach(train => {
               	  const cell = document.createElement("td");
-                  //const cell = isMobileDevice? document.createElement("tr"): document.createElement("td");
                   cell.style.fontSize = "small";                   // Use x-small for smaller font
                   cell.style.border = "1px solid black";
                   cell.style.whiteSpace = "normal";
@@ -478,11 +473,11 @@
                       cell.style.backgroundColor = "lightgreen";
                   }
 
-                  // Show only the trains for last 1 hour & next 2 hours if the page is opened on a Mobile.
-                  if ( isMobileDevice && ( train.isActive  ||(diffMinutes >= -60 && diffMinutes <= 120)) ) {
+                  // Show only the trains for last 1 hour & next 2 hours if the page is opened on a Mobile/Watch.
+                  if ( !(deviceType == "Destop") && ( train.isActive  ||(diffMinutes >= -60 && diffMinutes <= 120)) ) {
                   		row.appendChild(cell);
                   }
-                  if ( !isMobileDevice) {
+                  if ( (deviceType == "Desktop")) {
                      row.appendChild(cell);	
                   }
               });
@@ -514,16 +509,16 @@
                document.body.appendChild(tableLegend);
            };
            //if (tableSchedule.style.display === "none") {
-           if (displayScheduleFlag === true) {
+           if (displayScheduleFlag === false) {
                tableSchedule.style.display = "table";
                tableLegend.style.display = "table" ;
-               displayScheduleFlag = false;
+               displayScheduleFlag = true;
                tableSchedule.scrollIntoView({ behavior: "smooth", block: "start" });  // Scroll to table
                button.textContent = "Hide Schedule";
            } else {
                tableSchedule.style.display = "none";
                tableLegend.style.display = "none" ;
-               displayScheduleFlag = true;
+               displayScheduleFlag = false;
                button.textContent = "Show Schedule";
            }
        }
@@ -597,18 +592,20 @@
        plotStationsOnMap();
        const { filterParam, focusVehicleIdParam } = initializePageParameters();
        let displayScheduleFlag = false;
-       const isMobileDevice = checkIfWebsiteOpenedInMobile();
+       const deviceType = findDeviceTypeBeingUsed();
+       
+       if ( deviceType == "Watch") 
+          document.getElementById("map").style.display = "none";
 
        let countdown = 60;
-       fetchMtrecTrainPositionApiData(); // <== Main Function to fetch data & Plot
-       
+       fetchMtrecTrainPositionApiData(); // <== Main Function to fetch data & Plot       
 
        setInterval(() => {
            countdown -= 1;
            const button = document.getElementById("countdownButton");
            button.textContent = `Refresh in ${countdown}s`;
            if (countdown <= 0) {
-               fetchMtrecTrainPositionApiData();
+                 fetchMtrecTrainPositionApiData();
            }
        }, 1000);
 
