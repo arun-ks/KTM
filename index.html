@@ -279,10 +279,16 @@
                 const data = await response.json();              
                 console.log((new Date()).toLocaleTimeString(),'Count:', data.data.length,', (API Response) :', data);
                 const vehicles = data.data || [];
-                classifyVehiclesForPlotting(vehicles);
+                if (data.data.length == 0 ) {
+                	 fetchMtrecStatusMonitorApiData();
+                } else {
+                   classifyVehiclesForPlotting(vehicles);
+                }
             } catch (error) {
                 console.error('Error fetching data from API:', error);
-            }            
+                fetchMtrecStatusMonitorApiData();
+            }
+                        
        }
        
        async function fetchMtrecStatusMonitorApiData() {
@@ -292,9 +298,9 @@
                 console.log((new Date()).toLocaleTimeString(),' (API Response) :', data);
                 const api_monitor_status = data.data.monitor_status;                
                 
-				        document.getElementById("system_status").innerHTML="Down"==api_monitor_status?
-				                `API Status<b><span style="color: red;">${api_monitor_status}</span></b>`:
-				                `API Status<b><span style="color: green;">${api_monitor_status}</span></b>`;                
+				        document.getElementById("system_status").innerHTML= ("Down"==api_monitor_status) ?
+				                `API Status:<b><span style="color: red;">${api_monitor_status}</span></b>`:
+				                `API Status:<b><span style="color: green;">${api_monitor_status}</span></b>`;                
             } catch (error) {
                 console.error('Error fetching data from API:', error);
             }		      	
