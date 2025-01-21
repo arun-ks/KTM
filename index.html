@@ -575,15 +575,26 @@
                }
            }
 
-           let nearestStations = "Between ";
-           if ( nearestNorthStation && nearestSouthStation) {
-           	 if (nearestNorthStation.distanceInMins < nearestSouthStation.distanceInMins) {
-           	 	  nearestStations += (nearestNorthStation ? `${nearestNorthStation.name} (${nearestNorthStation.distanceInMins} mins away)` : "no northern station")  + " & " +
-                                   (nearestSouthStation ? `${nearestSouthStation.name} (${nearestSouthStation.distanceInMins} mins away)` : "no southern station");
-           	 }else {
-           	    nearestStations += (nearestSouthStation ? `${nearestSouthStation.name} (${nearestSouthStation.distanceInMins} mins away)` : "no southern station") + " & " +
-           	                       (nearestNorthStation ? `${nearestNorthStation.name} (${nearestNorthStation.distanceInMins} mins away)` : "no northern station");
-           	 }
+           let nearestStations = "Approx ";
+           if ( nearestNorthStation && nearestSouthStation) {                      
+           	     let tripDistanceInKmsBetweenStations = Math.abs(nearestNorthStation.tripDistanceInKms - nearestSouthStation.tripDistanceInKms);
+                 let distanceInMinsBetweenStations    = Math.abs(nearestNorthStation.distanceInMins - nearestSouthStation.distanceInMins);
+           	
+           	     if (nearestNorthStation.distanceInMins < nearestSouthStation.distanceInMins) {           	 	  
+           	     	  distanceInMinsBetweenNearestStationAndTrain = (nearestNorthStation.distance / tripDistanceInKmsBetweenStations) * distanceInMinsBetweenStations;
+                    nearestStations += `${(nearestNorthStation.distanceInMins + distanceInMinsBetweenNearestStationAndTrain).toFixed(0)} Mins away, between `;
+           	     	  nearestStations += (nearestNorthStation ? `${nearestNorthStation.name} (${nearestNorthStation.distanceInMins} mins away)` : "no northern station")  + " & " +
+                                       (nearestSouthStation ? `${nearestSouthStation.name} (${nearestSouthStation.distanceInMins} mins away)` : "no southern station");
+                    
+                                       
+           	     }else {
+           	     	  distanceInMinsBetweenNearestStationAndTrain = (nearestSouthStation.distance / tripDistanceInKmsBetweenStations) * distanceInMinsBetweenStations;
+           	     	  nearestStations += `${(nearestSouthStation.distanceInMins + distanceInMinsBetweenNearestStationAndTrain).toFixed(0)} Mins away, between `;
+           	        nearestStations += (nearestSouthStation ? `${nearestSouthStation.name} (${nearestSouthStation.distanceInMins} mins away)` : "no southern station") + " & " +
+           	                           (nearestNorthStation ? `${nearestNorthStation.name} (${nearestNorthStation.distanceInMins} mins away)` : "no northern station");           	        
+           	        
+           	        
+           	     }              
            }
                                    
            //console.debug(nearestStations);

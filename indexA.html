@@ -42,8 +42,6 @@
            line-height: 1;
        }
 
-
-
     </style>	
 </head>
 <body>
@@ -61,7 +59,7 @@
       	
     <button id="countdownButton" onclick="fetchMtrecTrainPositionApiData()">Refresh in 00s</button>
     <!--button id="toggleButton" onclick="toggleTrainScheduleTableVisibility()">Show Schedule</button!-->
-    <b><a href="indexA.html">Reset(Testing)</a>
+    <a href="indexA.html">Reset</a>
 
 
     <div id="map"></div>
@@ -73,92 +71,92 @@
         //  This includes weekday(#2002-#2071) & weekend(#2206-#2271) trains
         //  Up trains have even vehicleId & Down trains have odd.
         let KTMTrains = [
-            { vehicleId: 9999, typeOfDay: "na"     , direction: "na"  , startStation: "na"              ,  vehicleType: "na", isActive: false},
-            { vehicleId: 2002, typeOfDay: "Weekday", direction: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2004, typeOfDay: "Weekday", direction: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2602, typeOfDay: "Weekday", direction: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: "LS", isActive: false},
-            { vehicleId: 2008, typeOfDay: "Weekday", direction: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2010, typeOfDay: "Weekday", direction: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2012, typeOfDay: "Weekday", direction: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2014, typeOfDay: "Weekday", direction: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2016, typeOfDay: "Weekday", direction: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2018, typeOfDay: "Weekday", direction: "up"  , startStation: "Kajang KTM"      ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2020, typeOfDay: "Weekday", direction: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2024, typeOfDay: "Weekday", direction: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2028, typeOfDay: "Weekday", direction: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2032, typeOfDay: "Weekday", direction: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2036, typeOfDay: "Weekday", direction: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2040, typeOfDay: "Weekday", direction: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2046, typeOfDay: "Weekday", direction: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2048, typeOfDay: "Weekday", direction: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2050, typeOfDay: "Weekday", direction: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2054, typeOfDay: "Weekday", direction: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2058, typeOfDay: "Weekday", direction: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2062, typeOfDay: "Weekday", direction: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2066, typeOfDay: "Weekday", direction: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2070, typeOfDay: "Weekday", direction: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2206, typeOfDay: "Weekend", direction: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2208, typeOfDay: "Weekend", direction: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2210, typeOfDay: "Weekend", direction: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2212, typeOfDay: "Weekend", direction: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2214, typeOfDay: "Weekend", direction: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2216, typeOfDay: "Weekend", direction: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2220, typeOfDay: "Weekend", direction: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2224, typeOfDay: "Weekend", direction: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2228, typeOfDay: "Weekend", direction: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2232, typeOfDay: "Weekend", direction: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2236, typeOfDay: "Weekend", direction: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2240, typeOfDay: "Weekend", direction: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2246, typeOfDay: "Weekend", direction: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2248, typeOfDay: "Weekend", direction: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2250, typeOfDay: "Weekend", direction: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2254, typeOfDay: "Weekend", direction: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2258, typeOfDay: "Weekend", direction: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2262, typeOfDay: "Weekend", direction: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2266, typeOfDay: "Weekend", direction: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2270, typeOfDay: "Weekend", direction: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2003, typeOfDay: "Weekday", direction: "down", startStation: "Sentul KTM"      ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2007, typeOfDay: "Weekday", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2011, typeOfDay: "Weekday", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2013, typeOfDay: "Weekday", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2015, typeOfDay: "Weekday", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2017, typeOfDay: "Weekday", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2019, typeOfDay: "Weekday", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2021, typeOfDay: "Weekday", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2025, typeOfDay: "Weekday", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2027, typeOfDay: "Weekday", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2031, typeOfDay: "Weekday", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2035, typeOfDay: "Weekday", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2039, typeOfDay: "Weekday", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2045, typeOfDay: "Weekday", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2049, typeOfDay: "Weekday", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2053, typeOfDay: "Weekday", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2603, typeOfDay: "Weekday", direction: "down", startStation: "Sentul KTM"      ,  vehicleType: "LS", isActive: false},
-            { vehicleId: 2057, typeOfDay: "Weekday", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2059, typeOfDay: "Weekday", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2061, typeOfDay: "Weekday", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2063, typeOfDay: "Weekday", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2067, typeOfDay: "Weekday", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2071, typeOfDay: "Weekday", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2207, typeOfDay: "Weekend", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2211, typeOfDay: "Weekend", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2213, typeOfDay: "Weekend", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2215, typeOfDay: "Weekend", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2219, typeOfDay: "Weekend", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2223, typeOfDay: "Weekend", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2225, typeOfDay: "Weekend", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2229, typeOfDay: "Weekend", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2233, typeOfDay: "Weekend", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2237, typeOfDay: "Weekend", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2243, typeOfDay: "Weekend", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2247, typeOfDay: "Weekend", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2251, typeOfDay: "Weekend", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2253, typeOfDay: "Weekend", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2257, typeOfDay: "Weekend", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2259, typeOfDay: "Weekend", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2261, typeOfDay: "Weekend", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2265, typeOfDay: "Weekend", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2271, typeOfDay: "Weekend", direction: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false}
+            { vehicleId: 9999, typeOfDay: "na"     , Xdirection: "na"  , startStation: "na"              ,  vehicleType: "na", isActive: false},
+            { vehicleId: 2002, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2004, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2602, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: "LS", isActive: false},
+            { vehicleId: 2008, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2010, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2012, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2014, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2016, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2018, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Kajang KTM"      ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2020, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2024, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2028, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2032, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2036, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2040, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2046, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2048, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2050, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2054, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2058, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2062, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2066, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2070, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2206, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2208, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2210, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2212, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2214, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2216, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2220, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2224, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2228, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2232, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2236, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2240, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2246, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2248, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2250, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2254, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2258, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2262, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2266, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2270, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
+            { vehicleId: 2003, typeOfDay: "Weekday", Xdirection: "down", startStation: "Sentul KTM"      ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2007, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2011, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2013, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2015, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2017, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2019, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2021, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2025, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2027, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2031, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2035, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2039, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2045, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2049, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2053, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2603, typeOfDay: "Weekday", Xdirection: "down", startStation: "Sentul KTM"      ,  vehicleType: "LS", isActive: false},
+            { vehicleId: 2057, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2059, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2061, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2063, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2067, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2071, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2207, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2211, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2213, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2215, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2219, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2223, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2225, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2229, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2233, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2237, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2243, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2247, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2251, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2253, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2257, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2259, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2261, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2265, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
+            { vehicleId: 2271, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false}
         ];
 
 
@@ -220,10 +218,8 @@
        function initializePageParameters(){               
                const urlParams   = new URLSearchParams(window.location.search);
                
-               //Get the filter parameter ('up', 'down', 'both' , 'all' or anything else) from the URL
                let filterParamRaw = urlParams.get('filter');
                const filterParam =  (filterParamRaw == null) ?  "both" : filterParamRaw;
-
 
                let focusVehicleIdParamRaw = urlParams.get('focusVehicleId');
                const focusVehicleIdParam = ( (focusVehicleIdParamRaw == null) || isNaN(focusVehicleIdParamRaw) ) ? 0 : parseInt(focusVehicleIdParamRaw, 10);
@@ -315,10 +311,10 @@
                 let label = `${stationName}: <a href="https://myrailtime.ktmb.com.my/timetable?origin=${stationInfo.stationId}" target="_blank">Schedule</a>`;
                 label += tripDurationInMins > 0 ? `, (+${tripDurationInMins} min or ${tripDistanceInKms} KMs)` : '';
                 stationMarker.bindPopup(label, {
-                    permanent: false,
+                    permanent: false,                // Cannot be true
                     direction: 'left',
-                    offset: [8, 8],
-                    className: 'custom-popup',
+                    offset: [0, 0],
+                    className: 'custom-popup',                    
                 });
                 //                    direction: 'left',                     offset: [-10, 0],
 
@@ -384,8 +380,10 @@
 
                 let plotThisTrain = true;
                 let activeKTMTrainInfo = KTMTrains.find(train => train.vehicleId === vehicleIdNum);
+                
                 if( activeKTMTrainInfo ) {
                       activeKTMTrainInfo.isActive = true;
+                      activeKTMTrainInfo.direction = (vehicleIdNum % 2 ) ? "down" : "up";
                       if ( activeKTMTrainInfo.direction == "up") {
                 	          upCount++;
                 	          if (filterParam === "down" ) { plotThisTrain = false;}
@@ -395,6 +393,7 @@
                 	    }
                 } else {
                      activeKTMTrainInfo = KTMTrains.find(train => train.vehicleId === 9999);      //Use Dummy Train              	
+                     activeKTMTrainInfo.direction = "na";
                      naCount++;
                      if (filterParam !== "all" ) { plotThisTrain = false;}
                 }
@@ -448,7 +447,7 @@
                 let label;
                 let distance;
                 if ( activeKTMTrainInfo.direction === "na" ) {
-                	 distance = 'na';
+                	 //distance = 'na';
                    label    = `( #${vehicleIdNum})`;
                 } else {	                	
                    distance = calculateDistanceInKM(vehiclePosition.latitude, vehiclePosition.longitude, KTMStations[baseStationParam].location[0], KTMStations[baseStationParam].location[1]);
@@ -628,17 +627,24 @@
                }
            }
 
-           let nearestStations = "Between ";
+           let nearestStations = "Approx ";
            if ( nearestNorthStation && nearestSouthStation) {
-           	 if (nearestNorthStation.distanceInMins < nearestSouthStation.distanceInMins) {
-           	 	
+        	   let tripDistanceInKmsBetweenStations = Math.abs(nearestNorthStation.tripDistanceInKms  - nearestSouthStation.tripDistanceInKms);
+             let tripDurationInMinsBetweenStations    = Math.abs(nearestNorthStation.tripDurationInMins - nearestSouthStation.tripDurationInMins);
+
+           	 if (nearestNorthStation.tripDurationInMins < nearestSouthStation.tripDurationInMins) {  
+           	 	  tripDurationInMinsBetweenNearestStationAndTrain = (nearestNorthStation.distance / tripDistanceInKmsBetweenStations) * tripDurationInMinsBetweenStations;         	 	
+           	 	  nearestStations += `${(nearestNorthStation.tripDurationInMins + tripDurationInMinsBetweenNearestStationAndTrain).toFixed(0)} Mins away, between `;           	 	  
            	 	  nearestStations += (nearestNorthStation ? `${nearestNorthStation.name} (${nearestNorthStation.tripDurationInMins} mins away)` : "no northern station")  + " & " +
                                    (nearestSouthStation ? `${nearestSouthStation.name} (${nearestSouthStation.tripDurationInMins} mins away)` : "no southern station");
            	 }else {
+      	     	  tripDurationInMinsBetweenNearestStationAndTrain = (nearestSouthStation.distance / tripDistanceInKmsBetweenStations) * tripDurationInMinsBetweenStations;           	 	
+      	     	  nearestStations += `${(nearestSouthStation.tripDurationInMins + tripDurationInMinsBetweenNearestStationAndTrain).toFixed(0)} Mins away, between `;
            	    nearestStations += (nearestSouthStation ? `${nearestSouthStation.name} (${nearestSouthStation.tripDurationInMins} mins away)` : "no southern station") + " & " +
            	                       (nearestNorthStation ? `${nearestNorthStation.name} (${nearestNorthStation.tripDurationInMins} mins away)` : "no northern station");
            	 }
            }
+
 
            //console.debug(nearestStations);
 
