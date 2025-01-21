@@ -1,5 +1,5 @@
 # KTM
-Exploratory code to keep track of KTM Komuter trains. You can get the [live version here](https://arun-ks.github.io/KTM/)
+Exploratory code to keep track of KTM Komuter trains for commute. You can get the [live version here](https://arun-ks.github.io/KTM/)
 
 ## Purpose
 The current version used hardcoded values for **KTM Serdang** & **MidValley** Stations, and deals with trains for "Batu Caves - Pulau Sebang" route.
@@ -20,6 +20,8 @@ You can use URL Parameter **focusVehicleId** to see data for 1 selected train
 
 The icons for trains are coloured as per the colour of the starting station. If the trains are not part of "Batu Caves - Pulau Sebang" route, then they have a separate colour.
 
+## Future Plans
+A generic version which will allow user to select 1 base station, is work in progress. The [current version is live here](https://arun-ks.github.io/KTM/indexA.html)
 
 ## Credits
 This uses the [KTM schedule](https://www.ktmb.com.my/TrainTime.html) and uses the [wonderful APIs](https://documenter.getpostman.com/view/40279048/2sAYBd67bZ) provided by [MTREC](https://www.mtrec.name.my/api.html) to show train locations.
