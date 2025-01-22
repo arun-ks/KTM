@@ -328,6 +328,7 @@
             countdown = COUNTDOWN_SECONDS;
             try {
                 const response = await fetch('https://api.mtrec.name.my/api/position?agency=ktmb');
+                //const response = await fetch('https://cors-anywhere.herokuapp.com/https://api.mtrec.name.my/api/position?agency=ktmb');
                 const data = await response.json();
                 console.log((new Date()).toLocaleTimeString(),'Count:', data.data.length,', (API Response) :', data);
                 const vehicles = data.data || [];
@@ -455,8 +456,7 @@
                    label = `(<a href="${window.location.pathname}?focusVehicleId=${vehicleIdNum}&baseStation=${baseStationParam}" style="text-decoration: none; color: inherit;">#${vehicleIdNum}</a>) - ${distance} km`;
                    if ( vehicleIdNum === focusVehicleIdParam ) {
                    	      map.flyTo([vehiclePosition.latitude, vehiclePosition.longitude]);  //, 14, { animation: true }) ;            	                           	
-                	        label = `${label}, ${vehiclePosition.speed} km/h.`;
-                	        speakDistance(distance);
+                	        label = `${label}, ${vehiclePosition.speed} km/h.`;                	     
                    }
                    else {
                    	      label = `${label}.`;                   	
@@ -627,26 +627,30 @@
                }
            }
 
-           let nearestStations = "Approx ";
+           let nearestStations = "NA";
            if ( nearestNorthStation && nearestSouthStation) {
-        	   let tripDistanceInKmsBetweenStations = Math.abs(nearestNorthStation.tripDistanceInKms  - nearestSouthStation.tripDistanceInKms);
-             let tripDurationInMinsBetweenStations    = Math.abs(nearestNorthStation.tripDurationInMins - nearestSouthStation.tripDurationInMins);
-
-           	 if (nearestNorthStation.tripDurationInMins < nearestSouthStation.tripDurationInMins) {  
-           	 	  tripDurationInMinsBetweenNearestStationAndTrain = (nearestNorthStation.distance / tripDistanceInKmsBetweenStations) * tripDurationInMinsBetweenStations;         	 	
-           	 	  nearestStations += `${(nearestNorthStation.tripDurationInMins + tripDurationInMinsBetweenNearestStationAndTrain).toFixed(0)} Mins away, between `;           	 	  
-           	 	  nearestStations += (nearestNorthStation ? `${nearestNorthStation.name} (${nearestNorthStation.tripDurationInMins} mins away)` : "no northern station")  + " & " +
-                                   (nearestSouthStation ? `${nearestSouthStation.name} (${nearestSouthStation.tripDurationInMins} mins away)` : "no southern station");
-           	 }else {
-      	     	  tripDurationInMinsBetweenNearestStationAndTrain = (nearestSouthStation.distance / tripDistanceInKmsBetweenStations) * tripDurationInMinsBetweenStations;           	 	
-      	     	  nearestStations += `${(nearestSouthStation.tripDurationInMins + tripDurationInMinsBetweenNearestStationAndTrain).toFixed(0)} Mins away, between `;
-           	    nearestStations += (nearestSouthStation ? `${nearestSouthStation.name} (${nearestSouthStation.tripDurationInMins} mins away)` : "no southern station") + " & " +
-           	                       (nearestNorthStation ? `${nearestNorthStation.name} (${nearestNorthStation.tripDurationInMins} mins away)` : "no northern station");
-           	 }
+        	      let tripDistanceInKmsBetweenStations     = Math.abs(nearestNorthStation.tripDistanceInKms  - nearestSouthStation.tripDistanceInKms);
+                let tripDurationInMinsBetweenStations    = Math.abs(nearestNorthStation.tripDurationInMins - nearestSouthStation.tripDurationInMins);
+                
+           	    if (nearestNorthStation.tripDurationInMins < nearestSouthStation.tripDurationInMins) {  
+           	    	  let tripDurationInMinsBetweenNearestStationAndTrain = (nearestNorthStation.distance / tripDistanceInKmsBetweenStations) * tripDurationInMinsBetweenStations;
+           	    	  let trainDistanceFromBaseStation = (nearestNorthStation.tripDurationInMins + tripDurationInMinsBetweenNearestStationAndTrain).toFixed(0) ;       	 	
+           	    	  nearestStations += `Approx ${trainDistanceFromBaseStation} Mins away, between `;           	 	  
+           	    	  nearestStations += (nearestNorthStation ? `${nearestNorthStation.name} (${nearestNorthStation.tripDurationInMins} mins away)` : "no northern station")  + " & "
+                    nearestStations += (nearestSouthStation ? `${nearestSouthStation.name} (${nearestSouthStation.tripDurationInMins} mins away)` : "no southern station");
+           	    }else {
+      	        	  let tripDurationInMinsBetweenNearestStationAndTrain = (nearestSouthStation.distance / tripDistanceInKmsBetweenStations) * tripDurationInMinsBetweenStations;           	 	
+      	        	  let trainDistanceFromBaseStation = (nearestSouthStation.tripDurationInMins + tripDurationInMinsBetweenNearestStationAndTrain).toFixed(0) ;       	 	
+      	        	  nearestStations += `Approx ${trainDistanceFromBaseStation} Mins away, between `; 
+           	        nearestStations += (nearestSouthStation ? `${nearestSouthStation.name} (${nearestSouthStation.tripDurationInMins} mins away)` : "no southern station") + " & "
+           	        nearestStations += (nearestNorthStation ? `${nearestNorthStation.name} (${nearestNorthStation.tripDurationInMins} mins away)` : "no northern station");
+           	    }
+           	    speakDistance(trainDistanceFromBaseStation);
            }
 
 
            //console.debug(nearestStations);
+        
 
            return nearestStations;
        }
@@ -654,7 +658,7 @@
        function speakDistance(distance) {
            // Check if the browser supports speech synthesis
            if ('speechSynthesis' in window) {
-           	   const message = new SpeechSynthesisUtterance(`The distance is ${distance} kilometers.`);
+           	   const message = new SpeechSynthesisUtterance(`Train is ${distance} minutes away.`);
                message.lang = 'en-US';  // Set language
                message.rate = 1;        // Adjust speed if needed (0.5 - 2)
                message.pitch = 1;       // Adjust pitch if needed (0 - 2)
