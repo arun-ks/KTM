@@ -574,27 +574,27 @@
                }
            }
 
-           let nearestStations = "NA ";
+           let nearestStations = "";
            if ( nearestNorthStation && nearestSouthStation) {                      
            	     let tripDistanceInKmsBetweenStations = Math.abs(nearestNorthStation.tripDistanceInKms - nearestSouthStation.tripDistanceInKms);
                  let distanceInMinsBetweenStations    = Math.abs(nearestNorthStation.distanceInMins - nearestSouthStation.distanceInMins);
            	
            	     if (nearestNorthStation.distanceInMins < nearestSouthStation.distanceInMins) {           	 	  
            	     	  tripDurationInMinsBetweenNearestStationAndTrain = (nearestNorthStation.distance / tripDistanceInKmsBetweenStations) * distanceInMinsBetweenStations;
-           	    	  trainDistanceFromBaseStation = (nearestNorthStation.tripDurationInMins + tripDurationInMinsBetweenNearestStationAndTrain).toFixed(0) ;       	 	
+           	    	  trainDurationFromBaseStation = (nearestNorthStation.tripDurationInMins + tripDurationInMinsBetweenNearestStationAndTrain).toFixed(0) ;       	 	
 
-                    nearestStations += `Approx ${trainDistanceFromBaseStation} Mins away, between `; 
+                    nearestStations = `Approx ${trainDurationFromBaseStation} Mins away, between `; 
            	     	  nearestStations += (nearestNorthStation ? `${nearestNorthStation.name} (${nearestNorthStation.distanceInMins} mins away)` : "no northern station")  + " & " +
                                        (nearestSouthStation ? `${nearestSouthStation.name} (${nearestSouthStation.distanceInMins} mins away)` : "no southern station");
            	     }else {
            	     	  tripDurationInMinsBetweenNearestStationAndTrain = (nearestSouthStation.distance / tripDistanceInKmsBetweenStations) * distanceInMinsBetweenStations;
-           	    	  trainDistanceFromBaseStation = (nearestSouthStation.tripDurationInMins + tripDurationInMinsBetweenNearestStationAndTrain).toFixed(0) ;       	 	
+           	    	  trainDurationFromBaseStation = (nearestSouthStation.tripDurationInMins + tripDurationInMinsBetweenNearestStationAndTrain).toFixed(0) ;       	 	
 
-           	     	  nearestStations += `Approx ${trainDistanceFromBaseStation} Mins away, between `; 
+           	     	  nearestStations = `Approx ${trainDistanceFromBaseStation} Mins away, between `; 
            	        nearestStations += (nearestSouthStation ? `${nearestSouthStation.name} (${nearestSouthStation.distanceInMins} mins away)` : "no southern station") + " & " +
            	                           (nearestNorthStation ? `${nearestNorthStation.name} (${nearestNorthStation.distanceInMins} mins away)` : "no northern station");
            	     }              
-           	     speakDistance(trainDistanceFromBaseStation);
+           	     speakDistance(trainDurationFromBaseStation);
            }
            
            return nearestStations;
