@@ -74,6 +74,9 @@
         
          // Used color blue for Serdang(Up) & red for Midvalley(Down) trains, with a lighter shade used for stations in those directions
         // Stations which are 20 minutes away from 2 stations are marked magenta
+        
+        KTMTrains.forEach(train => train.direction = (train.vehicleId % 2 ) ? "down" : "up");
+        
         let KTMStations = {
              'Batu Caves KTM'    :  {stationId:50600, tripDurationInMins:0  , tripDistanceInKms:0      , location: [3.237796,101.681215] },
              'Taman Wahyu KTM'   :  {stationId:50500, tripDurationInMins:4  , tripDistanceInKms:2.95   , location: [3.214510,101.672178] },
@@ -276,10 +279,7 @@
             document.getElementById("trainCountFocus").textContent = "";
 
             unplotAllVechiclesOnMap();
-            //KTMTrainsOld.forEach(train => train.isActive = false);
-            KTMTrains.forEach(train => train.isActive = false);
-            KTMTrains.forEach(train => train.direction = (train.vehicleId % 2 ) ? "down" : "up");
-         
+            KTMTrains.forEach(train => train.isActive = false);                  
 
             vehicles.forEach(vehicle => {
                 const vehicleIdNum = parseInt(vehicle.vehicle.id.split('_')[1] || vehicle.vehicle.id);
@@ -294,11 +294,11 @@
                 */
 
                 let plotThisTrain = true;
-                //let activeKTMTrainInfo = KTMTrainsOld.find(train => train.vehicleId === vehicleIdNum);
                 let activeKTMTrainInfo = KTMTrains.find(train => train.vehicleId === vehicleIdNum && train.stationName === baseStationParam );
                 
                 if( activeKTMTrainInfo ) {
                       activeKTMTrainInfo.isActive = true;
+                      KTMTrains.forEach(train => train.isActive = ( train.vehicleId === vehicleIdNum) ? true : train.isActive);
                       if ( activeKTMTrainInfo.direction == "up") {
                 	          upCount++;
                 	          if (filterParam === "down" ) { plotThisTrain = false;}
@@ -428,7 +428,8 @@
         
               const row = document.createElement("tr");
               const stationCell = document.createElement("td");
-              stationCell.textContent = stationName + "(" + direction + ")";
+              //stationCell.textContent = stationName + "(" + direction + ")";
+              stationCell.textContent = direction + " Trains";
               stationCell.style.fontSize = "small";
               stationCell.style.border = "1px solid black";
               row.appendChild(stationCell);
@@ -517,11 +518,6 @@
                }
                
            }
-           
-           //else {
-           //	   tableSchedule.remove() ;           	
-           //	   tableLegend.remove(); 
-           //}
        }
 
        function calculateDistanceInKM(lat1, lon1, lat2, lon2) {
