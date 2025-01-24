@@ -172,7 +172,7 @@
                 document.getElementById('filterLinkUp').href   = `${window.location.pathname}?baseStation=${baseStationParam}&filter=up`;
                 document.getElementById('filterLinkDown').href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=down`;       
                 
-                displayScheduleFlag = false;  
+                //displayScheduleFlag = false;  
                 toggleTrainScheduleTableVisibility();
                 
        }
@@ -511,6 +511,11 @@
                tableLegend.style.display = "none" ;
                displayScheduleFlag = false;
                button.textContent = "Show Schedule";
+               if (tableSchedule) {
+                  tableSchedule.remove();
+                  tableLegend.remove();
+               }
+               
            }
            
            //else {
