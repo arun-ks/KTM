@@ -71,11 +71,9 @@
         // Vehicle IDs and Departure Times for 2 KTM stations as of 02-Dec, 2024.  https://www.ktmb.com.my/TrainTime.html
         //  This includes weekday(#2002-#2071) & weekend(#2206-#2271) trains
         //  Up trains have even vehicleId & Down trains have odd.
-        
-         // Used color blue for Serdang(Up) & red for Midvalley(Down) trains, with a lighter shade used for stations in those directions
-        // Stations which are 20 minutes away from 2 stations are marked magenta
-        
-        KTMTrains.forEach(train => train.direction = (train.vehicleId % 2 ) ? "down" : "up");
+        //  Limited Stop trains have vehicleId > 2600
+        KTMTrains.forEach(train => train.direction = (train.vehicleId % 2 ) ? "down" : "up"); 
+        KTMTrains.forEach(train => train.vehicleType = (train.vehicleId > 2600 ) ? "LS" : "");           
         
         let KTMStations = {
              'Batu Caves KTM'    :  {stationId:50600, tripDurationInMins:0  , tripDistanceInKms:0      , location: [3.237796,101.681215] },
@@ -87,11 +85,11 @@
              'Bank Negara KTM'   :  {stationId:18900, tripDurationInMins:21 , tripDistanceInKms:11.006 , location: [3.155105,101.693118] },
              'Kuala Lumpur KTM'  :  {stationId:19000, tripDurationInMins:25 , tripDistanceInKms:12.726 , location: [3.139444,101.693333] },
              'KL Sentral KTM'    :  {stationId:19100, tripDurationInMins:29 , tripDistanceInKms:13.886 , location: [3.134167,101.686111] },
-             'Midvalley KTM'     :  {stationId:19205, tripDurationInMins:36 , tripDistanceInKms:16.006 , location: [3.119211,101.678865] },   //Base for down train
+             'Midvalley KTM'     :  {stationId:19205, tripDurationInMins:36 , tripDistanceInKms:16.006 , location: [3.119211,101.678865] }, 
              'Seputeh KTM'       :  {stationId:19300, tripDurationInMins:39 , tripDistanceInKms:16.706 , location: [3.113612,101.681474] },
              'Salak Selatan KTM' :  {stationId:19400, tripDurationInMins:44 , tripDistanceInKms:20.006 , location: [3.098413,101.705055] },
              'BTS KTM'           :  {stationId:19600, tripDurationInMins:50 , tripDistanceInKms:23.106 , location: [3.076229,101.711119] },
-             'Serdang KTM'       :  {stationId:19900, tripDurationInMins:57 , tripDistanceInKms:29.446 , location: [3.023404,101.716056] },   //Base for up trains
+             'Serdang KTM'       :  {stationId:19900, tripDurationInMins:57 , tripDistanceInKms:29.446 , location: [3.023404,101.716056] },
              'Kajang KTM'        :  {stationId:20400, tripDurationInMins:69 , tripDistanceInKms:40.346 , location: [2.983222,101.790669] },
              'Kajang 2 KTM'      :  {stationId:20402, tripDurationInMins:72 , tripDistanceInKms:42.806 , location: [2.962640,101.792070] },
              'UKM KTM'           :  {stationId:20500, tripDurationInMins:75 , tripDistanceInKms:45.266 , location: [2.939775,101.787623] },
@@ -170,18 +168,15 @@
 
                 plotStationsOnMap ();
                 fetchMtrecTrainPositionApiData();
+                toggleTrainScheduleTableVisibility();
 
                 document.getElementById('filterLinkBoth').href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=both`;
                 document.getElementById('filterLinkUp').href   = `${window.location.pathname}?baseStation=${baseStationParam}&filter=up`;
                 document.getElementById('filterLinkDown').href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=down`;       
-                
-                //displayScheduleFlag = false;  
-                toggleTrainScheduleTableVisibility();
-                
        }
 
        function initializeMap(baseStation) {
-       	    // Initialize the map to Location between 2 stations & add OpenStreetMap tile layer
+       	    // Initialize the map to Location to baseStation
             // API reference https://leafletjs.com/reference.html
             const map = L.map('map').setView(KTMStations[baseStation].location, 11);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -194,13 +189,12 @@
        function plotStationsOnMap() {
        	     //Remove all stations (if any)
        	     map.eachLayer(layer => {
-                if (layer instanceof L.Marker && ! layer.isDynamicMarker) {                	
+                if (layer instanceof L.Marker && ! layer.isVehicleMarker) {                	
                     map.removeLayer(layer);
                 }
              });
        	
        	     for (const [stationName, stationInfo] of Object.entries(KTMStations)) {
-                //const distanceText = stationInfo.distanceInMins >= 0 ? stationInfo.distanceInMins.toString().padStart(2, '0') : '--';
                 const tripDurationInMins = Math.abs(stationInfo.tripDurationInMins - KTMStations[baseStationParam].tripDurationInMins);
                 const tripDistanceInKms  = Math.abs(stationInfo.tripDistanceInKms - KTMStations[baseStationParam].tripDistanceInKms).toFixed(1);
                 if (stationName == baseStationParam ) {
@@ -220,6 +214,7 @@
                         iconAnchor: [8, 8],
                     })
                 }).addTo(map);
+                stationMarker.isVehicleMarker = false;
 
                 let label = `${stationName}: <a href="https://myrailtime.ktmb.com.my/timetable?origin=${stationInfo.stationId}" target="_blank">Schedule</a>`;
                 label += tripDurationInMins > 0 ? `, (+${tripDurationInMins} min or ${tripDistanceInKms} KMs)` : '';
@@ -230,7 +225,6 @@
                     className: 'custom-popup',                    
                 });
                 //                    direction: 'left',                     offset: [-10, 0],
-
             }
        }
 
@@ -243,7 +237,7 @@
                 const response = await fetch('https://api.mtrec.name.my/api/position?agency=ktmb');
                 //const response = await fetch('https://cors-anywhere.herokuapp.com/https://api.mtrec.name.my/api/position?agency=ktmb');
                 const data = await response.json();
-                console.log((new Date()).toLocaleTimeString(),'Count:', data.data.length,', (API Response) :', data);
+                console.log((new Date()).toLocaleTimeString(),'Count: ', data.data.length,', Response: ', data);
                 const vehicles = data.data || [];
                 if (data.data.length == 0 ) {
                 	 fetchMtrecStatusMonitorApiData();
@@ -255,7 +249,6 @@
                 console.error('Error fetching data from API:', error);
                 fetchMtrecStatusMonitorApiData();
             }
-
        }
 
        async function fetchMtrecStatusMonitorApiData() {
@@ -272,7 +265,6 @@
                 console.error('Error fetching data from API:', error);
             }		      	
        }
-
 
        function classifyVehiclesForPlotting(vehicles) {
             let upCount = 0,downCount = 0,naCount = 0, focusCount = 0;
@@ -294,8 +286,7 @@
                 */
 
                 let plotThisTrain = true;
-                let activeKTMTrainInfo = KTMTrains.find(train => train.vehicleId === vehicleIdNum && train.stationName === baseStationParam );
-                
+                let activeKTMTrainInfo = KTMTrains.find(train => train.vehicleId === vehicleIdNum && train.stationName === baseStationParam );                
                 if( activeKTMTrainInfo ) {
                       activeKTMTrainInfo.isActive = true;
                       KTMTrains.forEach(train => train.isActive = ( train.vehicleId === vehicleIdNum) ? true : train.isActive);
@@ -315,9 +306,10 @@
 
                 if (focusVehicleIdParam > 0 ) { // If focusVehicleIdParam is used then show just 1 vehicle
                    if (focusVehicleIdParam == vehicleIdNum) {
-                   	    focusCount++;                  		
-                        const nearestStations = findNearestStationsOnNorthAndSouth([vehicle.position.latitude, vehicle.position.longitude]  );
-                        document.getElementById("trainCountFocus").textContent = `, #${vehicleIdNum} is ${nearestStations}`;
+                   	    focusCount++;                        
+                        const { trainDurationFromBaseStation, nearestStationsDescription } = findNearestStationsOnNorthAndSouth([vehicle.position.latitude, vehicle.position.longitude]);                      
+                        document.getElementById("trainCountFocus").textContent = `, #${vehicleIdNum} is approx. ${trainDurationFromBaseStation} mins away`;
+                        speakDistance(trainDurationFromBaseStation);
                    } else {
               	        plotThisTrain = false;
                    }
@@ -367,7 +359,7 @@
                    distance = calculateDistanceInKM(vehiclePosition.latitude, vehiclePosition.longitude, KTMStations[baseStationParam].location[0], KTMStations[baseStationParam].location[1]);
                    distance = distance.toFixed(2);
                    
-                   label = `${activeKTMTrainInfo.departureTime} (<a href="${window.location.pathname}?focusVehicleId=${vehicleIdNum}&baseStation=${baseStationParam}" style="text-decoration: none; color: inherit;">#${vehicleIdNum}</a>) - ${distance} km`;
+                   label = `${activeKTMTrainInfo.arrivalTime} (<a href="${window.location.pathname}?focusVehicleId=${vehicleIdNum}&baseStation=${baseStationParam}" style="text-decoration: none; color: inherit;">#${vehicleIdNum}</a>) - ${distance} km`;
                    if ( vehicleIdNum === focusVehicleIdParam ) {
                    	      map.flyTo([vehiclePosition.latitude, vehiclePosition.longitude]);  //, 14, { animation: true }) ;            	                           	
                 	        label = `${label}, ${vehiclePosition.speed} km/h.`;                	     
@@ -383,28 +375,26 @@
                     className: 'vehicle-label',
                     interactive: true
                 });
-                marker.isDynamicMarker = true;  //This marker's location can move on next refresh
+                marker.isVehicleMarker = true;  //This marker's location can move on next refresh
        }
 
        function unplotAllVechiclesOnMap() {
             map.eachLayer(layer => {
-                if (layer instanceof L.Marker && layer.isDynamicMarker) {                	
+                if (layer instanceof L.Marker && layer.isVehicleMarker) {                	
                     map.removeLayer(layer);
                 }
             });       	
        }
 
-
-       function showTrainScheduleTable(stationName, direction) {    //UNUSED    	
+       function showTrainScheduleTable(stationName, direction) { 
               const isWeekend = [0, 6].includes(new Date().getDay());
               const typeOfDay = isWeekend ? "weekend" : "weekday";
            
-              const trainsForStationAndTypeOfDayUnsorted = KTMTrains.filter(train => train.typeOfDay === typeOfDay && train.stationName === stationName && train.direction === direction);
-              
+              let trainsForStationAndTypeOfDayUnsorted = KTMTrains.filter(train => train.typeOfDay === typeOfDay && train.stationName === stationName && train.direction === direction);              
               let trainsForStationAndTypeOfDay = trainsForStationAndTypeOfDayUnsorted.sort((trainA, trainB) => {
                   let timeA = trainA.arrivalTime.split(":").map(Number);
                   let timeB = trainB.arrivalTime.split(":").map(Number);
-                  return timeA[0] - timeB[0] || timeA[1] - timeB[1]; // Compare hours, then minutes
+                  return timeA[0] - timeB[0] || timeA[1] - timeB[1]; 
               });
               
               const currentDate = new Date();
@@ -440,7 +430,7 @@
                   cell.style.border = "1px solid black";
                   cell.style.whiteSpace = "normal";
         
-                  cell.appendChild(document.createTextNode(`${train.departureTime}`));
+                  cell.appendChild(document.createTextNode(`${train.arrivalTime}`));
                   if (train.isActive == true) {
                       cell.appendChild(document.createTextNode("*"));
                   }
@@ -449,16 +439,16 @@
                   cell.appendChild(document.createTextNode("("));
                   const vehicleLink = document.createElement("a");
                   vehicleLink.href = `${window.location.pathname}?focusVehicleId=${train.vehicleId}&baseStation=${stationName}`;
-                  vehicleLink.textContent = `${train.vehicleId}`;   // train.vehicleType not supported for Limited Stop trains
+                  vehicleLink.textContent = `${train.vehicleId}${train.vehicleType}`;
                   cell.appendChild(vehicleLink);
                   cell.appendChild(document.createTextNode(")"));
         
-                  const [hours, minutes] = train.departureTime.split(":").map(Number);
-                  const departureDate = new Date(currentDate);
-                  departureDate.setHours(hours, minutes, 0, 0);
+                  const [hours, minutes] = train.arrivalTime.split(":").map(Number);
+                  const arrivalTime = new Date(currentDate);
+                  arrivalTime.setHours(hours, minutes, 0, 0);
         
                   //currentDate.setHours(9, 32, 0, 0); //For TESTING
-                  let diffMinutes = (departureDate - currentDate) / (1000 * 60);
+                  let diffMinutes = (arrivalTime - currentDate) / (1000 * 60);
                   if (diffMinutes < 0 && diffMinutes >= -60) {
                       cell.style.backgroundColor = "lightcoral";
                   } else if (diffMinutes >= 0 && diffMinutes <= 120) {
@@ -476,7 +466,7 @@
               table.appendChild(row);
        }
 
-       function toggleTrainScheduleTableVisibility() {   //UNUSED
+       function toggleTrainScheduleTableVisibility() {   
            let tableSchedule = document.querySelector("#trainScheduleTable");
            let tableLegend = document.querySelector("#trainScheduleLegend");
            const button = document.querySelector("#toggleButton");
@@ -494,13 +484,15 @@
                        <td style="font-size: small; border: 1px dotted black; white-space: normal;">Legend: </td>
                        <td style="background-color: lightcoral; font-size: small; border: 1px dotted black; white-space: normal;">Train for now - 1 hr</td>
                        <td style="background-color: lightgreen; font-size: small; border: 1px dotted black; white-space: normal;">Train for now +2 hr</td>
-                       <td style="font-size: small; border: 1px dotted black; white-space: normal;"> * Train is active</td>
-        
+                       <td style="font-size: small; border: 1px dotted black; white-space: normal;"> * Train is active</td>        
                    </tr>
+                   <tr>
+                       <td style="font-size: small; border: 1px dotted black; white-space: normal;" colspan=4>Schedule as per ${GTFSDataExtractDate}</td>
+                   </tr>   
                `;
                document.body.appendChild(tableLegend);
            }
-           //if (tableSchedule.style.display === "none") {
+
            if (displayScheduleFlag === false) {
                tableSchedule.style.display = "table";
                tableLegend.style.display = "table" ;
@@ -534,6 +526,8 @@
        }
 
        function findNearestStationsOnNorthAndSouth(vehiclePosition ) {
+       	   //There is a loop before the southern most station(near [2.452145476705575, 102.19320532886256], which is SOUTH of the station. 
+       	   //This function does not work for trains in that loop.
            let nearestNorthStation = null;
            let nearestSouthStation = null;
 
@@ -556,6 +550,7 @@
            }
 
            let nearestStations = "";
+           let trainDurationFromBaseStation = 0;
            if ( nearestNorthStation && nearestSouthStation) {
         	      let tripDistanceInKmsBetweenStations     = Math.abs(nearestNorthStation.tripDistanceInKms  - nearestSouthStation.tripDistanceInKms);
                 let tripDurationInMinsBetweenStations    = Math.abs(nearestNorthStation.tripDurationInMins - nearestSouthStation.tripDurationInMins);
@@ -572,15 +567,9 @@
       	        	  nearestStations += `Approx ${trainDurationFromBaseStation} Mins away, between `; 
            	        nearestStations += (nearestSouthStation ? `${nearestSouthStation.name} (${nearestSouthStation.tripDurationInMins} mins away)` : "no southern station") + " & "
            	        nearestStations += (nearestNorthStation ? `${nearestNorthStation.name} (${nearestNorthStation.tripDurationInMins} mins away)` : "no northern station");
-           	    }
-           	    speakDistance(trainDurationFromBaseStation);
+           	    }           	    
            }
-
-
-           //console.debug(nearestStations);
-        
-
-           return nearestStations;
+         return {trainDurationFromBaseStation, nearestStations};
        }
 
        function speakDistance(distance) {
@@ -596,10 +585,9 @@
            }
        }
 
-
        //MAIN PROCESS STARTS HERE
        const COUNTDOWN_SECONDS = 60;
-       const BASESTATION_DEFAULT = "Midvalley KTM";
+       const BASESTATION_DEFAULT = "Serdang KTM";
 
        let countdown = COUNTDOWN_SECONDS;
        let { filterParam, focusVehicleIdParam, baseStationParam } = initializePageParameters();
@@ -621,8 +609,6 @@
                  fetchMtrecTrainPositionApiData();
            }
        }, 1000);
-
-
     </script>
 </body>
 </html>
