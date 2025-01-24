@@ -59,9 +59,9 @@ echo '            { vehicleId: 9999, typeOfDay: "na"     , stationId: 00000, sta
 echo "];" >> $OutputJsFileName
 
 
+echo "File created : " $OutputJsFileName  " with " `cat __StopTimesOfTripsInRoute.txt | wc -l` " records."
+
 rm __StationIdToNamesMapping.txt
 rm __ListOfTripsInRoute.txt __StopTimesOfTripsInRoute.txt 
 
-echo "File created : " $OutputJsFileName
 #head $OutputJsFileName
-
