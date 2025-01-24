@@ -58,115 +58,21 @@
     <span id="system_status"></span>
       	
     <button id="countdownButton" onclick="fetchMtrecTrainPositionApiData()">Refresh in 00s</button>
-    <!--button id="toggleButton" onclick="toggleTrainScheduleTableVisibility()">Show Schedule</button!-->
+    <button id="toggleButton" onclick="toggleTrainScheduleTableVisibility()">Show Schedule</button>
     <a href="indexA.html">Reset</a>
 
 
     <div id="map"></div>
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-
+    <script type="text/javascript" src="GTFSdata/KTMInfo.js"></script>
+    
     <script>  // Data Structures
         // Vehicle IDs and Departure Times for 2 KTM stations as of 02-Dec, 2024.  https://www.ktmb.com.my/TrainTime.html
         //  This includes weekday(#2002-#2071) & weekend(#2206-#2271) trains
         //  Up trains have even vehicleId & Down trains have odd.
-        let KTMTrains = [
-            { vehicleId: 9999, typeOfDay: "na"     , Xdirection: "na"  , startStation: "na"              ,  vehicleType: "na", isActive: false},
-            { vehicleId: 2002, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2004, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2602, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: "LS", isActive: false},
-            { vehicleId: 2008, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2010, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2012, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2014, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2016, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2018, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Kajang KTM"      ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2020, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2024, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2028, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2032, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2036, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2040, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2046, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2048, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2050, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2054, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2058, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2062, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2066, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2070, typeOfDay: "Weekday", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2206, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2208, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2210, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2212, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2214, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2216, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2220, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2224, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2228, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2232, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2236, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2240, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2246, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2248, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2250, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Pulau Sebang KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2254, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2258, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Bangi KTM"       ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2262, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2266, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2270, typeOfDay: "Weekend", Xdirection: "up"  , startStation: "Sungai Gadut KTM",  vehicleType: ""  , isActive: false},
-            { vehicleId: 2003, typeOfDay: "Weekday", Xdirection: "down", startStation: "Sentul KTM"      ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2007, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2011, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2013, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2015, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2017, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2019, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2021, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2025, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2027, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2031, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2035, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2039, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2045, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2049, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2053, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2603, typeOfDay: "Weekday", Xdirection: "down", startStation: "Sentul KTM"      ,  vehicleType: "LS", isActive: false},
-            { vehicleId: 2057, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2059, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2061, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2063, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2067, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2071, typeOfDay: "Weekday", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2207, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2211, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2213, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2215, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2219, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2223, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2225, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2229, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2233, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2237, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2243, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2247, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2251, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2253, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2257, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2259, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2261, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2265, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false},
-            { vehicleId: 2271, typeOfDay: "Weekend", Xdirection: "down", startStation: "Batu Caves KTM"  ,  vehicleType: ""  , isActive: false}
-        ];
-
-
-        let KTMTrains2 = [
-            { vehicleId: 2002, typeOfDay: "Weekday", stationId: 25100, arrivalTime:"04:42", departureTime:"04:43", distanceTravelled:0, Xdirection: "up"  , XstartStation: "Pulau Sebang KTM",  XvehicleType: ""  , isActive: false},
-            { vehicleId: 2265, typeOfDay: "Weekend", stationId: 25100, arrivalTime:"04:42", departureTime:"04:43", distanceTravelled:0, Xdirection: "down", XstartStation: "Batu Caves KTM"  ,  XvehicleType: ""  , isActive: false},
-            { vehicleId: 2271, typeOfDay: "Weekend", stationId: 25100, arrivalTime:"04:42", departureTime:"04:43", distanceTravelled:0, Xdirection: "down", XstartStation: "Batu Caves KTM"  ,  XvehicleType: ""  , isActive: false}
-        ];
-
-        // Used color blue for Serdang(Up) & red for Midvalley(Down) trains, with a lighter shade used for stations in those directions
+        
+         // Used color blue for Serdang(Up) & red for Midvalley(Down) trains, with a lighter shade used for stations in those directions
         // Stations which are 20 minutes away from 2 stations are marked magenta
         let KTMStations = {
              'Batu Caves KTM'    :  {stationId:50600, tripDurationInMins:0  , tripDistanceInKms:0      , location: [3.237796,101.681215] },
@@ -264,7 +170,11 @@
 
                 document.getElementById('filterLinkBoth').href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=both`;
                 document.getElementById('filterLinkUp').href   = `${window.location.pathname}?baseStation=${baseStationParam}&filter=up`;
-                document.getElementById('filterLinkDown').href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=down`;
+                document.getElementById('filterLinkDown').href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=down`;       
+                
+                displayScheduleFlag = false;  
+                toggleTrainScheduleTableVisibility();
+                
        }
 
        function initializeMap(baseStation) {
@@ -360,12 +270,16 @@
             }		      	
        }
 
+
        function classifyVehiclesForPlotting(vehicles) {
             let upCount = 0,downCount = 0,naCount = 0, focusCount = 0;
             document.getElementById("trainCountFocus").textContent = "";
 
             unplotAllVechiclesOnMap();
+            //KTMTrainsOld.forEach(train => train.isActive = false);
             KTMTrains.forEach(train => train.isActive = false);
+            KTMTrains.forEach(train => train.direction = (train.vehicleId % 2 ) ? "down" : "up");
+         
 
             vehicles.forEach(vehicle => {
                 const vehicleIdNum = parseInt(vehicle.vehicle.id.split('_')[1] || vehicle.vehicle.id);
@@ -380,11 +294,11 @@
                 */
 
                 let plotThisTrain = true;
-                let activeKTMTrainInfo = KTMTrains.find(train => train.vehicleId === vehicleIdNum);
+                //let activeKTMTrainInfo = KTMTrainsOld.find(train => train.vehicleId === vehicleIdNum);
+                let activeKTMTrainInfo = KTMTrains.find(train => train.vehicleId === vehicleIdNum && train.stationName === baseStationParam );
                 
                 if( activeKTMTrainInfo ) {
                       activeKTMTrainInfo.isActive = true;
-                      activeKTMTrainInfo.direction = (vehicleIdNum % 2 ) ? "down" : "up";
                       if ( activeKTMTrainInfo.direction == "up") {
                 	          upCount++;
                 	          if (filterParam === "down" ) { plotThisTrain = false;}
@@ -424,7 +338,7 @@
             document.getElementById("trainCountBoth").textContent = `${bothCount}`;
 
             if ( focusVehicleIdParam > 0 && focusCount == 0 ) { // If we are in focus Mode & the focused Train has no data
-            	  let focusKTMTrainInfo = KTMTrains.find(train => train.vehicleId === focusVehicleIdParam);
+            	  let focusKTMTrainInfo = KTMTrains.find(train => train.vehicleId === focusVehicleIdParam && train.stationName === baseStationParam);
             	  if ( focusKTMTrainInfo ) {
             	  	  document.getElementById("trainCountFocus").textContent = `, #${focusVehicleIdParam} is not active, it starts from ${focusKTMTrainInfo.startStation}`;
             	  } else {
@@ -448,12 +362,12 @@
                 let label;
                 let distance;
                 if ( activeKTMTrainInfo.direction === "na" ) {
-                	 //distance = 'na';
                    label    = `( #${vehicleIdNum})`;
                 } else {	                	
                    distance = calculateDistanceInKM(vehiclePosition.latitude, vehiclePosition.longitude, KTMStations[baseStationParam].location[0], KTMStations[baseStationParam].location[1]);
                    distance = distance.toFixed(2);
-                   label = `(<a href="${window.location.pathname}?focusVehicleId=${vehicleIdNum}&baseStation=${baseStationParam}" style="text-decoration: none; color: inherit;">#${vehicleIdNum}</a>) - ${distance} km`;
+                   
+                   label = `${activeKTMTrainInfo.departureTime} (<a href="${window.location.pathname}?focusVehicleId=${vehicleIdNum}&baseStation=${baseStationParam}" style="text-decoration: none; color: inherit;">#${vehicleIdNum}</a>) - ${distance} km`;
                    if ( vehicleIdNum === focusVehicleIdParam ) {
                    	      map.flyTo([vehiclePosition.latitude, vehiclePosition.longitude]);  //, 14, { animation: true }) ;            	                           	
                 	        label = `${label}, ${vehiclePosition.speed} km/h.`;                	     
@@ -480,116 +394,129 @@
             });       	
        }
 
-       function showTrainScheduleTable(stationName) {    //UNUSED    	
-        //      const isWeekend = [0, 6].includes(new Date().getDay());
-        //      const typeOfDay = isWeekend ? "Weekend" : "Weekday";
-        //
-        //      const trainsForStationAndTypeOfDay = KTMTrains.filter(train => train.baseStation === stationName && train.typeOfDay === typeOfDay);
-        //      const currentDate = new Date();
-        //      if (currentDate.getHours() < 5 )  // Handle times when pages is opened when there are no trains ...
-        //         currentDate.setHours(4);
-        //
-        //      // Create table if there is none. If it has 1 row, append next row to it. If it already had 2 rows then delete the table.
-        //      let table = document.querySelector("#trainScheduleTable");
-        //      if (table) {
-        //          if (table.rows.length === 2) {
-        //              table.remove();
-        //              table = null;
-        //          }
-        //      }
-        //      if (!table) {
-        //          table = document.createElement("table");
-        //          table.id = "trainScheduleTable";
-        //          table.style.borderCollapse = "collapse";
-        //          document.body.appendChild(table);
-        //      }
-        //
-        //      const row = document.createElement("tr");
-        //      const stationCell = document.createElement("td");
-        //      stationCell.textContent = stationName;
-        //      stationCell.style.fontSize = "small";
-        //      stationCell.style.border = "1px solid black";
-        //      row.appendChild(stationCell);
-        //
-        //      trainsForStationAndTypeOfDay.forEach(train => {
-        //      	  const cell = document.createElement("td");
-        //          cell.style.fontSize = "small";                   // Use x-small for smaller font
-        //          cell.style.border = "1px solid black";
-        //          cell.style.whiteSpace = "normal";
-        //
-        //          cell.appendChild(document.createTextNode(`${train.departureTime}`));
-        //          if (train.isActive == true) {
-        //              cell.appendChild(document.createTextNode("*"));
-        //          }
-        //
-        //          cell.appendChild(document.createElement("br"));
-        //          cell.appendChild(document.createTextNode("("));
-        //          const vehicleLink = document.createElement("a");
-        //          vehicleLink.href = `${window.location.pathname}?focusVehicleId=${train.vehicleId}&baseStation=${baseStationParam}`;
-        //          vehicleLink.textContent = `${train.vehicleId}${train.vehicleType}`;
-        //          cell.appendChild(vehicleLink);
-        //          cell.appendChild(document.createTextNode(")"));
-        //
-        //          const [hours, minutes] = train.departureTime.split(":").map(Number);
-        //          const departureDate = new Date(currentDate);
-        //          departureDate.setHours(hours, minutes, 0, 0);
-        //
-        //          //currentDate.setHours(9, 32, 0, 0); //For TESTING
-        //          let diffMinutes = (departureDate - currentDate) / (1000 * 60);
-        //          if (diffMinutes < 0 && diffMinutes >= -60) {
-        //              cell.style.backgroundColor = "lightcoral";
-        //          } else if (diffMinutes >= 0 && diffMinutes <= 120) {
-        //              cell.style.backgroundColor = "lightgreen";
-        //          }
-        //
-        //          // Show only the trains for last 1 hour & next 2 hours if the page is opened on a Mobile/Watch.
-        //          if ( !(deviceType == "Destop") && ( train.isActive  ||(diffMinutes >= -60 && diffMinutes <= 120)) ) {
-        //          		row.appendChild(cell);
-        //          }
-        //          if ( (deviceType == "Desktop")) {
-        //             row.appendChild(cell);	
-        //          }
-        //      });
-        //      table.appendChild(row);
+
+       function showTrainScheduleTable(stationName, direction) {    //UNUSED    	
+              const isWeekend = [0, 6].includes(new Date().getDay());
+              const typeOfDay = isWeekend ? "weekend" : "weekday";
+           
+              const trainsForStationAndTypeOfDayUnsorted = KTMTrains.filter(train => train.typeOfDay === typeOfDay && train.stationName === stationName && train.direction === direction);
+              
+              let trainsForStationAndTypeOfDay = trainsForStationAndTypeOfDayUnsorted.sort((trainA, trainB) => {
+                  let timeA = trainA.arrivalTime.split(":").map(Number);
+                  let timeB = trainB.arrivalTime.split(":").map(Number);
+                  return timeA[0] - timeB[0] || timeA[1] - timeB[1]; // Compare hours, then minutes
+              });
+              
+              const currentDate = new Date();
+              if (currentDate.getHours() < 5 )  // Handle times when pages is opened when there are no trains ...
+                 currentDate.setHours(4);
+        
+              // Create table if there is none. If it has 1 row, append next row to it. If it already had 2 rows then delete the table.
+              let table = document.querySelector("#trainScheduleTable");
+              if (table) {   
+                  if (table.rows.length === 2) {
+                      table.remove();
+                      table = null;
+                  }
+              }
+              if (!table) {
+                  table = document.createElement("table");
+                  table.id = "trainScheduleTable";
+                  table.style.borderCollapse = "collapse";
+                  document.body.appendChild(table);
+              }
+        
+              const row = document.createElement("tr");
+              const stationCell = document.createElement("td");
+              stationCell.textContent = stationName + "(" + direction + ")";
+              stationCell.style.fontSize = "small";
+              stationCell.style.border = "1px solid black";
+              row.appendChild(stationCell);
+        
+              trainsForStationAndTypeOfDay.forEach(train => {
+              	  const cell = document.createElement("td");
+                  cell.style.fontSize = "small";                   // Use x-small for smaller font
+                  cell.style.border = "1px solid black";
+                  cell.style.whiteSpace = "normal";
+        
+                  cell.appendChild(document.createTextNode(`${train.departureTime}`));
+                  if (train.isActive == true) {
+                      cell.appendChild(document.createTextNode("*"));
+                  }
+        
+                  cell.appendChild(document.createElement("br"));
+                  cell.appendChild(document.createTextNode("("));
+                  const vehicleLink = document.createElement("a");
+                  vehicleLink.href = `${window.location.pathname}?focusVehicleId=${train.vehicleId}&baseStation=${stationName}`;
+                  vehicleLink.textContent = `${train.vehicleId}`;   // train.vehicleType not supported for Limited Stop trains
+                  cell.appendChild(vehicleLink);
+                  cell.appendChild(document.createTextNode(")"));
+        
+                  const [hours, minutes] = train.departureTime.split(":").map(Number);
+                  const departureDate = new Date(currentDate);
+                  departureDate.setHours(hours, minutes, 0, 0);
+        
+                  //currentDate.setHours(9, 32, 0, 0); //For TESTING
+                  let diffMinutes = (departureDate - currentDate) / (1000 * 60);
+                  if (diffMinutes < 0 && diffMinutes >= -60) {
+                      cell.style.backgroundColor = "lightcoral";
+                  } else if (diffMinutes >= 0 && diffMinutes <= 120) {
+                      cell.style.backgroundColor = "lightgreen";
+                  }
+        
+                  // Show only the trains for last 1 hour & next 2 hours if the page is opened on a Mobile/Watch.
+                  if ( !(deviceType == "Destop") && ( train.isActive  ||(diffMinutes >= -60 && diffMinutes <= 120)) ) {
+                  		row.appendChild(cell);
+                  }
+                  if ( (deviceType == "Desktop")) {
+                     row.appendChild(cell);	
+                  }
+              });
+              table.appendChild(row);
        }
 
        function toggleTrainScheduleTableVisibility() {   //UNUSED
-        //   let tableSchedule = document.querySelector("#trainScheduleTable");
-        //   let tableLegend = document.querySelector("#trainScheduleLegend");
-        //   const button = document.querySelector("#toggleButton");
-        //   if (!tableSchedule) {
-        //   	   showTrainScheduleTable("Serdang KTM");
-        //       showTrainScheduleTable("Midvalley KTM");
-        //       tableSchedule = document.querySelector("#trainScheduleTable");
-        //       tableSchedule.style.display = "none";
-        //
-        //       tableLegend = document.createElement("table");
-        //       tableLegend.id = "trainScheduleLegend";
-        //       tableLegend.style.borderCollapse = "collapse";
-        //       tableLegend.innerHTML = `
-        //           <tr>
-        //               <td style="font-size: small; border: 1px dotted black; white-space: normal;">Legend: </td>
-        //               <td style="background-color: lightcoral; font-size: small; border: 1px dotted black; white-space: normal;">Train for now - 1 hr</td>
-        //               <td style="background-color: lightgreen; font-size: small; border: 1px dotted black; white-space: normal;">Train for now +2 hr</td>
-        //               <td style="font-size: small; border: 1px dotted black; white-space: normal;"> * Train is active</td>
-        //
-        //           </tr>
-        //       `;
-        //       document.body.appendChild(tableLegend);
-        //   };
-        //   //if (tableSchedule.style.display === "none") {
-        //   if (displayScheduleFlag === false) {
-        //       tableSchedule.style.display = "table";
-        //       tableLegend.style.display = "table" ;
-        //       displayScheduleFlag = true;
-        //       tableSchedule.scrollIntoView({ behavior: "smooth", block: "start" });  // Scroll to table
-        //       button.textContent = "Hide Schedule";
-        //   } else {
-        //       tableSchedule.style.display = "none";
-        //       tableLegend.style.display = "none" ;
-        //       displayScheduleFlag = false;
-        //       button.textContent = "Show Schedule";
-        //   }
+           let tableSchedule = document.querySelector("#trainScheduleTable");
+           let tableLegend = document.querySelector("#trainScheduleLegend");
+           const button = document.querySelector("#toggleButton");
+           if (!tableSchedule) {
+           	   showTrainScheduleTable(baseStationParam,"up");
+           	   showTrainScheduleTable(baseStationParam,"down");
+               tableSchedule = document.querySelector("#trainScheduleTable");
+               tableSchedule.style.display = "none";
+        
+               tableLegend = document.createElement("table");
+               tableLegend.id = "trainScheduleLegend";
+               tableLegend.style.borderCollapse = "collapse";
+               tableLegend.innerHTML = `
+                   <tr>
+                       <td style="font-size: small; border: 1px dotted black; white-space: normal;">Legend: </td>
+                       <td style="background-color: lightcoral; font-size: small; border: 1px dotted black; white-space: normal;">Train for now - 1 hr</td>
+                       <td style="background-color: lightgreen; font-size: small; border: 1px dotted black; white-space: normal;">Train for now +2 hr</td>
+                       <td style="font-size: small; border: 1px dotted black; white-space: normal;"> * Train is active</td>
+        
+                   </tr>
+               `;
+               document.body.appendChild(tableLegend);
+           }
+           //if (tableSchedule.style.display === "none") {
+           if (displayScheduleFlag === false) {
+               tableSchedule.style.display = "table";
+               tableLegend.style.display = "table" ;
+               displayScheduleFlag = true;
+               tableSchedule.scrollIntoView({ behavior: "smooth", block: "start" });  // Scroll to table
+               button.textContent = "Hide Schedule";
+           } else {
+               tableSchedule.style.display = "none";
+               tableLegend.style.display = "none" ;
+               displayScheduleFlag = false;
+               button.textContent = "Show Schedule";
+           }
+           
+           //else {
+           //	   tableSchedule.remove() ;           	
+           //	   tableLegend.remove(); 
+           //}
        }
 
        function calculateDistanceInKM(lat1, lon1, lat2, lon2) {
