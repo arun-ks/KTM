@@ -31,7 +31,7 @@ If more people use this, maybe MTREC/KTM will ensure data accuracy & consistency
 ## Credits
 This uses 
 - [GTFS Static data from data.gov.my](https://developer.data.gov.my/realtime-api/gtfs-static) for train schedule.
-- [GTFS Realtime data](https://documenter.getpostman.com/view/40279048/2sAYBd67bZ) provided by [MTREC](https://www.mtrec.name.my/api.html) to show realtime train locations.
+- [GTFS Realtime data](https://documenter.getpostman.com/view/40279048/2sAYBd67bZ) provided by [MTREC](https://www.mtrec.name.my/api.html) to show realtime train locations. These are updated after every 60 seconds.
 - [Leaflet](https://leafletjs.com/) for interactive maps & jQuery for handling API requests.
 - [KTM Komuter](https://www.ktmb.com.my/Komuter.html) is used to check periodically for updates 
 
