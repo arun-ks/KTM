@@ -1,5 +1,5 @@
 # KTM
-This website shows online status of trains in [KTM Seremban Line](https://www.ktmb.com.my/Komuter.html) (KTM Batu Caves - Pulau Sebang/Tampin).
+This website shows online status of trains in [KTM Seremban Line(KTM Batu Caves - Pulau Sebang/Tampin)](https://en.wikipedia.org/wiki/Batu_Caves%E2%80%93Pulau_Sebang_Line).
 
 It shows distance of stations & trains as "Minutes of train travel" instead of KMs.
 
@@ -32,7 +32,9 @@ If more people use this, maybe MTREC/KTM will ensure data accuracy & consistency
 This uses 
 - [GTFS Static data from data.gov.my](https://developer.data.gov.my/realtime-api/gtfs-static) for train schedule.
 - [GTFS Realtime data](https://documenter.getpostman.com/view/40279048/2sAYBd67bZ) provided by [MTREC](https://www.mtrec.name.my/api.html) to show realtime train locations.
-- [Leaflet](https://leafletjs.com/) for interactive maps & jQuery for handling API requests. 
+- [Leaflet](https://leafletjs.com/) for interactive maps & jQuery for handling API requests.
+- [KTM Komuter](https://www.ktmb.com.my/Komuter.html) is used to check periodically for updates 
+
 
 The page was inspired by [https://go.navig.me/my/ktmb](https://go.navig.me/my/ktmb) which is very comprehensive, and thus too generic to be of any use. Hence, the need for this tool.
 
