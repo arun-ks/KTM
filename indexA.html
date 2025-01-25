@@ -71,38 +71,38 @@
         // Vehicle IDs and Departure Times for 2 KTM stations as of 02-Dec, 2024.  https://www.ktmb.com.my/TrainTime.html
         //  This includes weekday(#2002-#2071) & weekend(#2206-#2271) trains
         //  Up trains have even vehicleId & Down trains have odd.
-        //  Limited Stop trains have vehicleId > 2600
-        KTMTrains.forEach(train => train.direction = (train.vehicleId % 2 ) ? "down" : "up"); 
+        //  Limited Stop trains have vehicleId > 2600        
+        KTMTrains.forEach(train => train.direction   = (train.vehicleId % 2 ) ? "down" : "up"); 
         KTMTrains.forEach(train => train.vehicleType = (train.vehicleId > 2600 ) ? "LS" : "");           
         
         let KTMStations = {
-             'Batu Caves KTM'    :  {stationId:50600, tripDurationInMins:0  , tripDistanceInKms:0      , location: [3.237796,101.681215] },
-             'Taman Wahyu KTM'   :  {stationId:50500, tripDurationInMins:4  , tripDistanceInKms:2.95   , location: [3.214510,101.672178] },
-             'Kampung Batu KTM'  :  {stationId:50400, tripDurationInMins:6  , tripDistanceInKms:4.2    , location: [3.204892,101.675584] },
-             'Batu Kentonmen KTM':  {stationId:50300, tripDurationInMins:8  , tripDistanceInKms:5.15   , location: [3.198485,101.681138] },
-             'Sentul KTM'        :  {stationId:50000, tripDurationInMins:12 , tripDistanceInKms:7.3    , location: [3.183581,101.688802] },
-             'Putra KTM'         :  {stationId:18800, tripDurationInMins:18 , tripDistanceInKms:9.646  , location: [3.165399,101.691101] },
-             'Bank Negara KTM'   :  {stationId:18900, tripDurationInMins:21 , tripDistanceInKms:11.006 , location: [3.155105,101.693118] },
-             'Kuala Lumpur KTM'  :  {stationId:19000, tripDurationInMins:25 , tripDistanceInKms:12.726 , location: [3.139444,101.693333] },
-             'KL Sentral KTM'    :  {stationId:19100, tripDurationInMins:29 , tripDistanceInKms:13.886 , location: [3.134167,101.686111] },
-             'Midvalley KTM'     :  {stationId:19205, tripDurationInMins:36 , tripDistanceInKms:16.006 , location: [3.119211,101.678865] }, 
-             'Seputeh KTM'       :  {stationId:19300, tripDurationInMins:39 , tripDistanceInKms:16.706 , location: [3.113612,101.681474] },
-             'Salak Selatan KTM' :  {stationId:19400, tripDurationInMins:44 , tripDistanceInKms:20.006 , location: [3.098413,101.705055] },
-             'BTS KTM'           :  {stationId:19600, tripDurationInMins:50 , tripDistanceInKms:23.106 , location: [3.076229,101.711119] },
-             'Serdang KTM'       :  {stationId:19900, tripDurationInMins:57 , tripDistanceInKms:29.446 , location: [3.023404,101.716056] },
-             'Kajang KTM'        :  {stationId:20400, tripDurationInMins:69 , tripDistanceInKms:40.346 , location: [2.983222,101.790669] },
-             'Kajang 2 KTM'      :  {stationId:20402, tripDurationInMins:72 , tripDistanceInKms:42.806 , location: [2.962640,101.792070] },
-             'UKM KTM'           :  {stationId:20500, tripDurationInMins:75 , tripDistanceInKms:45.266 , location: [2.939775,101.787623] },
-             'Bangi KTM'         :  {stationId:20900, tripDurationInMins:81 , tripDistanceInKms:50.066 , location: [2.904467,101.785943] },
-             'Batang Benar KTM'  :  {stationId:21300, tripDurationInMins:94 , tripDistanceInKms:60.516 , location: [2.829904,101.826655] },
-             'Nilai KTM'         :  {stationId:21500, tripDurationInMins:100, tripDistanceInKms:64.416 , location: [2.802356,101.799303] },
-             'Labu KTM'          :  {stationId:22000, tripDurationInMins:110, tripDistanceInKms:71.476 , location: [2.754501,101.826656] },
-             'Tiroi KTM'         :  {stationId:22400, tripDurationInMins:116, tripDistanceInKms:77.226 , location: [2.741459,101.871914] },
-             'Seremban KTM'      :  {stationId:22700, tripDurationInMins:124, tripDistanceInKms:86.176 , location: [2.719169,101.940792] },
-             'Senawang KTM'      :  {stationId:22900, tripDurationInMins:130, tripDistanceInKms:90.846 , location: [2.690138,101.972336] },
-             'Sungai Gadut KTM'  :  {stationId:23100, tripDurationInMins:135, tripDistanceInKms:95.306 , location: [2.660898,101.996158] },
-             'Rembau KTM'        :  {stationId:23900, tripDurationInMins:148, tripDistanceInKms:109.486, location: [2.593055,102.094653] },
-             'Pulau Sebang KTM'  :  {stationId:25100, tripDurationInMins:165, tripDistanceInKms:134.446, location: [2.46396,102.2263080] }
+             'Batu Caves'    :  {stationId:50600, tripDurationInMins:0  , tripDistanceInKms:0      , location: [3.237796,101.681215] },
+             'Taman Wahyu'   :  {stationId:50500, tripDurationInMins:4  , tripDistanceInKms:2.95   , location: [3.214510,101.672178] },
+             'Kampung Batu'  :  {stationId:50400, tripDurationInMins:6  , tripDistanceInKms:4.2    , location: [3.204892,101.675584] },
+             'Batu Kentonmen':  {stationId:50300, tripDurationInMins:8  , tripDistanceInKms:5.15   , location: [3.198485,101.681138] },
+             'Sentul'        :  {stationId:50000, tripDurationInMins:12 , tripDistanceInKms:7.3    , location: [3.183581,101.688802] },
+             'Putra'         :  {stationId:18800, tripDurationInMins:18 , tripDistanceInKms:9.646  , location: [3.165399,101.691101] },
+             'Bank Negara'   :  {stationId:18900, tripDurationInMins:21 , tripDistanceInKms:11.006 , location: [3.155105,101.693118] },
+             'Kuala Lumpur'  :  {stationId:19000, tripDurationInMins:25 , tripDistanceInKms:12.726 , location: [3.139444,101.693333] },
+             'KL Sentral'    :  {stationId:19100, tripDurationInMins:29 , tripDistanceInKms:13.886 , location: [3.134167,101.686111] },
+             'Midvalley'     :  {stationId:19205, tripDurationInMins:36 , tripDistanceInKms:16.006 , location: [3.119211,101.678865] }, 
+             'Seputeh'       :  {stationId:19300, tripDurationInMins:39 , tripDistanceInKms:16.706 , location: [3.113612,101.681474] },
+             'Salak Selatan' :  {stationId:19400, tripDurationInMins:44 , tripDistanceInKms:20.006 , location: [3.098413,101.705055] },
+             'BTS'           :  {stationId:19600, tripDurationInMins:50 , tripDistanceInKms:23.106 , location: [3.076229,101.711119] },
+             'Serdang'       :  {stationId:19900, tripDurationInMins:57 , tripDistanceInKms:29.446 , location: [3.023404,101.716056] },
+             'Kajang'        :  {stationId:20400, tripDurationInMins:69 , tripDistanceInKms:40.346 , location: [2.983222,101.790669] },
+             'Kajang 2'      :  {stationId:20402, tripDurationInMins:72 , tripDistanceInKms:42.806 , location: [2.962640,101.792070] },
+             'UKM'           :  {stationId:20500, tripDurationInMins:75 , tripDistanceInKms:45.266 , location: [2.939775,101.787623] },
+             'Bangi'         :  {stationId:20900, tripDurationInMins:81 , tripDistanceInKms:50.066 , location: [2.904467,101.785943] },
+             'Batang Benar'  :  {stationId:21300, tripDurationInMins:94 , tripDistanceInKms:60.516 , location: [2.829904,101.826655] },
+             'Nilai'         :  {stationId:21500, tripDurationInMins:100, tripDistanceInKms:64.416 , location: [2.802356,101.799303] },
+             'Labu'          :  {stationId:22000, tripDurationInMins:110, tripDistanceInKms:71.476 , location: [2.754501,101.826656] },
+             'Tiroi'         :  {stationId:22400, tripDurationInMins:116, tripDistanceInKms:77.226 , location: [2.741459,101.871914] },
+             'Seremban'      :  {stationId:22700, tripDurationInMins:124, tripDistanceInKms:86.176 , location: [2.719169,101.940792] },
+             'Senawang'      :  {stationId:22900, tripDurationInMins:130, tripDistanceInKms:90.846 , location: [2.690138,101.972336] },
+             'Sungai Gadut'  :  {stationId:23100, tripDurationInMins:135, tripDistanceInKms:95.306 , location: [2.660898,101.996158] },
+             'Rembau'        :  {stationId:23900, tripDurationInMins:148, tripDistanceInKms:109.486, location: [2.593055,102.094653] },
+             'Pulau Sebang'  :  {stationId:25100, tripDurationInMins:165, tripDistanceInKms:134.446, location: [2.46396,102.2263080] }
          };
 
          const iconDesigns = {
@@ -133,6 +133,11 @@
 	                 	
                let baseStationParamRaw = urlParams.get('baseStation');
                const baseStationParam =  ((baseStationParamRaw == null) || !(baseStationParamRaw in KTMStations)) ? BASESTATION_DEFAULT : baseStationParamRaw;
+               
+               const url = new URL(location);
+               url.searchParams.set("baseStation", baseStationParam);
+               history.pushState({}, "", url);
+               
                
                console.log(`Page Parameters: filter is ${filterParam}, focusVehicleId is ${focusVehicleIdParam} and baseStation is ${baseStationParam} `);
                
@@ -168,8 +173,13 @@
 
                 plotStationsOnMap ();
                 fetchMtrecTrainPositionApiData();
-                toggleTrainScheduleTableVisibility();
-
+                toggleTrainScheduleTableVisibility();                
+                
+                const url = new URL(location);
+                url.searchParams.set("baseStation", newBaseStation);
+                //history.pushState({}, "", url);
+                history.pushState(null, '', url);
+            
                 document.getElementById('filterLinkBoth').href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=both`;
                 document.getElementById('filterLinkUp').href   = `${window.location.pathname}?baseStation=${baseStationParam}&filter=up`;
                 document.getElementById('filterLinkDown').href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=down`;       
@@ -487,7 +497,7 @@
                        <td style="font-size: small; border: 1px dotted black; white-space: normal;"> * Train is active</td>        
                    </tr>
                    <tr>
-                       <td style="font-size: small; border: 1px dotted black; white-space: normal;" colspan=4>Schedule as per ${GTFSDataExtractDate}</td>
+                       <td style="font-size: small; border: 1px dotted black; white-space: normal;" colspan=4>Arrival Time schedule updated on ${GTFSDataExtractDate}</td>
                    </tr>   
                `;
                document.body.appendChild(tableLegend);
@@ -587,7 +597,7 @@
 
        //MAIN PROCESS STARTS HERE
        const COUNTDOWN_SECONDS = 60;
-       const BASESTATION_DEFAULT = "Serdang KTM";
+       const BASESTATION_DEFAULT = "Serdang";
 
        let countdown = COUNTDOWN_SECONDS;
        let { filterParam, focusVehicleIdParam, baseStationParam } = initializePageParameters();
