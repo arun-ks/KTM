@@ -25,7 +25,7 @@ grep  'stationId:.*location:' ../index.html  | sed "s/[\':]/,/g" | cut -d, -f2,5
 mv $OutputJsFileName ${OutputJsFileName}.`date "+%Y%m%d"`.bak
 echo "var GTFSDataExtractDate = '"` date "+%d-%b,%Y"`"';" > $OutputJsFileName
 echo ""                                                  >> $OutputJsFileName
-echo "KTMTrains = ["                                     >> $OutputJsFileName
+echo "let KTMTrains = ["                                     >> $OutputJsFileName
 
 awk -F, -v OFS=',' -v stopNamesFile="__StationIdToNamesMapping.txt" '
 BEGIN {
@@ -59,7 +59,7 @@ echo '            { vehicleId: 9999, typeOfDay: "na"     , stationId: 00000, sta
 echo "];" >> $OutputJsFileName
 
 
-echo "File created : " $OutputJsFileName  " with " `cat __StopTimesOfTripsInRoute.txt | wc -l` " records."
+echo "File created : "$OutputJsFileName" with "`cat __StopTimesOfTripsInRoute.txt | wc -l`" records."
 
 rm __StationIdToNamesMapping.txt
 rm __ListOfTripsInRoute.txt __StopTimesOfTripsInRoute.txt 
