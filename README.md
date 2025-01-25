@@ -8,20 +8,10 @@ The current version uses hardcoding, to to check how useful this is for a specif
 ## Usage
 Each active train is marked to show its direction (northbound or southbound) and show distance from KTM Serdang of KTM MidValley station (based on the direction).
 
-You can use URL parameter **filter** :
-- Use "?filter=up" to see only trains from [Serdang to Midvalley](https://arun-ks.github.io/KTM/?filter=up)
-- Use "?filter=down" to see trains from [MidValley to Serdang](https://arun-ks.github.io/KTM/?filter=down)
-- Use "?filter=all" to see [all active KTM trains](https://arun-ks.github.io/KTM/?filter=all)
+- Filter trains based on their direction - Click on up, down or both. Using links on top of the page.
+- Click on station markers to see details about it
+- Click on label for a train number to focus on 1 train. This will show more details about the train & it position. (this is referre to as focus Mode, as in this example for [train#2059](https://arun-ks.github.io/KTM/?focusVehicleId=2059) ).
 
-Any other value of filter, or even no value for it will [show trains in Serdang to Midvalley or from Midvalley to Serdang route](https://arun-ks.github.io/KTM/)
-
-You can use URL Parameter **focusVehicleId** to see data for 1 selected train
-- Use "?focusVehicleId=2059" to see location of specific [train#2059](https://arun-ks.github.io/KTM/?focusVehicleId=2059)
-
-The icons for trains are coloured as per the colour of the starting station. If the trains are not part of "Batu Caves - Pulau Sebang" route, then they have a separate colour.
-
-## Future Plans
-A generic version which will allow user to select 1 base station, is work in progress. The [current version is live here](https://arun-ks.github.io/KTM/indexA.html)
 
 
 ## Credits
