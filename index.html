@@ -365,9 +365,9 @@
             document.getElementById("trainCountBoth").textContent = `${bothCount}`;
 
             if ( focusVehicleIdParam > 0 && focusCount == 0 ) { // If we are in focus Mode & the focused Train has no data
-            	  let focusKTMTrainInfo = KTMTrains.find(train => train.vehicleId === focusVehicleIdParam && train.stationName === baseStationParam);
+            	  let focusKTMTrainInfo = KTMTrains.find(train => train.vehicleId === focusVehicleIdParam && train.distanceTravelled === 0);
             	  if ( focusKTMTrainInfo ) {
-            	  	  document.getElementById("trainCountFocus").textContent = `, #${focusVehicleIdParam} is not active, it starts from ${focusKTMTrainInfo.startStation}`;
+            	  	  document.getElementById("trainCountFocus").textContent = `, #${focusVehicleIdParam} is not active, it starts from ${focusKTMTrainInfo.stationName}`;
             	  } else {
             	      document.getElementById("trainCountFocus").textContent = `,  No information on #${focusVehicleIdParam} `;	
             	  }
@@ -377,7 +377,7 @@
        function plotVehicleOnMap(vehicleIdNum, vehiclePosition, activeKTMTrainInfo) {
        	        vehicleIconDesign= iconDesigns[activeKTMTrainInfo.direction];
                 const arrowIcon = L.divIcon({
-                    html: `<svg width=${vehicleIconDesign.dimension} height=${vehicleIconDesign.dimension} xmlns="http://www.w3.org/2000/svg" fill=${vehicleIconDesign.colour} viewBox=${vehicleIconDesign.viewBox}><path d="${vehicleIconDesign.svgPathd}"/></svg>`,
+                    html: `<svg width=${vehicleIconDesign.dimension} height=${vehicleIconDesign.dimension} xmlns="http://www.w3.org/2000/svg" fill=${vehicleIconDesign.colour} viewBox="${vehicleIconDesign.viewBox}"><path d="${vehicleIconDesign.svgPathd}"/></svg>`,
                     className: 'vehicle-arrow-icon',
                     iconSize: [30, 30],
                     iconAnchor: [12, 12]
