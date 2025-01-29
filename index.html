@@ -48,18 +48,20 @@
     <select id="baseStationDropdown">
         <option value="" disabled selected>Select base station</option>
     </select>
-    :
-    <a href="" id="filterLinkBoth">Total</a>:<span id="trainCountBoth">0</span>,
-    <a href="" id="filterLinkUp">Up</a>:<span id="trainCountUp">0</span>,
- 
- 
-    <a href="" id="filterLinkDown">Down</a>:<span id="trainCountDown">0</span>
+    
+    <button id="countdownButton" onclick="fetchMtrecTrainPositionApiData()">Refresh in 60s</button>
+    <button id="toggleButton" onclick="toggleTrainScheduleTableVisibility()">Show Schedule</button>
+    <br>
+    <a href="" id="filterLinkBoth">Total</a>:<span id="trainCountBoth">0</span> (
+    <a href="" id="filterLinkUp">Up</a>:<span id="trainCountUp">0</span>, 
+    <a href="" id="filterLinkDown">Down</a>:<span id="trainCountDown">0</span> )
+
+    <a href="" id="filterLinkOthers"></a><span id="trainCountOthers"></span>
 
     <span id="trainCountFocus"></span>.
     <span id="system_status"></span>
       	
-    <button id="countdownButton" onclick="fetchMtrecTrainPositionApiData()">Refresh in 00s</button>
-    <button id="toggleButton" onclick="toggleTrainScheduleTableVisibility()">Show Schedule</button>
+
     <a href="index.html">Reset</a>
 
 
@@ -107,9 +109,10 @@
          };
 
          const iconDesigns = {
-         	'up'   : { svgPathd: 'M15 5 L25 25 L5 25 Z'      , viewBox: '0 0 30 30' , dimension: 20, colour:'blue' },
-         	'down' : { svgPathd: 'M15 25 L25 5 L5 5 Z'       , viewBox: '0 0 30 30' , dimension: 20, colour:'red'  },
-         	'na'   : { svgPathd: 'M5 5 L25 5 L25 25 L5 25 Z' , viewBox: '0 0 30 30' , dimension: 20, colour:'green'}         	
+         	'up'   : { viewBox: '0 0 30 30' , dimension: 20, colour:'blue'  , svgPathd: 'M15 5 L25 25 L5 25 Z'       },
+         	'down' : { viewBox: '0 0 30 30' , dimension: 20, colour:'red'   , svgPathd: 'M15 25 L25 5 L5 5 Z'        },
+         	'na'   : { viewBox: '0 0 30 30' , dimension: 20, colour:'green' , svgPathd: 'M5 5 L25 5 L25 25 L5 25 Z'  },
+         	'user' : { viewBox: '0 0 30 30' , dimension: 20, colour:'green' , svgPathd: 'M12 6 A3 3 0 1 1 18 6 A3 3 0 1 1 12 6 Z  M10 9 L20 9 L20 20 L10 20 Z  M5 10 L10 10 L10 14 L5 14 Z  M20 10 L25 10 L25 14 L20 14 Z M10 20 L14 20 L14 26 L10 26 Z  M16 20 L20 20 L20 26 L16 26 Z'  }
          }
 
     </script>
@@ -169,6 +172,25 @@
                svgDown.appendChild(pathDown);               
                let linkDown = document.getElementById("filterLinkDown");
                linkDown.appendChild(svgDown);
+               
+               if ( filterParam === "all") {
+                     document.getElementById('filterLinkOthers').href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=all`; 
+                     vehicleIconDesign= iconDesigns["na"];
+                     const svgOthers = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                     svgOthers.setAttribute("width", vehicleIconDesign.dimension);
+                     svgOthers.setAttribute("height",vehicleIconDesign.dimension);
+                     svgOthers.setAttribute("viewBox", vehicleIconDesign.viewBox);
+                     svgOthers.setAttribute("fill", vehicleIconDesign.colour);            
+                     const pathOthers = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                     pathOthers.setAttribute("d", vehicleIconDesign.svgPathd);
+                     svgOthers.appendChild(pathOthers);               
+                     let linkOthers = document.getElementById("filterLinkOthers");
+                     linkOthers.appendChild(document.createTextNode("na"));
+                     linkOthers.appendChild(svgOthers);
+                     linkOthers.appendChild(document.createTextNode(":"));
+               } else {
+               	   document.getElementById('filterLinkOthers').href = "#";
+               }
                               
                return { filterParam, focusVehicleIdParam, baseStationParam};
        }
@@ -216,7 +238,10 @@
             const map = L.map('map').setView(KTMStations[baseStation].location, 11);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 18,
+                attribution: '&copy; OpenStreetMap contributors'
             }).addTo(map);
+            
+            map.locate({setView: true, maxZoom: 16});
 
             return map;
        }
@@ -360,6 +385,7 @@
 
             document.getElementById("trainCountUp").textContent = `${upCount}`;
             document.getElementById("trainCountDown").textContent = `${downCount}`;
+            document.getElementById("trainCountOthers").textContent = (filterParam === "all" )  ? `${naCount}`:"";
             bothCount = upCount + downCount;
             allCount = naCount + bothCount;
             document.getElementById("trainCountBoth").textContent = `${bothCount}`;
@@ -631,7 +657,7 @@
                console.log("Speech synthesis not supported in this browser.");
            }
        }
-
+       
        //MAIN PROCESS STARTS HERE
        const COUNTDOWN_SECONDS = 60;
        const BASESTATION_DEFAULT = "Serdang";
@@ -647,7 +673,7 @@
        const deviceType = findDeviceTypeBeingUsed();
 
        fetchMtrecTrainPositionApiData(); // <== Main Function to fetch data & Plot
-
+       
        setInterval(() => {
            countdown -= 1;
            const button = document.getElementById("countdownButton");
