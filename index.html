@@ -49,21 +49,16 @@
         <option value="" disabled selected>Select base station</option>
     </select>
     
-    <button id="countdownButton" onclick="fetchMtrecTrainPositionApiData()">Refresh in 60s</button>
-    <button id="toggleButton" onclick="toggleTrainScheduleTableVisibility()">Show Schedule</button>
-    <br>
     <a href="" id="filterLinkBoth">Total</a>:<span id="trainCountBoth">0</span> (
     <a href="" id="filterLinkUp">Up</a>:<span id="trainCountUp">0</span>, 
     <a href="" id="filterLinkDown">Down</a>:<span id="trainCountDown">0</span> )
-
     <a href="" id="filterLinkOthers"></a><span id="trainCountOthers"></span>
 
     <span id="trainCountFocus"></span>.
     <span id="system_status"></span>
-      	
 
-    <a href="index.html">Reset</a>
-
+    <button id="countdownButton" onclick="fetchMtrecTrainPositionApiData()">Refresh in 60s</button>
+    <button id="toggleButton" onclick="toggleTrainScheduleTableVisibility()">Show Schedule</button>
 
     <div id="map"></div>
 
@@ -187,7 +182,6 @@
                      let linkOthers = document.getElementById("filterLinkOthers");
                      linkOthers.appendChild(document.createTextNode("na"));
                      linkOthers.appendChild(svgOthers);
-                     linkOthers.appendChild(document.createTextNode(":"));
                } else {
                	   document.getElementById('filterLinkOthers').href = "#";
                }
@@ -241,7 +235,7 @@
                 attribution: '&copy; OpenStreetMap contributors'
             }).addTo(map);
             
-            map.locate({setView: true, maxZoom: 16});
+            //map.locate({setView: true, maxZoom: 16});
 
             return map;
        }
@@ -367,9 +361,6 @@
                 if (focusVehicleIdParam > 0 ) { // If focusVehicleIdParam is used then show just 1 vehicle
                    if (focusVehicleIdParam == vehicleIdNum) {
                    	    focusCount++;                        
-                        const { trainDurationFromBaseStation, nearestStationsDescription } = findNearestStationsOnNorthAndSouth([vehicle.position.latitude, vehicle.position.longitude]);                      
-                        document.getElementById("trainCountFocus").textContent = `, #${vehicleIdNum} is approx. ${trainDurationFromBaseStation} mins away`;
-                        speakDistance(trainDurationFromBaseStation);
                    } else {
               	        plotThisTrain = false;
                    }
@@ -385,7 +376,7 @@
 
             document.getElementById("trainCountUp").textContent = `${upCount}`;
             document.getElementById("trainCountDown").textContent = `${downCount}`;
-            document.getElementById("trainCountOthers").textContent = (filterParam === "all" )  ? `${naCount}`:"";
+            document.getElementById("trainCountOthers").textContent = (filterParam === "all" )  ? `:${naCount}`:"";
             bothCount = upCount + downCount;
             allCount = naCount + bothCount;
             document.getElementById("trainCountBoth").textContent = `${bothCount}`;
@@ -420,10 +411,13 @@
                    distance = calculateDistanceInKM(vehiclePosition.latitude, vehiclePosition.longitude, KTMStations[baseStationParam].location[0], KTMStations[baseStationParam].location[1]);
                    distance = distance.toFixed(2);
                    
-                   label = `${activeKTMTrainInfo.arrivalTime} (<a href="${window.location.pathname}?focusVehicleId=${vehicleIdNum}&baseStation=${baseStationParam}" style="text-decoration: none; color: inherit;">#${vehicleIdNum}</a>) - ${distance} km`;
+                   label = `${activeKTMTrainInfo.arrivalTime} (<a href="${window.location.pathname}?focusVehicleId=${vehicleIdNum}&baseStation=${baseStationParam}" style="text-decoration: none; color: inherit;">#${vehicleIdNum}</a>) - ${vehiclePosition.speed} km/h`;
                    if ( vehicleIdNum === focusVehicleIdParam ) {
-                   	      map.flyTo([vehiclePosition.latitude, vehiclePosition.longitude]);  //, 14, { animation: true }) ;            	                           	
-                	        label = `${label}, ${vehiclePosition.speed} km/h.`;                	     
+                 	      map.flyTo([vehiclePosition.latitude, vehiclePosition.longitude]);  //, 14, { animation: true }) ;            	                           	
+                        const trainDurationFromBaseStation = findTrainDurationInMins([vehiclePosition.latitude, vehiclePosition.longitude]);                      
+                        //document.getElementById("trainCountFocus").textContent = `, #${vehicleIdNum} is approx. ${trainDurationFromBaseStation} mins away`;
+                  	    label = `${label}, ${trainDurationFromBaseStation} mins away.`;              	     
+                	      speakDistance(trainDurationFromBaseStation);
                    }
                    else {
                    	      label = `${label}.`;                   	
@@ -598,7 +592,7 @@
             return R * c;
        }
 
-       function findNearestStationsOnNorthAndSouth(vehiclePosition ) {
+       function findTrainDurationInMins(vehiclePosition ) {
        	   //There is a loop before the southern most station(near [2.452145476705575, 102.19320532886256], which is SOUTH of the station. 
        	   //This function does not work for trains in that loop.
            let nearestNorthStation = null;
@@ -622,7 +616,7 @@
                }
            }
 
-           let nearestStations = "";
+           //let nearestStations = "";
            let trainDurationFromBaseStation = 0;
            if ( nearestNorthStation && nearestSouthStation) {
         	      let tripDistanceInKmsBetweenStations     = Math.abs(nearestNorthStation.tripDistanceInKms  - nearestSouthStation.tripDistanceInKms);
@@ -631,20 +625,23 @@
            	    if (nearestNorthStation.tripDurationInMins < nearestSouthStation.tripDurationInMins) {  
            	    	  let tripDurationInMinsBetweenNearestStationAndTrain = (nearestNorthStation.distance / tripDistanceInKmsBetweenStations) * tripDurationInMinsBetweenStations;
            	    	  trainDurationFromBaseStation = (nearestNorthStation.tripDurationInMins + tripDurationInMinsBetweenNearestStationAndTrain).toFixed(0) ;       	 	
-           	    	  nearestStations += `Approx ${trainDurationFromBaseStation} Mins away, between `;           	 	  
-           	    	  nearestStations += (nearestNorthStation ? `${nearestNorthStation.name} (${nearestNorthStation.tripDurationInMins} mins away)` : "no northern station")  + " & "
-                    nearestStations += (nearestSouthStation ? `${nearestSouthStation.name} (${nearestSouthStation.tripDurationInMins} mins away)` : "no southern station");
+           	    	 // nearestStations += `Approx ${trainDurationFromBaseStation} Mins away, between `;           	 	  
+           	    	 // nearestStations += (nearestNorthStation ? `${nearestNorthStation.name} (${nearestNorthStation.tripDurationInMins} mins away)` : "no northern station")  + " & "
+                   // nearestStations += (nearestSouthStation ? `${nearestSouthStation.name} (${nearestSouthStation.tripDurationInMins} mins away)` : "no southern station");
            	    }else {
       	        	  let tripDurationInMinsBetweenNearestStationAndTrain = (nearestSouthStation.distance / tripDistanceInKmsBetweenStations) * tripDurationInMinsBetweenStations;           	 	
       	        	  trainDurationFromBaseStation = (nearestSouthStation.tripDurationInMins + tripDurationInMinsBetweenNearestStationAndTrain).toFixed(0) ;       	 	
-      	        	  nearestStations += `Approx ${trainDurationFromBaseStation} Mins away, between `; 
-           	        nearestStations += (nearestSouthStation ? `${nearestSouthStation.name} (${nearestSouthStation.tripDurationInMins} mins away)` : "no southern station") + " & "
-           	        nearestStations += (nearestNorthStation ? `${nearestNorthStation.name} (${nearestNorthStation.tripDurationInMins} mins away)` : "no northern station");
+      	        	 // nearestStations += `Approx ${trainDurationFromBaseStation} Mins away, between `; 
+           	       // nearestStations += (nearestSouthStation ? `${nearestSouthStation.name} (${nearestSouthStation.tripDurationInMins} mins away)` : "no southern station") + " & "
+           	       // nearestStations += (nearestNorthStation ? `${nearestNorthStation.name} (${nearestNorthStation.tripDurationInMins} mins away)` : "no northern station");
            	    }           	    
-           }
-         return {trainDurationFromBaseStation, nearestStations};
+           }  else  {
+           	      console.log(`Cannot find EITHER nearest north (${nearestNorthStation.name}) or south(${nearestSouthStation.name}) station for ${location}`)
+           }          
+           
+           return trainDurationFromBaseStation;
        }
-
+        
        function speakDistance(distance) {
            // Check if the browser supports speech synthesis
            if ('speechSynthesis' in window) {
@@ -685,3 +682,16 @@
     </script>
 </body>
 </html>
+<!------------ Test cases 
+
+up - Shows only up trains
+down - Shows only down trains
+all - Shows all trains & counter for NA
+both/else - Shows up & down
+
+focus with active train  : See map centered on active train & its distance
+focus without active train : see message on top
+
+change station : 
+----!-->
+
