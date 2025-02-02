@@ -523,7 +523,7 @@
                   }
         
                   // Show only the trains for last 1 hour & next 2 hours if the page is opened on a Mobile/Watch.
-                  if ( !(deviceType == "Destop") && ( train.isActive  ||(diffMinutes >= -60 && diffMinutes <= 120)) ) {
+                  if ( !(deviceType == "Desktop") && ( train.isActive  ||(diffMinutes >= -60 && diffMinutes <= 120)) ) {
                   		row.appendChild(cell);
                   }
                   if ( (deviceType == "Desktop")) {
@@ -531,6 +531,26 @@
                   }
               });
               table.appendChild(row);
+              
+              // Add legend after the 2nd row was added.
+              if (table.rows.length === 2) {
+                   let tableLegend = document.querySelector("#trainScheduleLegend");
+                    tableLegend = document.createElement("table");
+                    tableLegend.id = "trainScheduleLegend";
+                    tableLegend.style.borderCollapse = "collapse";
+                    tableLegend.innerHTML = `
+                        <tr>
+                            <td style="font-size: small; border: 1px dotted black; white-space: normal;">Legend: </td>
+                            <td style="background-color: lightcoral; font-size: small; border: 1px dotted black; white-space: normal;">Trains in last 1 hr</td>
+                            <td style="background-color: lightgreen; font-size: small; border: 1px dotted black; white-space: normal;">Trains for next 2 hrs</td>
+                            <td style="font-size: small; border: 1px dotted black; white-space: normal;"> * Train is active</td>        
+                        </tr>
+                        <tr>
+                            <td style="font-size: small; border: 1px dotted black; white-space: normal;" colspan=4>Arrival Times on ${typeOfDay}s at ${baseStationParam}. Schedule updated on ${GTFSDataExtractDate}</td>
+                        </tr>   
+                    `;
+                    document.body.appendChild(tableLegend);              
+              }              
        }
 
        function toggleTrainScheduleTableVisibility() {   
@@ -541,23 +561,9 @@
            	   showTrainScheduleTable(baseStationParam,"up");
            	   showTrainScheduleTable(baseStationParam,"down");
                tableSchedule = document.querySelector("#trainScheduleTable");
+               tableLegend = document.querySelector("#trainScheduleLegend");
                tableSchedule.style.display = "none";
-        
-               tableLegend = document.createElement("table");
-               tableLegend.id = "trainScheduleLegend";
-               tableLegend.style.borderCollapse = "collapse";
-               tableLegend.innerHTML = `
-                   <tr>
-                       <td style="font-size: small; border: 1px dotted black; white-space: normal;">Legend: </td>
-                       <td style="background-color: lightcoral; font-size: small; border: 1px dotted black; white-space: normal;">Train for now - 1 hr</td>
-                       <td style="background-color: lightgreen; font-size: small; border: 1px dotted black; white-space: normal;">Train for now +2 hr</td>
-                       <td style="font-size: small; border: 1px dotted black; white-space: normal;"> * Train is active</td>        
-                   </tr>
-                   <tr>
-                       <td style="font-size: small; border: 1px dotted black; white-space: normal;" colspan=4>Arrival Times at ${baseStationParam}. Schedule updated on ${GTFSDataExtractDate}</td>
-                   </tr>   
-               `;
-               document.body.appendChild(tableLegend);
+               tableLegend.style.display = "none" ;
            }
 
            if (displayScheduleFlag === false) {
@@ -689,9 +695,12 @@ down - Shows only down trains
 all - Shows all trains & counter for NA
 both/else - Shows up & down
 
-focus with active train  : See map centered on active train & its distance
-focus without active train : see message on top
+focus with active train : See map centered on active train & its distance
+focus without active train : See message on top that train is inactive
 
-change station : 
+change base station : Display & Distances change in map
+Show Schedule: Shows for Weekdays/weekends & Legend
+Hide Schedule: Removes schedule
+In Table Schedule: Shows active trains. Links work.
 ----!-->
 
