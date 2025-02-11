@@ -49,17 +49,18 @@
     <select id="baseStationDropdown">
         <option value="" disabled selected>Select base station</option>
     </select>
+    <button id="toggleButton" onclick="toggleTrainScheduleTableVisibility()">Show Schedule</button> <br>
     
     <a href="" id="filterLinkBoth">Total</a>:<span id="trainCountBoth">0</span> (
     <a href="" id="filterLinkUp">Up</a>:<span id="trainCountUp">0</span>, 
     <a href="" id="filterLinkDown">Down</a>:<span id="trainCountDown">0</span> )
     <a href="" id="filterLinkOthers"></a><span id="trainCountOthers"></span>
 
-    <span id="trainCountFocus"></span>. <br>
+    <span id="trainCountFocus"></span>.
     <span id="system_status"></span>
 
     <button id="countdownButton" onclick="fetchMtrecTrainPositionApiData()">Refresh in 60s</button>
-    <button id="toggleButton" onclick="toggleTrainScheduleTableVisibility()">Show Schedule</button>
+
 
     <div id="map"></div>
 
@@ -72,7 +73,7 @@
         //  Up trains have even vehicleId & Down trains have odd.
         //  Limited Stop trains have vehicleId > 2600        
         KTMTrains.forEach(train => train.direction   = (train.vehicleId % 2 ) ? "down" : "up"); 
-        KTMTrains.forEach(train => train.vehicleType = (train.vehicleId > 2600 ) ? "LS" : "");           
+        KTMTrains.forEach(train => train.vehicleType = (train.vehicleId > 2600 ) ? "LS" : "");                  
         
         let KTMStations = {
              'Batu Caves'           :  {stationId:50600, tripDurationInMins:  0, tripDistanceInKms:  0    , location: [3.237796,101.681215] },
@@ -87,7 +88,7 @@
              'Midvalley'            :  {stationId:19205, tripDurationInMins: 36, tripDistanceInKms: 16.006, location: [3.119211,101.678865] }, 
              'Seputeh'              :  {stationId:19300, tripDurationInMins: 39, tripDistanceInKms: 16.706, location: [3.113612,101.681474] },
              'Salak Selatan'        :  {stationId:19400, tripDurationInMins: 44, tripDistanceInKms: 20.006, location: [3.098413,101.705055] },
-             'Bandar Tasik Selatan' :  {stationId:19600, tripDurationInMins: 50, tripDistanceInKms: 23.106, location: [3.076229,101.711119] },
+             'Bdr. Tasek Selatan'   :  {stationId:19600, tripDurationInMins: 50, tripDistanceInKms: 23.106, location: [3.076229,101.711119] },
              'Serdang'              :  {stationId:19900, tripDurationInMins: 57, tripDistanceInKms: 29.446, location: [3.023404,101.716056] },
              'Kajang'               :  {stationId:20400, tripDurationInMins: 69, tripDistanceInKms: 40.346, location: [2.983222,101.790669] },
              'Kajang 2'             :  {stationId:20402, tripDurationInMins: 72, tripDistanceInKms: 42.806, location: [2.962640,101.792070] },
