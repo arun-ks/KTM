@@ -1,4 +1,4 @@
-var GTFSDataExtractDate = '11-Feb,2025';
+var GTFSDataExtractDate = '15-Feb,2025';
 
 let KTMTrains = [
     { vehicleId: 2102, typeOfDay: "weekday", stationId: 19100, stationName: "Kl Sentral"           , arrivalTime: "07:05", departureTime: "07:05", distanceTravelled: 0       },
