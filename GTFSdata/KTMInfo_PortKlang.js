@@ -1734,3 +1734,6 @@ let KTMTrains = [
  
     { vehicleId: 9999, typeOfDay: "na"     , stationId: 00000, stationName: "na "                  , arrivalTime: "na"   , departureTime: "na"   , distanceTravelled: 0       } 
 ];
+ 
+KTMTrains.forEach(train => train.direction   = (train.vehicleId % 2 ) ? "down" : "up");
+KTMTrains.forEach(train => train.vehicleType = (train.vehicleId > 2600 ) ? "LS" : "");
