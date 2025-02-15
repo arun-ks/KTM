@@ -1,14 +1,10 @@
-KTMTrains.forEach(train => train.direction   = (train.vehicleId % 2 ) ? "down" : "up"); 
-KTMTrains.forEach(train => train.vehicleType = (train.vehicleId > 2600 ) ? "LS" : "");   
- 
 const iconDesigns = {
   	'up'   : { viewBox: '0 0 30 30' , dimension: 20, colour:'blue'  , svgPathd: 'M15 5 L25 25 L5 25 Z'       },
   	'down' : { viewBox: '0 0 30 30' , dimension: 20, colour:'red'   , svgPathd: 'M15 25 L25 5 L5 5 Z'        },
   	'na'   : { viewBox: '0 0 30 30' , dimension: 20, colour:'green' , svgPathd: 'M5 5 L25 5 L25 25 L5 25 Z'  },
   	'user' : { viewBox: '0 0 30 30' , dimension: 20, colour:'green' , svgPathd: 'M12 6 A3 3 0 1 1 18 6 A3 3 0 1 1 12 6 Z  M10 9 L20 9 L20 20 L10 20 Z  M5 10 L10 10 L10 14 L5 14 Z  M20 10 L25 10 L25 14 L20 14 Z M10 20 L14 20 L14 26 L10 26 Z  M16 20 L20 20 L20 26 L16 26 Z'  }
- }
+}
 
- 
 function findDeviceTypeBeingUsed() {
     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
     if (/watch|samsungbrowser/i.test(userAgent.toLowerCase())) { return "Watch";}
@@ -16,9 +12,9 @@ function findDeviceTypeBeingUsed() {
     return "Desktop";
 }
 
-function initializePageParameters(){               
+function initializePageParameters(){
         const urlParams   = new URLSearchParams(window.location.search);
-        
+
         let filterParamRaw = urlParams.get('filter');
         const filterParam =  (filterParamRaw == null) ?  "both" : filterParamRaw;
 
@@ -27,60 +23,60 @@ function initializePageParameters(){
            	
         let baseStationParamRaw = urlParams.get('baseStation');
         const baseStationParam =  ((baseStationParamRaw == null) || !(baseStationParamRaw in KTMStations)) ? BASESTATION_DEFAULT : baseStationParamRaw;
-        
+
         //Force use or baseStation parameter
         const url = new URL(location);
         url.searchParams.set("baseStation", baseStationParam);
-        history.pushState({}, "", url);               
-        
+        history.pushState({}, "", url);
+
         console.log(`Page Parameters: filter is ${filterParam}, focusVehicleId is ${focusVehicleIdParam} and baseStation is ${baseStationParam} `);
-        
+
         document.getElementById('filterLinkBoth').href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=both`;
-        
-        document.getElementById('filterLinkUp').href   = `${window.location.pathname}?baseStation=${baseStationParam}&filter=up`;    
-        vehicleIconDesign= iconDesigns["up"];             
+
+        document.getElementById('filterLinkUp').href   = `${window.location.pathname}?baseStation=${baseStationParam}&filter=up`;
+        vehicleIconDesign= iconDesigns["up"];
         const svgUp = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         svgUp.setAttribute("width", vehicleIconDesign.dimension);
         svgUp.setAttribute("height", vehicleIconDesign.dimension);
         svgUp.setAttribute("viewBox", vehicleIconDesign.viewBox);
-        svgUp.setAttribute("fill", vehicleIconDesign.colour);            
+        svgUp.setAttribute("fill", vehicleIconDesign.colour);
         const pathUp = document.createElementNS("http://www.w3.org/2000/svg", "path");
         pathUp.setAttribute("d", vehicleIconDesign.svgPathd);
-        svgUp.appendChild(pathUp);               
+        svgUp.appendChild(pathUp);
         let linkUp = document.getElementById("filterLinkUp");
         linkUp.appendChild(svgUp);
-        
-        document.getElementById('filterLinkDown').href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=down`; 
+
+        document.getElementById('filterLinkDown').href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=down`;
         vehicleIconDesign= iconDesigns["down"];
         const svgDown = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         svgDown.setAttribute("width", vehicleIconDesign.dimension);
         svgDown.setAttribute("height",vehicleIconDesign.dimension);
         svgDown.setAttribute("viewBox", vehicleIconDesign.viewBox);
-        svgDown.setAttribute("fill", vehicleIconDesign.colour);            
+        svgDown.setAttribute("fill", vehicleIconDesign.colour);
         const pathDown = document.createElementNS("http://www.w3.org/2000/svg", "path");
         pathDown.setAttribute("d", vehicleIconDesign.svgPathd);
-        svgDown.appendChild(pathDown);               
+        svgDown.appendChild(pathDown);
         let linkDown = document.getElementById("filterLinkDown");
         linkDown.appendChild(svgDown);
-        
+
         if ( filterParam === "all") {
-              document.getElementById('filterLinkOthers').href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=all`; 
+              document.getElementById('filterLinkOthers').href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=all`;
               vehicleIconDesign= iconDesigns["na"];
               const svgOthers = document.createElementNS("http://www.w3.org/2000/svg", "svg");
               svgOthers.setAttribute("width", vehicleIconDesign.dimension);
               svgOthers.setAttribute("height",vehicleIconDesign.dimension);
               svgOthers.setAttribute("viewBox", vehicleIconDesign.viewBox);
-              svgOthers.setAttribute("fill", vehicleIconDesign.colour);            
+              svgOthers.setAttribute("fill", vehicleIconDesign.colour);
               const pathOthers = document.createElementNS("http://www.w3.org/2000/svg", "path");
               pathOthers.setAttribute("d", vehicleIconDesign.svgPathd);
-              svgOthers.appendChild(pathOthers);               
+              svgOthers.appendChild(pathOthers);
               let linkOthers = document.getElementById("filterLinkOthers");
               linkOthers.appendChild(document.createTextNode("na"));
               linkOthers.appendChild(svgOthers);
         } else {
         	   document.getElementById('filterLinkOthers').href = "#";
         }
-                       
+
         return { filterParam, focusVehicleIdParam, baseStationParam};
 }
 
@@ -109,16 +105,16 @@ function handleBaseStationUpdate(newBaseStation) {
 
          plotStationsOnMap ();
          fetchMtrecTrainPositionApiData();
-         toggleStationScheduleTableVisibility();                
-         
+         toggleStationScheduleTableVisibility();
+
          const url = new URL(location);
          url.searchParams.set("baseStation", newBaseStation);
          //history.pushState({}, "", url);
          history.pushState(null, '', url);
-     
+
          document.getElementById('filterLinkBoth').href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=both`;
          document.getElementById('filterLinkUp').href   = `${window.location.pathname}?baseStation=${baseStationParam}&filter=up`;
-         document.getElementById('filterLinkDown').href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=down`;       
+         document.getElementById('filterLinkDown').href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=down`;
 }
 
 function initializeMap(baseStation) {
@@ -129,7 +125,7 @@ function initializeMap(baseStation) {
          maxZoom: 18,
          attribution: '&copy; OpenStreetMap contributors'
      }).addTo(map);
-     
+
      //map.locate({setView: true, maxZoom: 16});
 
      return map;
@@ -171,7 +167,7 @@ function plotStationsOnMap() {
              permanent: false,                // Cannot be true
              direction: 'left',
              offset: [0, 0],
-             className: 'custom-popup',                    
+             className: 'custom-popup',
          });
          //                    direction: 'left',                     offset: [-10, 0],
      }
@@ -220,7 +216,7 @@ function classifyVehiclesForPlotting(vehicles) {
      document.getElementById("trainCountFocus").textContent = "";
 
      unplotAllVechiclesOnMap();
-     KTMTrains.forEach(train => train.isActive = false);                  
+     KTMTrains.forEach(train => train.isActive = false);
 
      vehicles.forEach(vehicle => {
          const vehicleIdNum = parseInt(vehicle.vehicle.id.split('_')[1] || vehicle.vehicle.id);
@@ -235,7 +231,7 @@ function classifyVehiclesForPlotting(vehicles) {
          */
 
          let plotThisTrain = true;
-         let activeKTMTrainInfo = KTMTrains.find(train => train.vehicleId === vehicleIdNum && train.stationName === baseStationParam );                
+         let activeKTMTrainInfo = KTMTrains.find(train => train.vehicleId === vehicleIdNum && train.stationName === baseStationParam );
          if( activeKTMTrainInfo ) {
                activeKTMTrainInfo.isActive = true;
                KTMTrains.forEach(train => train.isActive = ( train.vehicleId === vehicleIdNum) ? true : train.isActive);
@@ -255,7 +251,7 @@ function classifyVehiclesForPlotting(vehicles) {
 
          if (focusVehicleIdParam > 0 ) { // If focusVehicleIdParam is used then show just 1 vehicle
             if (focusVehicleIdParam == vehicleIdNum) {
-            	    focusCount++;                        
+            	    focusCount++;
             } else {
        	        plotThisTrain = false;
             }
@@ -305,13 +301,13 @@ function plotVehicleOnMap(vehicleIdNum, vehiclePosition, activeKTMTrainInfo) {
          } else {	                	
             distance = calculateDistanceInKM(vehiclePosition.latitude, vehiclePosition.longitude, KTMStations[baseStationParam].location[0], KTMStations[baseStationParam].location[1]);
             distance = distance.toFixed(2);
-            
-            label = `${activeKTMTrainInfo.arrivalTime} (<a href="${window.location.pathname}?focusVehicleId=${vehicleIdNum}&baseStation=${baseStationParam}" style="text-decoration: none; color: inherit;">#${vehicleIdNum}</a>) - ${vehiclePosition.speed} km/h`;
+
+            label = `${activeKTMTrainInfo.arrivalTime} (<a href="${window.location.pathname}?focusVehicleId=${vehicleIdNum}&baseStation=${baseStationParam}">#${vehicleIdNum}</a>) - ${vehiclePosition.speed} km/h`;
             if ( vehicleIdNum === focusVehicleIdParam ) {
-          	      map.flyTo([vehiclePosition.latitude, vehiclePosition.longitude]);  //, 14, { animation: true }) ;            	                           	
-                 const trainDurationFromBaseStation = findTrainDurationInMins([vehiclePosition.latitude, vehiclePosition.longitude]);                      
-                 //document.getElementById("trainCountFocus").textContent = `, #${vehicleIdNum} is approx. ${trainDurationFromBaseStation} mins away`;
-           	    label = `${label}, ${trainDurationFromBaseStation} mins away.`;              	     
+          	    map.flyTo([vehiclePosition.latitude, vehiclePosition.longitude]);  //, 14, { animation: true }) ;            	                           	
+                const trainDurationFromBaseStation = findTrainDurationInMins([vehiclePosition.latitude, vehiclePosition.longitude]);
+           	    label = `${label}, ${trainDurationFromBaseStation} mins away.`;              	
+           	    label = `${label}, (<span onclick="javascript:showTrainScheduleTable(focusVehicleIdParam)">Schedule</span>)`;
          	      speakDistance(trainDurationFromBaseStation);
             }
             else {
@@ -336,24 +332,24 @@ function unplotAllVechiclesOnMap() {
      });       	
 }
 
-function showStationScheduleTable(stationName, direction) { 
+function showStationScheduleTable(stationName, direction) {
        const isWeekend = [0, 6].includes(new Date().getDay());
        const typeOfDay = isWeekend ? "weekend" : "weekday";
-    
-       let trainsForStationAndTypeOfDayUnsorted = KTMTrains.filter(train => train.typeOfDay === typeOfDay && train.stationName === stationName && train.direction === direction);              
+
+       let trainsForStationAndTypeOfDayUnsorted = KTMTrains.filter(train => train.typeOfDay === typeOfDay && train.stationName === stationName && train.direction === direction);
        let trainsForStationAndTypeOfDay = trainsForStationAndTypeOfDayUnsorted.sort((trainA, trainB) => {
            let timeA = trainA.arrivalTime.split(":").map(Number);
            let timeB = trainB.arrivalTime.split(":").map(Number);
-           return timeA[0] - timeB[0] || timeA[1] - timeB[1]; 
+           return timeA[0] - timeB[0] || timeA[1] - timeB[1];
        });
-       
+
        const currentDate = new Date();
        if (currentDate.getHours() < 5 )  // Handle times when pages is opened when there are no trains ...
           currentDate.setHours(4);
- 
+
        // Create table if there is none. If it has 1 row, append next row to it. If it already had 2 rows then delete the table.
        let table = document.querySelector("#stationScheduleTable");
-       if (table) {   
+       if (table) {
            if (table.rows.length === 2) {
                table.remove();
                table = null;
@@ -365,38 +361,38 @@ function showStationScheduleTable(stationName, direction) {
            table.style.borderCollapse = "collapse";
            document.body.appendChild(table);
        }
- 
+
        const row = document.createElement("tr");
        const stationCell = document.createElement("td");
-       
-       stationCell.textContent = direction +" ";              
+
+       stationCell.textContent = direction +" ";
        stationCell.style.fontSize = "small";
        stationCell.style.border = "1px solid black";
-       
-       vehicleIconDesign= iconDesigns[direction];             
+
+       vehicleIconDesign= iconDesigns[direction];
        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
        svg.setAttribute("width", vehicleIconDesign.dimension);
        svg.setAttribute("height",vehicleIconDesign.dimension);
        svg.setAttribute("viewBox", vehicleIconDesign.viewBox);
        svg.setAttribute("fill", vehicleIconDesign.colour);
        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-       path.setAttribute("d", vehicleIconDesign.svgPathd);    
-       svg.appendChild(path);                    
+       path.setAttribute("d", vehicleIconDesign.svgPathd);
+       svg.appendChild(path);
        stationCell.appendChild(svg);
-       
+
        row.appendChild(stationCell);
- 
+
        trainsForStationAndTypeOfDay.forEach(train => {
        	  const cell = document.createElement("td");
            cell.style.fontSize = "small";                   // Use x-small for smaller font
            cell.style.border = "1px solid black";
            cell.style.whiteSpace = "normal";
- 
+
            cell.appendChild(document.createTextNode(`${train.arrivalTime}`));
            if (train.isActive == true) {
                cell.appendChild(document.createTextNode("*"));
            }
- 
+
            cell.appendChild(document.createElement("br"));
            cell.appendChild(document.createTextNode("("));
            const vehicleLink = document.createElement("a");
@@ -404,11 +400,11 @@ function showStationScheduleTable(stationName, direction) {
            vehicleLink.textContent = `${train.vehicleId}${train.vehicleType}`;
            cell.appendChild(vehicleLink);
            cell.appendChild(document.createTextNode(")"));
- 
+
            const [hours, minutes] = train.arrivalTime.split(":").map(Number);
            const arrivalTime = new Date(currentDate);
            arrivalTime.setHours(hours, minutes, 0, 0);
- 
+
            //currentDate.setHours(9, 32, 0, 0); //For TESTING
            let diffMinutes = (arrivalTime - currentDate) / (1000 * 60);
            if (diffMinutes < 0 && diffMinutes >= -60) {
@@ -416,7 +412,7 @@ function showStationScheduleTable(stationName, direction) {
            } else if (diffMinutes >= 0 && diffMinutes <= 120) {
                cell.style.backgroundColor = "lightgreen";
            }
- 
+
            // Show only the trains for last 1 hour & next 2 hours if the page is opened on a Mobile/Watch.
            if ( !(deviceType == "Desktop") && ( train.isActive  ||(diffMinutes >= -60 && diffMinutes <= 120)) ) {
            		row.appendChild(cell);
@@ -426,7 +422,7 @@ function showStationScheduleTable(stationName, direction) {
            }
        });
        table.appendChild(row);
-       
+
        // Add legend after the 2nd row was added.
        if (table.rows.length === 2) {
             let tableLegend = document.querySelector("#stationScheduleLegend");
@@ -438,78 +434,23 @@ function showStationScheduleTable(stationName, direction) {
                      <td style="font-size: small; border: 1px dotted black; white-space: normal;">Legend: </td>
                      <td style="background-color: lightcoral; font-size: small; border: 1px dotted black; white-space: normal;">Trains in last 1 hr</td>
                      <td style="background-color: lightgreen; font-size: small; border: 1px dotted black; white-space: normal;">Trains for next 2 hrs</td>
-                     <td style="font-size: small; border: 1px dotted black; white-space: normal;"> * Train is active</td>        
+                     <td style="font-size: small; border: 1px dotted black; white-space: normal;"> * Train is active</td>
                  </tr>
                  <tr>
                      <td style="font-size: small; border: 1px dotted black; white-space: normal;" colspan=4>Arrival Times on ${typeOfDay}s at ${baseStationParam}. Schedule updated on ${GTFSDataExtractDate}</td>
-                 </tr>   
+                 </tr>
              `;
-             document.body.appendChild(tableLegend);              
-       }              
+             document.body.appendChild(tableLegend);
+       }
 }
 
-
-function showTrainScheduleTable(vehicleId, stationName, direction) { 
-    
-       let stationForTrainUnsorted = KTMTrains.filter(train => train.vehicleId === vehicleId );              
-       let stationForTrain = stationForTrainUnsorted.sort((trainA, trainB) => {
-           let timeA = trainA.arrivalTime.split(":").map(Number);
-           let timeB = trainB.arrivalTime.split(":").map(Number);
-           return timeA[0] - timeB[0] || timeA[1] - timeB[1]; 
-       });
-       
-       let table = document.querySelector("#trainScheduleTable");
-       if (table) {   
-           table.remove();
-           table = null;
-       }
-       if (!table) {
-           table = document.createElement("table");
-           table.id = "trainScheduleTable";
-           table.style.borderCollapse = "collapse";
-           document.body.appendChild(table);
-       }
- 
-       const row = document.createElement("tr");
-       const stationCell = document.createElement("td");
-       
-       stationCell.textContent = vehicleId +" ";              
-       stationCell.style.fontSize = "small";
-       stationCell.style.border = "1px solid black";
-       row.appendChild(stationCell);
- 
-       stationForTrain.forEach(train => {
-       	  const cell = document.createElement("td");
-           cell.style.fontSize = "small";                   // Use x-small for smaller font
-           cell.style.border = "1px solid black";
-           cell.style.whiteSpace = "normal";
- 
-           cell.appendChild(document.createTextNode(`${train.arrivalTime}`));
-
-           cell.appendChild(document.createElement("br"));
-           cell.appendChild(document.createTextNode(`${train.stationName}`));          
-           
-           // Show only the trains for last 1 hour & next 2 hours if the page is opened on a Mobile/Watch.
-           if ( !(deviceType == "Desktop") && ( train.isActive  ||(diffMinutes >= -60 && diffMinutes <= 120)) ) {
-           		row.appendChild(cell);
-           }
-           if ( (deviceType == "Desktop")) {
-              row.appendChild(cell);	
-           }
-       });
-       table.appendChild(row);       
-
-}
-
-
-
-function toggleStationScheduleTableVisibility() {   
+function toggleStationScheduleTableVisibility() {
     let tableSchedule = document.querySelector("#stationScheduleTable");
     let tableLegend = document.querySelector("#stationScheduleLegend");
-    const button = document.querySelector("#toggleButton");
+    const button = document.querySelector("#toggleStationScheduleButton");
     if (!tableSchedule) {
-    	   showStationScheduleTable(baseStationParam,"up");
-    	   showStationScheduleTable(baseStationParam,"down");
+    	  showStationScheduleTable(baseStationParam,"up");
+    	  showStationScheduleTable(baseStationParam,"down");
         tableSchedule = document.querySelector("#stationScheduleTable");
         tableLegend = document.querySelector("#stationScheduleLegend");
         tableSchedule.style.display = "none";
@@ -531,8 +472,59 @@ function toggleStationScheduleTableVisibility() {
            tableSchedule.remove();
            tableLegend.remove();
         }
-        
+
     }
+}
+
+function showTrainScheduleTable(vehicleId) {
+       let stationForTrainUnsorted = KTMTrains.filter(train => train.vehicleId === vehicleId );
+       let stationForTrain = stationForTrainUnsorted.sort((trainA, trainB) => {
+           let timeA = trainA.arrivalTime.split(":").map(Number);
+           let timeB = trainB.arrivalTime.split(":").map(Number);
+           return timeA[0] - timeB[0] || timeA[1] - timeB[1];
+       });
+
+       let table = document.querySelector("#trainScheduleTable");
+       if (table) {
+           table.remove();
+           table = null;
+           return;
+       }
+       if (!table) {
+           table = document.createElement("table");
+           table.id = "trainScheduleTable";
+           table.style.borderCollapse = "collapse";
+           document.body.appendChild(table);
+       }
+
+       const row = document.createElement("tr");
+       const trainCell = document.createElement("td");
+
+       trainCell.textContent = vehicleId +" ";
+       trainCell.style.fontSize = "small";
+       trainCell.style.border = "1px solid black";
+       row.appendChild(trainCell);
+
+       stationForTrain.forEach(train => {
+       	  const cell = document.createElement("td");
+           cell.style.fontSize = "small";                   // Use x-small for smaller font
+           cell.style.border = "1px solid black";
+           cell.style.whiteSpace = "normal";
+
+           cell.appendChild(document.createTextNode(`${train.arrivalTime}`));
+
+           cell.appendChild(document.createElement("br"));
+           cell.appendChild(document.createTextNode(`${train.stationName}`));
+
+           // Show only the trains for last 1 hour & next 2 hours if the page is opened on a Mobile/Watch.
+           if ( !(deviceType == "Desktop") && ( train.isActive  ||(diffMinutes >= -60 && diffMinutes <= 120)) ) {
+           		row.appendChild(cell);
+           }
+           if ( (deviceType == "Desktop")) {
+              row.appendChild(cell);	
+           }
+       });
+       table.appendChild(row);
 }
 
 function calculateDistanceInKM(lat1, lon1, lat2, lon2) {
@@ -549,7 +541,7 @@ function calculateDistanceInKM(lat1, lon1, lat2, lon2) {
 }
 
 function findTrainDurationInMins(vehiclePosition ) {
-	   //There is a loop before the southern most station(near [2.452145476705575, 102.19320532886256], which is SOUTH of the station. 
+	   //There is a loop before the southern most station(near [2.452145476705575, 102.19320532886256], which is SOUTH of the station.
 	   //This function does not work for trains in that loop.
     let nearestNorthStation = null;
     let nearestSouthStation = null;
@@ -577,27 +569,27 @@ function findTrainDurationInMins(vehiclePosition ) {
     if ( nearestNorthStation && nearestSouthStation) {
  	      let tripDistanceInKmsBetweenStations     = Math.abs(nearestNorthStation.tripDistanceInKms  - nearestSouthStation.tripDistanceInKms);
          let tripDurationInMinsBetweenStations    = Math.abs(nearestNorthStation.tripDurationInMins - nearestSouthStation.tripDurationInMins);
-         
-    	    if (nearestNorthStation.tripDurationInMins < nearestSouthStation.tripDurationInMins) {  
+
+    	    if (nearestNorthStation.tripDurationInMins < nearestSouthStation.tripDurationInMins) {
     	    	  let tripDurationInMinsBetweenNearestStationAndTrain = (nearestNorthStation.distance / tripDistanceInKmsBetweenStations) * tripDurationInMinsBetweenStations;
     	    	  trainDurationFromBaseStation = (nearestNorthStation.tripDurationInMins + tripDurationInMinsBetweenNearestStationAndTrain).toFixed(0) ;       	 	
-    	    	 // nearestStations += `Approx ${trainDurationFromBaseStation} Mins away, between `;           	 	  
+    	    	 // nearestStations += `Approx ${trainDurationFromBaseStation} Mins away, between `;           	 	
     	    	 // nearestStations += (nearestNorthStation ? `${nearestNorthStation.name} (${nearestNorthStation.tripDurationInMins} mins away)` : "no northern station")  + " & "
             // nearestStations += (nearestSouthStation ? `${nearestSouthStation.name} (${nearestSouthStation.tripDurationInMins} mins away)` : "no southern station");
     	    }else {
         	  let tripDurationInMinsBetweenNearestStationAndTrain = (nearestSouthStation.distance / tripDistanceInKmsBetweenStations) * tripDurationInMinsBetweenStations;           	 	
         	  trainDurationFromBaseStation = (nearestSouthStation.tripDurationInMins + tripDurationInMinsBetweenNearestStationAndTrain).toFixed(0) ;       	 	
-        	 // nearestStations += `Approx ${trainDurationFromBaseStation} Mins away, between `; 
+        	 // nearestStations += `Approx ${trainDurationFromBaseStation} Mins away, between `;
     	       // nearestStations += (nearestSouthStation ? `${nearestSouthStation.name} (${nearestSouthStation.tripDurationInMins} mins away)` : "no southern station") + " & "
     	       // nearestStations += (nearestNorthStation ? `${nearestNorthStation.name} (${nearestNorthStation.tripDurationInMins} mins away)` : "no northern station");
-    	    }           	    
+    	    }           	
     }  else  {
     	      console.log(`Cannot find EITHER nearest north (${nearestNorthStation.name}) or south(${nearestSouthStation.name}) station for ${location}`)
-    }          
-    
+    }
+
     return trainDurationFromBaseStation;
 }
- 
+
 function speakDistance(distance) {
     // Check if the browser supports speech synthesis
     if ('speechSynthesis' in window) {
