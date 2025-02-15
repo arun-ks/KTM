@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="stylesheet" href="resources/KTMPageStyle.css">
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script type="text/javascript" src="GTFSdata/KTMInfo.js"></script>
 
 </head>
 <body>
@@ -13,11 +15,10 @@
     <select id="baseStationDropdown">
         <option value="" disabled selected>Select base station</option>
     </select>
-    <button id="toggleButton" onclick="toggleStationScheduleTableVisibility()">Show Schedule</button> <br>
+    <button id="toggleStationScheduleButton" onclick="toggleStationScheduleTableVisibility()">Show Schedule</button><br>
 
-    
     <a href="" id="filterLinkBoth">Total</a>:<span id="trainCountBoth">0</span> (
-    <a href="" id="filterLinkUp">Up</a>:<span id="trainCountUp">0</span>, 
+    <a href="" id="filterLinkUp">Up</a>:<span id="trainCountUp">0</span>,
     <a href="" id="filterLinkDown">Down</a>:<span id="trainCountDown">0</span> )
     <a href="" id="filterLinkOthers"></a><span id="trainCountOthers"></span>
 
@@ -25,14 +26,9 @@
     <span id="system_status"></span>
 
     <button id="countdownButton" onclick="fetchMtrecTrainPositionApiData()">Refresh in 60s</button>
-
     <div id="map"></div>
 
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script type="text/javascript" src="GTFSdata/KTMInfo.js"></script>
-    
-    <script>             
-        
+    <script>
         let KTMStations = {
              'Batu Caves'           :  {stationId:50600, tripDurationInMins:  0, tripDistanceInKms:  0    , location: [3.237796,101.681215] },
              'Taman Wahyu'          :  {stationId:50500, tripDurationInMins:  4, tripDistanceInKms:  2.95 , location: [3.214510,101.672178] },
@@ -43,7 +39,7 @@
              'Bank Negara'          :  {stationId:18900, tripDurationInMins: 21, tripDistanceInKms: 11.006, location: [3.155105,101.693118] },
              'Kuala Lumpur'         :  {stationId:19000, tripDurationInMins: 25, tripDistanceInKms: 12.726, location: [3.139444,101.693333] },
              'KL Sentral'           :  {stationId:19100, tripDurationInMins: 29, tripDistanceInKms: 13.886, location: [3.134167,101.686111] },
-             'Midvalley'            :  {stationId:19205, tripDurationInMins: 36, tripDistanceInKms: 16.006, location: [3.119211,101.678865] }, 
+             'Midvalley'            :  {stationId:19205, tripDurationInMins: 36, tripDistanceInKms: 16.006, location: [3.119211,101.678865] },
              'Seputeh'              :  {stationId:19300, tripDurationInMins: 39, tripDistanceInKms: 16.706, location: [3.113612,101.681474] },
              'Salak Selatan'        :  {stationId:19400, tripDurationInMins: 44, tripDistanceInKms: 20.006, location: [3.098413,101.705055] },
              'Bdr. Tasek Selatan'   :  {stationId:19600, tripDurationInMins: 50, tripDistanceInKms: 23.106, location: [3.076229,101.711119] },
@@ -64,10 +60,11 @@
         };
         const BASESTATION_DEFAULT = "Serdang";
     </script>
+
     <script type="text/javascript" src="resources/KTMHandler.js"></script>
 </body>
 </html>
-<!------------ Test cases 
+<!------------ Test cases
 
 up - Shows only up trains
 down - Shows only down trains
