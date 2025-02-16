@@ -1,12 +1,12 @@
 # KTM
-This website shows online status of trains in [KTM Seremban Line(KTM Batu Caves - Pulau Sebang/Tampin)](https://en.wikipedia.org/wiki/Batu_Caves%E2%80%93Pulau_Sebang_Line).
+This website shows online status of trains in [KTM Seremban Line(KTM Batu Caves - Pulau Sebang/Tampin)](https://en.wikipedia.org/wiki/Batu_Caves%E2%80%93Pulau_Sebang_Line) and for [KTM Port Klang Line(Tanjung Malim - Port Klang)](https://en.wikipedia.org/wiki/Tanjung_Malim-Port_Klang_Line).
 
 It shows distance of stations & trains as "Minutes of train travel" instead of KMs.
 
-You can get the [live version here](https://arun-ks.github.io/KTM/)
+You can get the [live version here for Seremban Line](https://arun-ks.github.io/KTM/) and [this for Port Klang Line](https://arun-ks.github.io/KTM/index_PortKlang.html).
 
 ## Purpose
-Users of KTM Seremban Line can use this to plan their trip to KTM stations based on realitime status of trains.
+Users of 2 KTM Lines can use this to plan their trip to KTM stations based on realitime status of trains.
 
 The page allows user to pick their **base-station**. If you bookmark the link with URL which includes baseStation parameter, you won't have to select it every time.
 
