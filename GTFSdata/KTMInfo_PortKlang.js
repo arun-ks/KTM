@@ -1,6 +1,7 @@
 var GTFSDataExtractDate = '17-Feb,2025';
 
 let KTMTrains = [
+    { vehicleId: 0, typeOfDay: "trip", stationId: stop_id, stationName: "Unknown"              , arrivalTime: "arriv", departureTime: "depar", distanceTravelled: shape_dist_traveled },
     { vehicleId: 2102, typeOfDay: "weekday", stationId: 19100, stationName: "Kl Sentral"           , arrivalTime: "07:05", departureTime: "07:05", distanceTravelled: 0       },
     { vehicleId: 2102, typeOfDay: "weekday", stationId: 19000, stationName: "Kuala Lumpur"         , arrivalTime: "07:08", departureTime: "07:09", distanceTravelled: 1.16    },
     { vehicleId: 2102, typeOfDay: "weekday", stationId: 18900, stationName: "Bank Negara"          , arrivalTime: "07:12", departureTime: "07:13", distanceTravelled: 2.88    },

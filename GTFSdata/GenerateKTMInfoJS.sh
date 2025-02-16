@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 if [[ "$1" == "REFRESH" ]] ; then 
    echo REFRESH MODE : Get new GTFS file from api.data.gov.my
    GTFSZipFileName=GTFS_`date "+%Y%m%d"`.zip
@@ -12,23 +11,22 @@ GenerateJs () {
 	    LineName=$1
 	    HtmlFileWithStationNames=$2
 	    OutputJsFileName=$3
-      #Get Route_ID for Seremban Line 
+	    
+      #Get RouteId for Line 
       RouteId=`grep "${LineName}" "routes.txt"  |cut -d, -f2`
       #Get list of trips for the RouteId
       grep -e trip_id -e $RouteId "trips.txt" |  cut -d, -f3 | sort   > __ListOfTripsInRoute.txt
       #Get Routes for the Trips of RouteId
-      grep -Fwf __ListOfTripsInRoute.txt "stop_times.txt"             > __StopTimesOfTripsInRoute.txt
-      
+      grep -Fwf __ListOfTripsInRoute.txt "stop_times.txt"             > __StopTimesOfTripsInRoute.txt      
       
       # Get HardCoded Mapping of stop_id to stationName from index.html file
       stopNamesFile=__StationIdToNamesMapping.txt
-      grep  'stationId:.*location:' $HtmlFileWithStationNames  | sed "s/[\':]/,/g" | cut -d, -f2,5 | awk -F, '{print $2","$1;}' > __StationIdToNamesMapping.txt 
-      
+      grep  'stationId:.*location:' $HtmlFileWithStationNames  | sed "s/[\':]/,/g" | cut -d, -f2,5 | awk -F, '{print $2","$1;}' > __StationIdToNamesMapping.txt       
 
       mv $OutputJsFileName ${OutputJsFileName}.`date "+%Y%m%d"`.bak
       echo "var GTFSDataExtractDate = '"` date "+%d-%b,%Y"`"';" > $OutputJsFileName
       echo ""                                                  >> $OutputJsFileName
-      echo "let KTMTrains = ["                                     >> $OutputJsFileName
+      echo "let KTMTrains = ["                                 >> $OutputJsFileName
       
       awk -F, -v OFS=',' -v stopNamesFile="__StationIdToNamesMapping.txt" '
       BEGIN {
@@ -39,7 +37,7 @@ GenerateJs () {
           }
           close(stopNamesFile);
       }
-      NR > 1 {
+      NR > 0 {
           # Extract fields
           split($1, tripParts, "_");
           vehicleId = tripParts[2];
@@ -51,7 +49,6 @@ GenerateJs () {
           arrivalTime = substr($2, 1, 5);
           departureTime = substr($3, 1, 5);
       
-          # Print formatted JavaScript object
           printf("    { vehicleId: %d, typeOfDay: \"%s\", stationId: %s, stationName: \"%s\"%-*s, arrivalTime: \"%s\", departureTime: \"%s\", distanceTravelled: %-7s },\n",
              vehicleId, typeOfDay, stationId, stationName, 21 - length(stationName), "", arrivalTime, departureTime, $6);
       }
@@ -67,13 +64,12 @@ GenerateJs () {
       
       echo "File created : "$OutputJsFileName" with "`cat __StopTimesOfTripsInRoute.txt | wc -l`" records."
       
-      rm __StationIdToNamesMapping.txt
-      rm __ListOfTripsInRoute.txt __StopTimesOfTripsInRoute.txt 
+      rm __StationIdToNamesMapping.txt __ListOfTripsInRoute.txt __StopTimesOfTripsInRoute.txt 
       
       echo -e "\n\nDifferences between the files $OutputJsFileName and ${OutputJsFileName}.`date "+%Y%m%d"`.bak\n"
       sdiff -s -w 300 $OutputJsFileName ${OutputJsFileName}.`date "+%Y%m%d"`.bak
 }      
 
-GenerateJs "Seremban Line"   ../index.html          KTMInfo.js
+GenerateJs "Seremban Line"   ../index.html           KTMInfo.js
 GenerateJs "Port Klang Line" ../index_PortKlang.html KTMInfo_PortKlang.js
 
