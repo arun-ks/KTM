@@ -1,7 +1,6 @@
 var GTFSDataExtractDate = '17-Feb,2025';
 
 let KTMTrains = [
-    { vehicleId: 0, typeOfDay: "trip", stationId: stop_id, stationName: "Unknown"              , arrivalTime: "arriv", departureTime: "depar", distanceTravelled: shape_dist_traveled },
     { vehicleId: 2002, typeOfDay: "weekday", stationId: 25100, stationName: "Pulau Sebang"         , arrivalTime: "04:42", departureTime: "04:42", distanceTravelled: 0       },
     { vehicleId: 2002, typeOfDay: "weekday", stationId: 23900, stationName: "Rembau"               , arrivalTime: "04:58", departureTime: "04:59", distanceTravelled: 24.96   },
     { vehicleId: 2002, typeOfDay: "weekday", stationId: 23100, stationName: "Sungai Gadut"         , arrivalTime: "05:11", departureTime: "05:12", distanceTravelled: 39.14   },

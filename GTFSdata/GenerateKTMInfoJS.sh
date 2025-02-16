@@ -37,7 +37,7 @@ GenerateJs () {
           }
           close(stopNamesFile);
       }
-      NR > 0 {
+      NR > 1 {
           # Extract fields
           split($1, tripParts, "_");
           vehicleId = tripParts[2];
