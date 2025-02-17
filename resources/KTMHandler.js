@@ -275,7 +275,10 @@ function classifyVehiclesForPlotting(vehicles) {
      if ( focusVehicleIdParam > 0 && focusCount == 0 ) { // If we are in focus Mode & the focused Train has no data
      	  let focusKTMTrainInfo = KTMTrains.find(train => train.vehicleId === focusVehicleIdParam && train.distanceTravelled === 0);
      	  if ( focusKTMTrainInfo ) {
-     	  	  document.getElementById("trainCountFocus").textContent = `, #${focusVehicleIdParam} is not active, it starts from ${focusKTMTrainInfo.stationName}`;
+    	  	  //document.getElementById("trainCountFocus").textContent = `, #${focusVehicleIdParam} is not active, it starts from ${focusKTMTrainInfo.stationName}`;
+    	  	  document.getElementById("trainCountFocus").innerHTML = `, #${focusVehicleIdParam} (<span onclick="javascript:showTrainScheduleTable(focusVehicleIdParam)">Schedule</span>) is not active, it starts from ${focusKTMTrainInfo.stationName}`;
+    	  	  //document.getElementById("trainCountFocus").href = `javascript:showTrainScheduleTable(focusVehicleIdParam)`;
+
      	  } else {
      	      document.getElementById("trainCountFocus").textContent = `,  No information on #${focusVehicleIdParam} `;	
      	  }
@@ -604,8 +607,8 @@ function speakDistance(distance) {
 }
 
 const COUNTDOWN_SECONDS = 60;
-
 let countdown = COUNTDOWN_SECONDS;
+
 let { filterParam, focusVehicleIdParam, baseStationParam } = initializePageParameters();
 const map = initializeMap(baseStationParam);
 initializeBaseStationDropdown(baseStationParam);
