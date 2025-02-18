@@ -213,7 +213,7 @@ async function fetchMtrecStatusMonitorApiData() {
 
 function classifyVehiclesForPlotting(vehicles) {
      let upCount = 0,downCount = 0,naCount = 0, focusCount = 0;
-     document.getElementById("trainCountFocus").textContent = "";
+     document.getElementById("inactiveFocusTrainMesg").textContent = "";
 
      unplotAllVechiclesOnMap();
      KTMTrains.forEach(train => train.isActive = false);
@@ -275,12 +275,11 @@ function classifyVehiclesForPlotting(vehicles) {
      if ( focusVehicleIdParam > 0 && focusCount == 0 ) { // If we are in focus Mode & the focused Train has no data
      	  let focusKTMTrainInfo = KTMTrains.find(train => train.vehicleId === focusVehicleIdParam && train.distanceTravelled === 0);
      	  if ( focusKTMTrainInfo ) {
-    	  	  //document.getElementById("trainCountFocus").textContent = `, #${focusVehicleIdParam} is not active, it starts from ${focusKTMTrainInfo.stationName}`;
-    	  	  document.getElementById("trainCountFocus").innerHTML = `, #${focusVehicleIdParam} (<span onclick="javascript:showTrainScheduleTable(focusVehicleIdParam)">Schedule</span>) is not active, it starts from ${focusKTMTrainInfo.stationName}`;
-    	  	  //document.getElementById("trainCountFocus").href = `javascript:showTrainScheduleTable(focusVehicleIdParam)`;
+    	  	  document.getElementById("inactiveFocusTrainMesg").innerHTML = `, #${focusVehicleIdParam} (<span id="scheduleOpen" tyle="color:blue" onclick="javascript:showTrainScheduleTable(focusVehicleIdParam)">Schedule</span>) is not active, it starts from ${focusKTMTrainInfo.stationName}`;
+    	  	  //document.getElementById("inactiveFocusTrainMesg").href = `javascript:showTrainScheduleTable(focusVehicleIdParam)`;
 
      	  } else {
-     	      document.getElementById("trainCountFocus").textContent = `,  No information on #${focusVehicleIdParam} `;	
+     	      document.getElementById("inactiveFocusTrainMesg").textContent = `,  No information on #${focusVehicleIdParam} `;	
      	  }
      }
 }
@@ -487,17 +486,17 @@ function showTrainScheduleTable(vehicleId) {
            return timeA[0] - timeB[0] || timeA[1] - timeB[1];
        });
 
-       let table = document.querySelector("#trainScheduleTable");
-       if (table) {
-           table.remove();
-           table = null;
+       let tableSchedule = document.querySelector("#trainScheduleTable");
+       if (tableSchedule) {
+           tableSchedule.remove();
+           tableSchedule = null;
            return;
        }
-       if (!table) {
-           table = document.createElement("table");
-           table.id = "trainScheduleTable";
-           table.style.borderCollapse = "collapse";
-           document.body.appendChild(table);
+       if (!tableSchedule) {
+           tableSchedule = document.createElement("table");
+           tableSchedule.id = "trainScheduleTable";
+           tableSchedule.style.borderCollapse = "collapse";
+           document.body.appendChild(tableSchedule);
        }
 
        const row = document.createElement("tr");
@@ -527,7 +526,9 @@ function showTrainScheduleTable(vehicleId) {
               row.appendChild(cell);	
            }
        });
-       table.appendChild(row);
+       tableSchedule.appendChild(row);       
+       tableSchedule.scrollIntoView({ behavior: "smooth", block: "start" });  // Scroll to table
+
 }
 
 function calculateDistanceInKM(lat1, lon1, lat2, lon2) {
