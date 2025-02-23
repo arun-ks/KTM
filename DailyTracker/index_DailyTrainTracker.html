@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Train Timeline Visualization</title>
+    <script type="text/javascript" src="../GTFSdata/KTMInfo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        canvas {
+            width: 100%;
+            max-width: 1200px;
+            height: 800px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Train Schedule Timeline</h2>
+    <canvas id="trainTimeline"></canvas>
+
+    <script>
+        function timeToMinutes(time) {
+            if(!time || typeof time !== "string" || !time.includes(":")) {
+                console.warn("Invalid time format:", time);
+                return null;
+            }
+            const [hours, minutes] = time.split(":").map(Number);
+            return hours * 60 + minutes;
+        }
+
+        function processTrainData(cuurentTypeOfDay) {
+            const processedTrainData = {};
+            
+            KTMTrains.forEach(train => {
+                const {
+                    vehicleId,
+                    typeOfDay,
+                    departureTime,
+                    arrivalTime
+                } = train;
+                if(train.typeOfDay === cuurentTypeOfDay) {
+                    if(!processedTrainData[vehicleId]) {
+                        processedTrainData[vehicleId] = {
+                            typeOfDay,
+                            earliestDeparture: departureTime,
+                            latestArrival: arrivalTime
+                        };
+                    } else {
+                        if(departureTime < processedTrainData[vehicleId].earliestDeparture) {
+                            processedTrainData[vehicleId].earliestDeparture = departureTime;
+                        }
+                        if(arrivalTime > processedTrainData[vehicleId].latestArrival) {
+                            processedTrainData[vehicleId].latestArrival = arrivalTime;
+                        }
+                    }
+                }
+            });
+            
+            
+            const trainData = [];
+            let index = 1;
+            for(const [trainId, trainInfo] of Object.entries(processedTrainData)) {
+                let start = timeToMinutes(trainInfo.earliestDeparture);
+                let end = timeToMinutes(trainInfo.latestArrival);
+                if(start === null || end === null) {
+                    console.warn("Skipping train due to invalid time:", trainId);
+                    return;
+                }
+                trainData.push({
+                	  start,
+                    label: `Train ${trainId}`,
+                    end,
+                    row: index++,
+                    direction: trainId % 2
+                });
+            }
+            
+            trainData.sort((a, b) => a.start - b.start);
+            return trainData;
+        }
+
+
+
+
+        function drawTimeline() {
+            const trainData = processTrainData("weekday");
+                        
+            const ctx = document.getElementById("trainTimeline").getContext("2d");
+            const chartHeight = trainData.length * 50; // 20px per row
+            ctx.canvas.parentNode.style.height = `${chartHeight}px`; // Set fixed height
+            new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: trainData.map(t => t.label),
+                    datasets: [{
+                        label: "Train Schedule",
+                        data: trainData.map(t => ({
+                            x: [t.start, t.end],
+                            y: t.row
+                        })),
+                        backgroundColor: trainData.map(t => (t.direction === 0) ? "rgba(54, 162, 235, 0.5)" : "rgba(235, 162, 54, 0.5)"),
+                        borderColor: "rgba(54, 162, 235, 1)",
+                        borderWidth: 1,
+                        barPercentage: 1,
+                        categoryPercentage: 0.8,
+                        barThickness: 10 // Set bar height to 15 pixels
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            min: 270, // 04:30 in minutes
+                            max: 1500, // 25:00 in minutes
+                            title: {
+                                display: true,
+                                text: "Time"
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    let hours = Math.floor(value / 60);
+                                    let minutes = value % 60;
+                                    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                                }
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: "Trains"
+                            },
+                            ticks: {
+                                autoSkip: false,
+                                maxRotation: 0,
+                                minRotation: 0
+                            }
+                        }
+                    },
+                    responsive: false, // Prevent dynamic resizing
+                    maintainAspectRatio: false
+                }
+            });
+        }
+        window.onload = drawTimeline;
+    </script>
+
+</body>
+</html>
