@@ -5,6 +5,8 @@ It shows distance of stations & trains as "Minutes of train travel" instead of K
 
 You can get the [live version here for Seremban Line](https://arun-ks.github.io/KTM/) and [this for Port Klang Line](https://arun-ks.github.io/KTM/index_PortKlang.html).
 
+Sometimes, the APIs are down & there is a [supplementary page to track API Status](https://arun-ks.github.io/KTM/apiStatus.html).
+
 ## Purpose
 Users of 2 KTM Lines can use this to plan their trip to KTM stations based on realitime status of trains.
 
