@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Malaysia Train Service API & Monitor Status</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 900px;
+      margin: 20px auto;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f4f4f4;
+      cursor: pointer;
+    }
+
+    .line-cell {
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .status-cell {
+      font-weight: bold;
+    }
+
+    .timestamp {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 1.1em;
+      color: #555;
+    }
+
+    h2 {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h2>KTMB Monitor Status</h2>
+  <div id="monitorStatus" class="timestamp">Loading monitor status...</div>
+  <table id="monitorTable">
+    <thead>
+      <tr>        <th>Service</th>         <th>Monitor Status</th>      </tr>
+    </thead>
+    <tbody>
+      <!-- Monitor status data -->
+    </tbody>
+  </table>
+
+  <h2>Train Line Service Status</h2>
+  <div class="timestamp" id="timestamp">Loading service status...</div>
+  <table id="statusTable">
+    <thead>
+      <tr>
+        <th onclick="sortTable(0)">Line ID</th>
+        <th onclick="sortTable(1)">Line</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Service status data -->
+    </tbody>
+  </table>
+
+  <script>  	
+    async function fetchMtrecMonitorApiData() {
+      try {
+        const res = await fetch('https://api.mtrec.name.my/api/monitor?service=position-api-ktmb');
+        const data = await res.json();
+        const monitorStatus = data.data?.monitor_status || "Unknown";
+
+        document.getElementById('monitorStatus').textContent = `Monitor: ${data.message}`;
+
+        const tbody = document.querySelector("#monitorTable tbody");
+        const row = document.createElement("tr");
+
+        const serviceCell = document.createElement("td");
+        serviceCell.textContent = "KTMB Position API";
+        row.appendChild(serviceCell);
+
+        const statusCell = document.createElement("td");
+        statusCell.textContent = monitorStatus;
+        statusCell.style.color = (monitorStatus === "Normal") ? "green" : "red";
+        row.appendChild(statusCell);
+
+        tbody.appendChild(row);
+      } catch (err) {
+        document.getElementById('monitorStatus').textContent = "Failed to load monitor status.";
+        console.error(err);
+      }
+    }
+
+    async function fetchMtrecServiceStatusApiData() {
+      try {
+        const response = await fetch('https://api.mtrec.name.my/api/servicestatus');
+        const data = await response.json();
+
+        document.getElementById('timestamp').textContent = `Last Updated: ${data.Timestamp}`;
+
+        const tbody = document.querySelector("#statusTable tbody");
+        data.Data.forEach(item => {
+          const row = document.createElement("tr");
+
+          const lineIdCell = document.createElement("td");
+          lineIdCell.textContent = item.LineID;
+          row.appendChild(lineIdCell);
+
+          const lineCell = document.createElement("td");
+          lineCell.textContent = item.Line;
+          lineCell.style.backgroundColor = `#${item.Line_Colour}`;
+          lineCell.classList.add("line-cell");
+          row.appendChild(lineCell);
+
+          const statusCell = document.createElement("td");
+          statusCell.textContent = item.Status;
+          statusCell.style.color = item.Status_Colour;
+          statusCell.classList.add("status-cell");
+          row.appendChild(statusCell);
+
+          tbody.appendChild(row);
+        });
+
+      } catch (error) {
+        document.getElementById('timestamp').textContent = "Failed to load service status.";
+        console.error("Service status error:", error);
+      }
+    }
+
+    function sortTable(columnIndex) {
+      const table = document.getElementById("statusTable");
+      const rows = Array.from(table.rows).slice(1); // Exclude header
+      const sortedRows = rows.sort((a, b) => {
+        const textA = a.cells[columnIndex].textContent.toUpperCase();
+        const textB = b.cells[columnIndex].textContent.toUpperCase();
+        return textA.localeCompare(textB);
+      });
+
+      const tbody = table.tBodies[0];
+      tbody.innerHTML = "";
+      sortedRows.forEach(row => tbody.appendChild(row));
+    }
+
+    fetchMtrecMonitorApiData();
+    fetchMtrecServiceStatusApiData();
+  </script>
+</body>
+</html>
