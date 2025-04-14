@@ -65,9 +65,8 @@
   <table id="statusTable">
     <thead>
       <tr>
-        <th onclick="sortTable(0)">Line ID</th>
-        <th onclick="sortTable(1)">Line</th>
-        <th>Status</th>
+        <th onclick="sortTable(0)">Line</th>
+        <th onclick="sortTable(1)">Status</th>
       </tr>
     </thead>
     <tbody>
@@ -114,9 +113,9 @@
         data.Data.forEach(item => {
           const row = document.createElement("tr");
 
-          const lineIdCell = document.createElement("td");
-          lineIdCell.textContent = item.LineID;
-          row.appendChild(lineIdCell);
+         // const lineIdCell = document.createElement("td");
+         // lineIdCell.textContent = item.LineID;
+         // row.appendChild(lineIdCell);
 
           const lineCell = document.createElement("td");
           lineCell.textContent = item.Line;
