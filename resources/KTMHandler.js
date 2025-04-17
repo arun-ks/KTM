@@ -174,7 +174,7 @@ function plotStationsOnMap() {
 }
 
 async function fetchMtrecTrainPositionApiData() {
-	     // Function to fetch data from MTREC API
+	    // Function to fetch data from MTREC API
       // API       : https://www.mtrec.name.my/api.html
       // DataSets  : https://developer.data.gov.my/static-api/data-catalogue
      countdown = COUNTDOWN_SECONDS;
@@ -185,32 +185,32 @@ async function fetchMtrecTrainPositionApiData() {
          console.log((new Date()).toLocaleTimeString(),'Count: ', data.data.length,', Response: ', data);
          const vehicles = data.data || [];
          if (data.data.length == 0 ) {
-         	 fetchMtrecStatusMonitorApiData();
+         	 fetchMtrecServicePositionStatusApiData();
          } else {
          	 document.getElementById("system_status").innerHTML="";
             classifyVehiclesForPlotting(vehicles);
          }
      } catch (error) {
          console.error('Error fetching data from API:', error);
-         fetchMtrecStatusMonitorApiData();
+         fetchMtrecServicePositionStatusApiData();
      }
 }
 
-async function fetchMtrecStatusMonitorApiData() {
+async function fetchMtrecServicePositionStatusApiData() {
      try {
          const response = await fetch('https://api.mtrec.name.my/api/monitor?service=position-api-ktmb');
          const data = await response.json();
          console.log((new Date()).toLocaleTimeString(),' (API Response) :', data);
          const api_monitor_status = data.data.monitor_status;
 
-     document.getElementById("system_status").innerHTML= ("Down"==api_monitor_status) ?
+         document.getElementById("system_status").innerHTML= ("Down"==api_monitor_status) ?
              `API Status:<b><span style="color: red;">${api_monitor_status}</span></b>`:
              `API Status:<b><span style="color: green;">${api_monitor_status}</span></b>`;
      } catch (error) {
          console.error('Error fetching data from API:', error);
      }		      	
 }
-
+      
 function classifyVehiclesForPlotting(vehicles) {
      let upCount = 0,downCount = 0,naCount = 0, focusCount = 0;
      document.getElementById("inactiveFocusTrainMesg").textContent = "";
@@ -334,7 +334,7 @@ function unplotAllVechiclesOnMap() {
      });       	
 }
 
-function showStationScheduleTable(stationName, direction) {
+function showStationScheduleTableOld(stationName, direction) {
        const isWeekend = [0, 6].includes(new Date().getDay());
        const typeOfDay = isWeekend ? "weekend" : "weekday";
 
@@ -407,7 +407,7 @@ function showStationScheduleTable(stationName, direction) {
            const arrivalTime = new Date(currentDate);
            arrivalTime.setHours(hours, minutes, 0, 0);
 
-           //currentDate.setHours(9, 32, 0, 0); //For TESTING
+           currentDate.setHours(10, 32, 0, 0); //For TESTING          *************************************
            let diffMinutes = (arrivalTime - currentDate) / (1000 * 60);
            if (diffMinutes < 0 && diffMinutes >= -60) {
                cell.style.backgroundColor = "lightcoral";
@@ -445,6 +445,136 @@ function showStationScheduleTable(stationName, direction) {
              document.body.appendChild(tableLegend);
        }
 }
+
+function showStationScheduleTable(stationName, direction) {
+       const isWeekend = [0, 6].includes(new Date().getDay());
+       const typeOfDay = isWeekend ? "weekend" : "weekday";
+
+       let trainsForStationAndTypeOfDayUnsorted = KTMTrains.filter(train => train.typeOfDay === typeOfDay && train.stationName === stationName && train.direction === direction);
+       let trainsForStationAndTypeOfDay = trainsForStationAndTypeOfDayUnsorted.sort((trainA, trainB) => {
+           let timeA = trainA.arrivalTime.split(":").map(Number);
+           let timeB = trainB.arrivalTime.split(":").map(Number);
+           return timeA[0] - timeB[0] || timeA[1] - timeB[1];
+       });
+
+       const currentDate = new Date();
+       if (currentDate.getHours() < 5 )  // Handle times when pages is opened when there are no trains ...
+          currentDate.setHours(4);
+          
+       //currentDate.setHours(10, 32, 0, 0); //For TESTING          *************************************   
+
+       // Create table if there is none. If it has 1 row, append next row to it. If it already had 2 rows then delete the table.
+       let table = document.querySelector("#stationScheduleTable");
+       if (table) {
+           if (table.rows.length === 2) {
+               table.remove();
+               table = null;
+           }
+       }
+       if (!table) {
+           table = document.createElement("table");
+           table.id = "stationScheduleTable";
+           table.style.borderCollapse = "collapse";
+           document.body.appendChild(table);
+       }
+
+       const row = document.createElement("tr");
+       const stationCell = document.createElement("td");
+
+       stationCell.textContent = direction +" ";
+       stationCell.style.fontSize = "small";
+       stationCell.style.border = "1px solid black";
+
+       vehicleIconDesign= iconDesigns[direction];
+       const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+       svg.setAttribute("width", vehicleIconDesign.dimension);
+       svg.setAttribute("height",vehicleIconDesign.dimension);
+       svg.setAttribute("viewBox", vehicleIconDesign.viewBox);
+       svg.setAttribute("fill", vehicleIconDesign.colour);
+       const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+       path.setAttribute("d", vehicleIconDesign.svgPathd);
+       svg.appendChild(path);
+       stationCell.appendChild(svg);
+
+       row.appendChild(stationCell);
+
+       trainsForStationAndTypeOfDay.forEach(train => {
+       	  const cell = document.createElement("td");
+           cell.style.fontSize = "small";                   // Use x-small for smaller font
+           cell.style.border = "1px solid black";
+           cell.style.whiteSpace = "normal";
+
+           cell.appendChild(document.createTextNode(`${train.arrivalTime}`));
+           if (train.isActive == true) {
+           	   cell.style.fontWeight = 'bold';
+               cell.appendChild(document.createTextNode("*"));
+           }                    
+           
+           const [hours, minutes] = train.arrivalTime.split(":").map(Number);
+           const arrivalTime = new Date(currentDate);
+           arrivalTime.setHours(hours, minutes, 0, 0);           
+           
+           let diffMinutes = (arrivalTime - currentDate) / (1000 * 60);
+           if (diffMinutes < 0 && diffMinutes >= -60) {
+               cell.style.backgroundColor = "lightcoral";
+           } else if (diffMinutes >= 0 && diffMinutes <= 120) {
+               cell.style.backgroundColor = "lightgreen";
+           }
+           
+         
+           let trainSummaryData = KTMTrainsSummary.filter(trainSummary => trainSummary.typeOfDay === typeOfDay && trainSummary.vehicleId === train.vehicleId);
+           let [hrs, mins] = trainSummaryData[0].arrivalTimeStart.split(":").map(Number);
+           const arrivalTimeStart = new Date(currentDate);
+           arrivalTimeStart.setHours(hrs, mins, 0, 0);
+           [hrs, mins] = trainSummaryData[0].arrivalTimeEnd.split(":").map(Number);
+           const arrivalTimeEnd = new Date(currentDate);
+           arrivalTimeEnd.setHours(hrs, mins, 0, 0);           
+           if ( arrivalTimeStart <= currentDate  && currentDate <=  arrivalTimeEnd ) {
+           	   cell.appendChild(document.createTextNode("+"));
+           }
+
+           cell.appendChild(document.createElement("br"));
+           cell.appendChild(document.createTextNode("("));
+           const vehicleLink = document.createElement("a");
+           vehicleLink.href = `${window.location.pathname}?focusVehicleId=${train.vehicleId}&baseStation=${stationName}`;
+           vehicleLink.textContent = `${train.vehicleId}${train.vehicleType}`;
+           cell.appendChild(vehicleLink);
+           cell.appendChild(document.createTextNode(")"));
+
+
+
+           // Show only the trains for last 1 hour & next 2 hours if the page is opened on a Mobile/Watch.
+           if ( !(deviceType == "Desktop") && ( train.isActive  ||(diffMinutes >= -60 && diffMinutes <= 120)) ) {
+           		row.appendChild(cell);
+           }
+           if ( (deviceType == "Desktop")) {
+              row.appendChild(cell);	
+           }
+       });
+       table.appendChild(row);
+
+       // Add legend after the 2nd row was added.
+       if (table.rows.length === 2) {
+            let tableLegend = document.querySelector("#stationScheduleLegend");
+             tableLegend = document.createElement("table");
+             tableLegend.id = "stationScheduleLegend";
+             tableLegend.style.borderCollapse = "collapse";
+             tableLegend.innerHTML = `
+                 <tr>
+                     <td style="font-size: small; border: 1px dotted black; white-space: normal;">Legend: </td>
+                     <td style="background-color: lightcoral; font-size: small; border: 1px dotted black; white-space: normal;">Trains in last 1 hr</td>
+                     <td style="background-color: lightgreen; font-size: small; border: 1px dotted black; white-space: normal;">Trains for next 2 hrs</td>
+                     <td style="font-size: small; border: 1px dotted black; white-space: normal;"><strong>Train is on the map</strong></td>
+                     <td style="font-size: small; border: 1px dotted black; white-space: normal;">+ Train is active on tracks</td>
+                 </tr>
+                 <tr>
+                     <td style="font-size: small; border: 1px dotted black; white-space: normal;" colspan=4>Arrival Times on ${typeOfDay}s at ${baseStationParam}. Schedule updated on ${GTFSDataExtractDate}</td>
+                 </tr>
+             `;
+             document.body.appendChild(tableLegend);
+       }
+}
+
 
 function toggleStationScheduleTableVisibility() {
     let tableSchedule = document.querySelector("#stationScheduleTable");
