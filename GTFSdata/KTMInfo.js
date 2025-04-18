@@ -995,7 +995,6 @@ let KTMTrains = [
     { vehicleId: 2602, typeOfDay: "weekday", stationId: 18900, stationName: "Bank Negara"          , arrivalTime: "31:49", departureTime: "31:50", distanceTravelled: 123.58  }, 
     { vehicleId: 2602, typeOfDay: "weekday", stationId: 18800, stationName: "Putra"                , arrivalTime: "31:52", departureTime: "31:53", distanceTravelled: 124.94  }, 
     { vehicleId: 2602, typeOfDay: "weekday", stationId: 50000, stationName: "Sentul"               , arrivalTime: "31:58", departureTime: "31:58", distanceTravelled: 127.286 }, 
-*/    
     { vehicleId: 2603, typeOfDay: "weekday", stationId: 50000, stationName: "Sentul"               , arrivalTime: "17:37", departureTime: "17:37", distanceTravelled: 0       }, 
     { vehicleId: 2603, typeOfDay: "weekday", stationId: 18800, stationName: "Putra"                , arrivalTime: "17:42", departureTime: "17:43", distanceTravelled: 2.346   }, 
     { vehicleId: 2603, typeOfDay: "weekday", stationId: 18900, stationName: "Bank Negara"          , arrivalTime: "17:45", departureTime: "17:46", distanceTravelled: 3.706   }, 
@@ -1019,6 +1018,7 @@ let KTMTrains = [
     { vehicleId: 2603, typeOfDay: "weekday", stationId: 23100, stationName: "Sungai Gadut"         , arrivalTime: "19:32", departureTime: "19:33", distanceTravelled: 88.006  }, 
     { vehicleId: 2603, typeOfDay: "weekday", stationId: 23900, stationName: "Rembau"               , arrivalTime: "19:45", departureTime: "19:45", distanceTravelled: 102.186 }, 
     { vehicleId: 2603, typeOfDay: "weekday", stationId: 25100, stationName: "Pulau Sebang"         , arrivalTime: "20:02", departureTime: "20:02", distanceTravelled: 127.146 }, 
+*/    
     { vehicleId: 2206, typeOfDay: "weekend", stationId: 25100, stationName: "Pulau Sebang"         , arrivalTime: "05:45", departureTime: "05:45", distanceTravelled: 0.0     }, 
     { vehicleId: 2206, typeOfDay: "weekend", stationId: 23900, stationName: "Rembau"               , arrivalTime: "06:01", departureTime: "06:02", distanceTravelled: 24.96   }, 
     { vehicleId: 2206, typeOfDay: "weekend", stationId: 23100, stationName: "Sungai Gadut"         , arrivalTime: "06:14", departureTime: "06:15", distanceTravelled: 39.14   }, 
@@ -1534,8 +1534,10 @@ let KTMTrainsSummary = [
     { vehicleId: 2258, typeOfDay: "weekend", stationNameStart: "Pulau Sebang"         , arrivalTimeStart: "19:40", stationNameEnd: "Batu Caves"           , arrivalTimeEnd: "22:30", distanceTravelled: 134.586  },
     { vehicleId: 2259, typeOfDay: "weekend", stationNameStart: "Batu Caves"           , arrivalTimeStart: "21:00", stationNameEnd: "Sungai Gadut"         , arrivalTimeEnd: "23:28", distanceTravelled: 95.306   },
     { vehicleId: 2262, typeOfDay: "weekend", stationNameStart: "Sungai Gadut"         , arrivalTimeStart: "21:05", stationNameEnd: "Batu Caves"           , arrivalTimeEnd: "23:35", distanceTravelled: 95.446   },
+/*
     { vehicleId: 2602, typeOfDay: "weekday", stationNameStart: "Senawang"             , arrivalTimeStart: "06:04", stationNameEnd: "Sentul"               , arrivalTimeEnd: "31:58", distanceTravelled: 127.286  },
     { vehicleId: 2603, typeOfDay: "weekday", stationNameStart: "Sentul"               , arrivalTimeStart: "17:37", stationNameEnd: "Pulau Sebang"         , arrivalTimeEnd: "20:02", distanceTravelled: 127.146  },
+*/
     { vehicleId: 9999, typeOfDay: "na"     , stationNameStart: "na "                  , arrivalTimeStart: "na"   , stationNameEnd: "na "                  , arrivalTimeEnd: "na"   , distanceTravelled: 0        },
 ];
 
