@@ -507,30 +507,31 @@ function showStationScheduleTable(stationName, direction) {
            cell.appendChild(document.createTextNode(`${train.arrivalTime}`));
            if (train.isActive == true) {
            	   cell.style.fontWeight = 'bold';
-               cell.appendChild(document.createTextNode("*"));
-           }                    
-           
-           const [hours, minutes] = train.arrivalTime.split(":").map(Number);
-           const arrivalTime = new Date(currentDate);
-           arrivalTime.setHours(hours, minutes, 0, 0);           
-           
-           let diffMinutes = (arrivalTime - currentDate) / (1000 * 60);
-           if (diffMinutes < 0 && diffMinutes >= -60) {
-               cell.style.backgroundColor = "lightcoral";
-           } else if (diffMinutes >= 0 && diffMinutes <= 120) {
-               cell.style.backgroundColor = "lightgreen";
-           }
-           
-         
-           let trainSummaryData = KTMTrainsSummary.filter(trainSummary => trainSummary.typeOfDay === typeOfDay && trainSummary.vehicleId === train.vehicleId);
-           let [hrs, mins] = trainSummaryData[0].arrivalTimeStart.split(":").map(Number);
-           const arrivalTimeStart = new Date(currentDate);
-           arrivalTimeStart.setHours(hrs, mins, 0, 0);
-           [hrs, mins] = trainSummaryData[0].arrivalTimeEnd.split(":").map(Number);
-           const arrivalTimeEnd = new Date(currentDate);
-           arrivalTimeEnd.setHours(hrs, mins, 0, 0);           
-           if ( arrivalTimeStart <= currentDate  && currentDate <=  arrivalTimeEnd ) {
-           	   cell.appendChild(document.createTextNode("+"));
+               cell.appendChild(document.createTextNode("*"));   //Marking trains which are in API response
+           } else 
+           {
+              //Check if this train should be on the API response as they are on the track
+              const [hours, minutes] = train.arrivalTime.split(":").map(Number);
+              const arrivalTime = new Date(currentDate);
+              arrivalTime.setHours(hours, minutes, 0, 0);           
+              
+              let diffMinutes = (arrivalTime - currentDate) / (1000 * 60);
+              if (diffMinutes < 0 && diffMinutes >= -60) {
+                  cell.style.backgroundColor = "lightcoral";
+              } else if (diffMinutes >= 0 && diffMinutes <= 120) {
+                  cell.style.backgroundColor = "lightgreen";
+              }           
+              
+              let trainSummaryData = KTMTrainsSummary.filter(trainSummary => trainSummary.typeOfDay === typeOfDay && trainSummary.vehicleId === train.vehicleId);
+              let [hrs, mins] = trainSummaryData[0].arrivalTimeStart.split(":").map(Number);
+              const arrivalTimeStart = new Date(currentDate);
+              arrivalTimeStart.setHours(hrs, mins, 0, 0);
+              [hrs, mins] = trainSummaryData[0].arrivalTimeEnd.split(":").map(Number);
+              const arrivalTimeEnd = new Date(currentDate);
+              arrivalTimeEnd.setHours(hrs, mins, 0, 0);           
+              if ( arrivalTimeStart <= currentDate  && currentDate <=  arrivalTimeEnd) {
+              	   cell.appendChild(document.createTextNode("+"));
+              }
            }
 
            cell.appendChild(document.createElement("br"));
@@ -564,8 +565,8 @@ function showStationScheduleTable(stationName, direction) {
                      <td style="font-size: small; border: 1px dotted black; white-space: normal;">Legend: </td>
                      <td style="background-color: lightcoral; font-size: small; border: 1px dotted black; white-space: normal;">Trains in last 1 hr</td>
                      <td style="background-color: lightgreen; font-size: small; border: 1px dotted black; white-space: normal;">Trains for next 2 hrs</td>
-                     <td style="font-size: small; border: 1px dotted black; white-space: normal;"><strong>Train is on the map</strong></td>
-                     <td style="font-size: small; border: 1px dotted black; white-space: normal;">+ Train is active on tracks</td>
+                     <td style="font-size: small; border: 1px dotted black; white-space: normal;"><strong>* Train is on the map</strong></td>
+                     <td style="font-size: small; border: 1px dotted black; white-space: normal;">+ Train is active on tracks, but position is unknown</td>
                  </tr>
                  <tr>
                      <td style="font-size: small; border: 1px dotted black; white-space: normal;" colspan=4>Arrival Times on ${typeOfDay}s at ${baseStationParam}. Schedule updated on ${GTFSDataExtractDate}</td>
