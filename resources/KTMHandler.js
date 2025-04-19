@@ -396,20 +396,20 @@ function showStationScheduleTable(stationName, direction) {
            if (train.isActive == true) {
            	   cell.style.fontWeight = 'bold';
                cell.appendChild(document.createTextNode("*"));   //Marking trains which are in API response
-           } else 
-           {
-              //Check if this train should be on the API response as they are on the track
-              const [hours, minutes] = train.arrivalTime.split(":").map(Number);
-              const arrivalTime = new Date(currentDate);
-              arrivalTime.setHours(hours, minutes, 0, 0);           
-              
-              let diffMinutes = (arrivalTime - currentDate) / (1000 * 60);
-              if (diffMinutes < 0 && diffMinutes >= -60) {
-                  cell.style.backgroundColor = "lightcoral";
-              } else if (diffMinutes >= 0 && diffMinutes <= 120) {
-                  cell.style.backgroundColor = "lightgreen";
-              }           
-              
+           } 
+          
+           const [hours, minutes] = train.arrivalTime.split(":").map(Number);
+           const arrivalTime = new Date(currentDate);
+           arrivalTime.setHours(hours, minutes, 0, 0);           
+           
+           let diffMinutes = (arrivalTime - currentDate) / (1000 * 60);
+           if (diffMinutes < 0 && diffMinutes >= -60) {
+               cell.style.backgroundColor = "lightcoral";
+           } else if (diffMinutes >= 0 && diffMinutes <= 120) {
+               cell.style.backgroundColor = "lightgreen";
+           }           
+           
+           if (train.isActive == false ) {   //Check if this train should be on the API response as they are on the track
               let trainSummaryData = KTMTrainsSummary.filter(trainSummary => trainSummary.typeOfDay === typeOfDay && trainSummary.vehicleId === train.vehicleId);
               let [hrs, mins] = trainSummaryData[0].arrivalTimeStart.split(":").map(Number);
               const arrivalTimeStart = new Date(currentDate);
