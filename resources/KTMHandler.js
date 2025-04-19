@@ -465,7 +465,7 @@ function showStationScheduleTable(stationName, direction) {
 }
 
 function toggleStationScheduleTableVisibility() {
-	  console.log("Button Pressed...0");
+	  console.log("Button Pressed...0"); ///***************** REMOVE THIS LATER
     let tableSchedule = document.querySelector("#stationScheduleTable");
     let tableLegend = document.querySelector("#stationScheduleLegend");
     const button = document.querySelector("#toggleStationScheduleButton");
@@ -484,13 +484,11 @@ function toggleStationScheduleTableVisibility() {
         displayScheduleFlag = true;
         tableSchedule.scrollIntoView({ behavior: "smooth", block: "start" });  // Scroll to table    
         button.textContent = "Hide Schedule";
-        console.log("Button Pressed...1 and made Hide");
     } else {
         tableSchedule.style.display = "none";
         tableLegend.style.display = "none" ;
         displayScheduleFlag = false;
         button.textContent = "Show Schedule";
-        console.log("Button Pressed...1 and made Show");
         if (tableSchedule) {
            tableSchedule.remove();
            tableLegend.remove();
