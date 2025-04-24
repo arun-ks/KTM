@@ -392,16 +392,11 @@ function showStationScheduleTable(stationName, direction) {
            cell.style.border = "1px solid black";
            cell.style.whiteSpace = "normal";
 
-           cell.appendChild(document.createTextNode(`${train.arrivalTime}`));
-           if (train.isActive == true) {
-           	   cell.style.fontWeight = 'bold';
-               cell.appendChild(document.createTextNode("*"));   //Marking trains which are in API response
-           } 
-          
+           cell.appendChild(document.createTextNode(`${train.arrivalTime}`));        
+           
            const [hours, minutes] = train.arrivalTime.split(":").map(Number);
            const arrivalTime = new Date(currentDate);
            arrivalTime.setHours(hours, minutes, 0, 0);           
-           
            let diffMinutes = (arrivalTime - currentDate) / (1000 * 60);
            if (diffMinutes < 0 && diffMinutes >= -60) {
                cell.style.backgroundColor = "lightcoral";
@@ -409,7 +404,11 @@ function showStationScheduleTable(stationName, direction) {
                cell.style.backgroundColor = "lightgreen";
            }           
            
-           if (train.isActive == false ) {   //Check if this train should be on the API response as they are on the track
+           
+           if (train.isActive == true) {
+           	   cell.style.fontWeight = 'bold';
+               cell.appendChild(document.createTextNode("*"));   //Marking trains which are in API response
+           } else {   //Check if this train should be on the API response as they are on the track
               let trainSummaryData = KTMTrainsSummary.filter(trainSummary => trainSummary.typeOfDay === typeOfDay && trainSummary.vehicleId === train.vehicleId);
               let [hrs, mins] = trainSummaryData[0].arrivalTimeStart.split(":").map(Number);
               const arrivalTimeStart = new Date(currentDate);
@@ -525,6 +524,12 @@ function showTrainScheduleTable(vehicleId) {
        trainCell.style.fontSize = "small";
        trainCell.style.border = "1px solid black";
        row.appendChild(trainCell);
+       
+       const currentDate = new Date();
+       if (currentDate.getHours() < 5 )  // Handle times when pages is opened when there are no trains ...
+          currentDate.setHours(4);
+          
+       //currentDate.setHours(10, 32, 0, 0); //For TESTING          *************************************   
 
        stationForTrain.forEach(train => {
        	  const cell = document.createElement("td");
@@ -533,9 +538,27 @@ function showTrainScheduleTable(vehicleId) {
            cell.style.whiteSpace = "normal";
 
            cell.appendChild(document.createTextNode(`${train.arrivalTime}`));
-
            cell.appendChild(document.createElement("br"));
-           cell.appendChild(document.createTextNode(`${train.stationName}`));
+           
+           const vehicleLink = document.createElement("a");
+           vehicleLink.href = `https://myrailtime.ktmb.com.my/timetable?origin=${train.stationId}`;
+           vehicleLink.textContent = `${train.stationName}`;
+           vehicleLink.target = "_blank";
+           vehicleLink.rel = "noopener noreferrer";
+           cell.appendChild(vehicleLink);        
+           
+                    
+           const [hours, minutes] = train.arrivalTime.split(":").map(Number);
+           const arrivalTime = new Date(currentDate);
+           arrivalTime.setHours(hours, minutes, 0, 0);           
+           let diffMinutes = (arrivalTime - currentDate) / (1000 * 60);
+           if (diffMinutes < 0 && diffMinutes >= -30) {
+               cell.style.backgroundColor = "lightcoral";
+           } else if (diffMinutes >= 0 && diffMinutes <= 30) {
+               cell.style.backgroundColor = "lightgreen";
+           }                            
+           
+           
 
            // Show only the trains for last 1 hour & next 2 hours if the page is opened on a Mobile/Watch.
            if ( !(deviceType == "Desktop") && ( train.isActive  ||(diffMinutes >= -60 && diffMinutes <= 120)) ) {
