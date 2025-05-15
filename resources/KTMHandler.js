@@ -186,13 +186,14 @@ async function fetchMtrecTrainPositionApiData() {
          const vehicles = data.data || [];
          if (data.data.length == 0 ) {
          	 fetchMtrecServicePositionStatusApiData();
+         	 classifyVehiclesForPlotting(vehicles);
          } else {
          	 document.getElementById("system_status").innerHTML="";
-            classifyVehiclesForPlotting(vehicles);
+           classifyVehiclesForPlotting(vehicles);
          }
      } catch (error) {
          console.error('Error fetching data from API:', error);
-         fetchMtrecServicePositionStatusApiData();
+         fetchMtrecServicePositionStatusApiData();         
      }
 }
 
