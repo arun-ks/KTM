@@ -5,7 +5,7 @@ const iconDesigns = {
   	'user' : { viewBox: '0 0 30 30' , dimension: 20, colour:'green' , svgPathd: 'M12 6 A3 3 0 1 1 18 6 A3 3 0 1 1 12 6 Z  M10 9 L20 9 L20 20 L10 20 Z  M5 10 L10 10 L10 14 L5 14 Z  M20 10 L25 10 L25 14 L20 14 Z M10 20 L14 20 L14 26 L10 26 Z  M16 20 L20 20 L20 26 L16 26 Z'  }
 }
 
-function findDeviceTypeBeingUsed() {
+function findDeviceTypeBeingUsed() {    // Returns Watch/Mobile/Desktop
     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
     if (/watch|samsungbrowser/i.test(userAgent.toLowerCase())) { return "Watch";}
     if (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase())) { return "Mobile"; }
@@ -661,10 +661,9 @@ plotStationsOnMap();
 let displayScheduleFlag = false;
 const deviceType = findDeviceTypeBeingUsed();
 
-toggleStationScheduleTableVisibility();
-
 fetchMtrecTrainPositionApiData(); // <== Main Function to fetch data & Plot
 
+if (deviceType === "Desktop" ) toggleStationScheduleTableVisibility();
 
 setInterval(() => {
     countdown -= 1;
