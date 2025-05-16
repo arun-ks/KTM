@@ -464,8 +464,7 @@ function showStationScheduleTable(stationName, direction) {
        }
 }
 
-function toggleStationScheduleTableVisibility() {
-	  console.log("Button Pressed...0"); ///***************** REMOVE THIS LATER
+function toggleStationScheduleTableVisibility() {	  
     let tableSchedule = document.querySelector("#stationScheduleTable");
     let tableLegend = document.querySelector("#stationScheduleLegend");
     const button = document.querySelector("#toggleStationScheduleButton");
@@ -662,7 +661,10 @@ plotStationsOnMap();
 let displayScheduleFlag = false;
 const deviceType = findDeviceTypeBeingUsed();
 
+toggleStationScheduleTableVisibility();
+
 fetchMtrecTrainPositionApiData(); // <== Main Function to fetch data & Plot
+
 
 setInterval(() => {
     countdown -= 1;
