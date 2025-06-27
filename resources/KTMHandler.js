@@ -335,9 +335,30 @@ function unplotAllVechiclesOnMap() {
      });       	
 }
 
-function showStationScheduleTable(stationName, direction) {
+function getTypeOfDay() {
+       const malaysiaPublicHolidays = [
+         "2025-06-02", // Agong's Birthday
+         "2025-06-07", // Hari Raya Haji
+         "2025-06-27", // Awal Muharram
+         "2025-09-01", // Merdeka Day (in-lieu)
+         "2025-09-05", // Maulidur Rasul
+         "2025-09-16", // Malaysia Day
+         "2025-10-20", // Deepavali
+         "2025-12-25"  // Christmas Day
+       ];
+       
+       const todayStr = new Date().toISOString().split("T")[0];   //Date as YYYY-MM-DD
+       
        const isWeekend = [0, 6].includes(new Date().getDay());
-       const typeOfDay = isWeekend ? "weekend" : "weekday";
+       const isPublicHoliday = malaysiaPublicHolidays.includes(todayStr);
+       const typeOfDay = (isWeekend || isPublicHoliday) ? "weekend" : "weekday";    
+       return typeOfDay;
+	
+}
+
+
+function showStationScheduleTable(stationName, direction) {
+       const typeOfDay = getTypeOfDay();
 
        let trainsForStationAndTypeOfDayUnsorted = KTMTrains.filter(train => train.typeOfDay === typeOfDay && train.stationName === stationName && train.direction === direction);
        let trainsForStationAndTypeOfDay = trainsForStationAndTypeOfDayUnsorted.sort((trainA, trainB) => {
@@ -457,7 +478,7 @@ function showStationScheduleTable(stationName, direction) {
                      <td style="font-size: small; border: 1px dotted black; white-space: normal;">+ Train is active on tracks, but position is unknown</td>
                  </tr>
                  <tr>
-                     <td style="font-size: small; border: 1px dotted black; white-space: normal;" colspan=4>Arrival Times on ${typeOfDay}s at ${baseStationParam}. Schedule updated on ${GTFSDataExtractDate}</td>
+                     <td style="font-size: small; border: 1px dotted black; white-space: normal;" colspan=4>Arrival Times on ${typeOfDay}s at ${baseStationParam}. <a href="https://www.ktmb.com.my/TrainTime.html">Schedule</a> updated on ${GTFSDataExtractDate}</td>
                  </tr>
              `;
              document.body.appendChild(tableLegend);
