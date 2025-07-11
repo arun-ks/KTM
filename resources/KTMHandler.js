@@ -274,7 +274,7 @@ function classifyVehiclesForPlotting(vehicles) {
      document.getElementById("trainCountBoth").textContent = `${bothCount}`;
 
      if ( focusVehicleIdParam > 0 && focusCount == 0 ) { // If we are in focus Mode & the focused Train has no data
-     	  let focusKTMTrainInfo = KTMTrains.find(train => train.vehicleId === focusVehicleIdParam && train.distanceTravelled === 0);
+     	  let focusKTMTrainInfo = KTMTrains.find(train => train.vehicleId === focusVehicleIdParam);
      	  if ( focusKTMTrainInfo ) {
     	  	  document.getElementById("inactiveFocusTrainMesg").innerHTML = `, #${focusVehicleIdParam} (<span id="scheduleOpen" tyle="color:blue" onclick="javascript:showTrainScheduleTable(focusVehicleIdParam)">Schedule</span>) is not active, it starts from ${focusKTMTrainInfo.stationName}`;
     	  	  //document.getElementById("inactiveFocusTrainMesg").href = `javascript:showTrainScheduleTable(focusVehicleIdParam)`;
