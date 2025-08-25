@@ -118,7 +118,7 @@ function handleBaseStationUpdate(newBaseStation) {
 }
 
 function initializeMap(baseStation) {
-	    // Initialize the map to Location to baseStation
+	   // Initialize the map to Location to baseStation
      // API reference https://leafletjs.com/reference.html
      const map = L.map('map').setView(KTMStations[baseStation].location, 11);
      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -127,7 +127,6 @@ function initializeMap(baseStation) {
      }).addTo(map);
 
      //map.locate({setView: true, maxZoom: 16});
-
      return map;
 }
 
@@ -342,6 +341,7 @@ function getTypeOfDay() {
          "2025-06-27", // Awal Muharram
          "2025-09-01", // Merdeka Day (in-lieu)
          "2025-09-05", // Maulidur Rasul
+         "2025-09-15", // Malaysia Day Eve         
          "2025-09-16", // Malaysia Day
          "2025-10-20", // Deepavali
          "2025-12-25"  // Christmas Day
@@ -684,8 +684,6 @@ const deviceType = findDeviceTypeBeingUsed();
 
 fetchMtrecTrainPositionApiData(); // <== Main Function to fetch data & Plot
 
-if (deviceType === "Desktop" ) toggleStationScheduleTableVisibility();
-
 setInterval(() => {
     countdown -= 1;
     const button = document.getElementById("countdownButton");
@@ -694,3 +692,5 @@ setInterval(() => {
           fetchMtrecTrainPositionApiData();
     }
 }, 1000);
+
+//if (deviceType === "Desktop" ) toggleStationScheduleTableVisibility();
