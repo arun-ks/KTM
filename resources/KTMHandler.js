@@ -119,7 +119,9 @@ function handleBaseStationUpdate(newBaseStation) {
 
 function initializeMap(baseStation) {
 	   // Initialize the map to Location to baseStation
-     // API reference https://leafletjs.com/reference.html
+     // API reference https://leafletjs.com/reference.html     
+     
+     // Openstreem Map has Transport Map Layer, but that requires API key from https://www.thunderforest.com/maps/transport/ hence it is not used.     
      const map = L.map('map').setView(KTMStations[baseStation].location, 11);
      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
          maxZoom: 18,
