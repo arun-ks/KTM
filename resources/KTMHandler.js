@@ -1,8 +1,8 @@
 const iconDesigns = {
-  	'up'   : { viewBox: '0 0 30 30' , dimension: 20, colour:'blue'  , svgPathd: 'M15 5 L25 25 L5 25 Z'       },
-  	'down' : { viewBox: '0 0 30 30' , dimension: 20, colour:'red'   , svgPathd: 'M15 25 L25 5 L5 5 Z'        },
-  	'na'   : { viewBox: '0 0 30 30' , dimension: 20, colour:'green' , svgPathd: 'M5 5 L25 5 L25 25 L5 25 Z'  },
-  	'user' : { viewBox: '0 0 30 30' , dimension: 20, colour:'green' , svgPathd: 'M12 6 A3 3 0 1 1 18 6 A3 3 0 1 1 12 6 Z  M10 9 L20 9 L20 20 L10 20 Z  M5 10 L10 10 L10 14 L5 14 Z  M20 10 L25 10 L25 14 L20 14 Z M10 20 L14 20 L14 26 L10 26 Z  M16 20 L20 20 L20 26 L16 26 Z'  }
+  	'up'   : { viewBox: '0 0 30 30' , dimensionW: 20, dimensionH: 20, colour:'blue'  , svgPathd: 'M15 5 L25 25 L5 25 Z'       },
+  	'down' : { viewBox: '0 0 30 30' , dimensionW: 20, dimensionH: 20, colour:'red'   , svgPathd: 'M15 25 L25 5 L5 5 Z'        },
+  	'na'   : { viewBox: '0 0 30 30' , dimensionW: 20, dimensionH: 20, colour:'green' , svgPathd: 'M5 5 L25 5 L25 25 L5 25 Z'  },
+  	'user' : { viewBox: '0 0 30 30' , dimensionW: 20, dimensionH: 20, colour:'green' , svgPathd: 'M12 6 A3 3 0 1 1 18 6 A3 3 0 1 1 12 6 Z  M10 9 L20 9 L20 20 L10 20 Z  M5 10 L10 10 L10 14 L5 14 Z  M20 10 L25 10 L25 14 L20 14 Z M10 20 L14 20 L14 26 L10 26 Z  M16 20 L20 20 L20 26 L16 26 Z'  }
 }
 
 function findDeviceTypeBeingUsed() {    // Returns Watch/Mobile/Desktop
@@ -10,6 +10,27 @@ function findDeviceTypeBeingUsed() {    // Returns Watch/Mobile/Desktop
     if (/watch|samsungbrowser/i.test(userAgent.toLowerCase())) { return "Watch";}
     if (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase())) { return "Mobile"; }
     return "Desktop";
+}
+
+function createFilterLink(linkId, filterKey, baseStationParam, iconKey, includeLabel = false) {
+    const link = document.getElementById(linkId);
+    link.href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=${filterKey}`;
+
+    const design = iconDesigns[iconKey];
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("width", design.dimensionW);
+    svg.setAttribute("height", design.dimensionH);
+    svg.setAttribute("viewBox", design.viewBox);
+    svg.setAttribute("fill", design.colour);
+
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", design.svgPathd);
+    svg.appendChild(path);
+
+    if (includeLabel) {
+        link.appendChild(document.createTextNode(iconKey));
+    }
+    link.appendChild(svg);
 }
 
 function initializePageParameters(){
@@ -30,52 +51,16 @@ function initializePageParameters(){
         history.pushState({}, "", url);
 
         console.log(`Page Parameters: filter is ${filterParam}, focusVehicleId is ${focusVehicleIdParam} and baseStation is ${baseStationParam} `);
+        document.getElementById('filterLinkBoth').href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=both`;       
 
-        document.getElementById('filterLinkBoth').href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=both`;
-
-        document.getElementById('filterLinkUp').href   = `${window.location.pathname}?baseStation=${baseStationParam}&filter=up`;
-        vehicleIconDesign= iconDesigns["up"];
-        const svgUp = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        svgUp.setAttribute("width", vehicleIconDesign.dimension);
-        svgUp.setAttribute("height", vehicleIconDesign.dimension);
-        svgUp.setAttribute("viewBox", vehicleIconDesign.viewBox);
-        svgUp.setAttribute("fill", vehicleIconDesign.colour);
-        const pathUp = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        pathUp.setAttribute("d", vehicleIconDesign.svgPathd);
-        svgUp.appendChild(pathUp);
-        let linkUp = document.getElementById("filterLinkUp");
-        linkUp.appendChild(svgUp);
-
-        document.getElementById('filterLinkDown').href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=down`;
-        vehicleIconDesign= iconDesigns["down"];
-        const svgDown = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        svgDown.setAttribute("width", vehicleIconDesign.dimension);
-        svgDown.setAttribute("height",vehicleIconDesign.dimension);
-        svgDown.setAttribute("viewBox", vehicleIconDesign.viewBox);
-        svgDown.setAttribute("fill", vehicleIconDesign.colour);
-        const pathDown = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        pathDown.setAttribute("d", vehicleIconDesign.svgPathd);
-        svgDown.appendChild(pathDown);
-        let linkDown = document.getElementById("filterLinkDown");
-        linkDown.appendChild(svgDown);
-
-        if ( filterParam === "all") {
-              document.getElementById('filterLinkOthers').href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=all`;
-              vehicleIconDesign= iconDesigns["na"];
-              const svgOthers = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-              svgOthers.setAttribute("width", vehicleIconDesign.dimension);
-              svgOthers.setAttribute("height",vehicleIconDesign.dimension);
-              svgOthers.setAttribute("viewBox", vehicleIconDesign.viewBox);
-              svgOthers.setAttribute("fill", vehicleIconDesign.colour);
-              const pathOthers = document.createElementNS("http://www.w3.org/2000/svg", "path");
-              pathOthers.setAttribute("d", vehicleIconDesign.svgPathd);
-              svgOthers.appendChild(pathOthers);
-              let linkOthers = document.getElementById("filterLinkOthers");
-              linkOthers.appendChild(document.createTextNode("na"));
-              linkOthers.appendChild(svgOthers);
+        createFilterLink("filterLinkUp", "up", baseStationParam, "up");
+        createFilterLink("filterLinkDown", "down", baseStationParam, "down");
+        
+        if (filterParam === "all") {
+            createFilterLink("filterLinkOthers", "all", baseStationParam, "na", true);
         } else {
-        	   document.getElementById('filterLinkOthers').href = "#";
-        }
+            document.getElementById("filterLinkOthers").href = "#";
+        }      
 
         return { filterParam, focusVehicleIdParam, baseStationParam};
 }
@@ -278,18 +263,19 @@ function classifyVehiclesForPlotting(vehicles) {
      	  let focusKTMTrainInfo = KTMTrains.find(train => train.vehicleId === focusVehicleIdParam);
      	  if ( focusKTMTrainInfo ) {
     	  	  document.getElementById("inactiveFocusTrainMesg").innerHTML = `, #${focusVehicleIdParam} (<span id="scheduleOpen" tyle="color:blue" onclick="javascript:showTrainScheduleTable(focusVehicleIdParam)">Schedule</span>) is not active, it starts from ${focusKTMTrainInfo.stationName}`;
-    	  	  //document.getElementById("inactiveFocusTrainMesg").href = `javascript:showTrainScheduleTable(focusVehicleIdParam)`;
+    	  	  //document.getElementById("inactiveFocusTrainMesg").href = `javascript:showTrainScheduleTable(focusVehicleIdParam)`;         	  	  
 
      	  } else {
      	      document.getElementById("inactiveFocusTrainMesg").textContent = `,  No information on #${focusVehicleIdParam} `;	
      	  }
+     	   showTrainScheduleTable(focusVehicleIdParam);
      }
 }
 
 function plotVehicleOnMap(vehicleIdNum, vehiclePosition, activeKTMTrainInfo) {
 	        vehicleIconDesign= iconDesigns[activeKTMTrainInfo.direction];
          const arrowIcon = L.divIcon({
-             html: `<svg width=${vehicleIconDesign.dimension} height=${vehicleIconDesign.dimension} xmlns="http://www.w3.org/2000/svg" fill=${vehicleIconDesign.colour} viewBox="${vehicleIconDesign.viewBox}"><path d="${vehicleIconDesign.svgPathd}"/></svg>`,
+             html: `<svg width=${vehicleIconDesign.dimensionW} height=${vehicleIconDesign.dimensionH} xmlns="http://www.w3.org/2000/svg" fill=${vehicleIconDesign.colour} viewBox="${vehicleIconDesign.viewBox}"><path d="${vehicleIconDesign.svgPathd}"/></svg>`,
              className: 'vehicle-arrow-icon',
              iconSize: [30, 30],
              iconAnchor: [12, 12]
@@ -338,15 +324,31 @@ function unplotAllVechiclesOnMap() {
 
 function getTypeOfDay() {
        const malaysiaPublicHolidays = [
-         "2025-06-02", // Agong's Birthday
-         "2025-06-07", // Hari Raya Haji
-         "2025-06-27", // Awal Muharram
-         "2025-09-01", // Merdeka Day (in-lieu)
-         "2025-09-05", // Maulidur Rasul
-         "2025-09-15", // Malaysia Day Eve         
-         "2025-09-16", // Malaysia Day
-         "2025-10-20", // Deepavali
-         "2025-12-25"  // Christmas Day
+         "2025-12-25", // Christmas Day
+         "2026-01-01", // New Year's Day
+         "2026-02-01", // Federal Territory Day
+         "2026-02-01", // Thaipusam
+         "2026-02-02", // Federal Territory Holiday
+         "2026-02-02", // Thaipusam Holiday
+         "2026-02-17", // Chinese New Year
+         "2026-02-18", // Chinese New Year Holiday
+         "2026-03-07", // Nuzul Al-Quran
+         "2026-03-21", // Hari Raya Aidilfitri
+         "2026-03-22", // Hari Raya Aidilfitri Holiday
+         "2026-03-23", // Hari Raya Aidilfitri Holiday
+         "2026-05-01", // Labour Day
+         "2026-05-27", // Hari Raya Haji
+         "2026-05-31", // Wesak Day
+         "2026-06-01", // Agong's Birthday
+         "2026-06-01", // Wesak Day Holiday
+         "2026-06-17", // Awal Muharram
+         "2026-08-25", // Prophet Muhammad's Birthday
+         "2026-08-31", // Merdeka Day
+         "2026-09-16", // Malaysia Day
+         "2026-11-08", // Deepavali
+         "2026-11-09", // Deepavali Holiday
+         "2026-12-25"  // Christmas Day
+         
        ];
        
        const todayStr = new Date().toISOString().split("T")[0];   //Date as YYYY-MM-DD
@@ -354,10 +356,8 @@ function getTypeOfDay() {
        const isWeekend = [0, 6].includes(new Date().getDay());
        const isPublicHoliday = malaysiaPublicHolidays.includes(todayStr);
        const typeOfDay = (isWeekend || isPublicHoliday) ? "weekend" : "weekday";    
-       return typeOfDay;
-	
+       return typeOfDay;	
 }
-
 
 function showStationScheduleTable(stationName, direction) {
        const typeOfDay = getTypeOfDay();
@@ -399,8 +399,8 @@ function showStationScheduleTable(stationName, direction) {
 
        vehicleIconDesign= iconDesigns[direction];
        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-       svg.setAttribute("width", vehicleIconDesign.dimension);
-       svg.setAttribute("height",vehicleIconDesign.dimension);
+       svg.setAttribute("width", vehicleIconDesign.dimensionW);
+       svg.setAttribute("height",vehicleIconDesign.dimensionH);
        svg.setAttribute("viewBox", vehicleIconDesign.viewBox);
        svg.setAttribute("fill", vehicleIconDesign.colour);
        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
@@ -435,14 +435,17 @@ function showStationScheduleTable(stationName, direction) {
            } else {   //Check if this train should be on the API response as they are on the track
               let trainSummaryData = KTMTrainsSummary.filter(trainSummary => trainSummary.typeOfDay === typeOfDay && trainSummary.vehicleId === train.vehicleId);
               let [hrs, mins] = trainSummaryData[0].arrivalTimeStart.split(":").map(Number);
-              const arrivalTimeStart = new Date(currentDate);
+              const arrivalTimeStart = new Date(currentDate);              
               arrivalTimeStart.setHours(hrs, mins, 0, 0);
+              
               [hrs, mins] = trainSummaryData[0].arrivalTimeEnd.split(":").map(Number);
-              const arrivalTimeEnd = new Date(currentDate);
-              arrivalTimeEnd.setHours(hrs, mins, 0, 0);           
+              const arrivalTimeEnd = new Date(currentDate);              
+              arrivalTimeEnd.setHours(hrs, mins, 0, 0);    
+                     
               if ( arrivalTimeStart <= currentDate  && currentDate <=  arrivalTimeEnd) {
               	   cell.appendChild(document.createTextNode("+"));
-              }
+               }
+               //else {	                 cell.appendChild(document.createTextNode( new Date(arrivalTimeStart).toString()  + "" + new Date(arrivalTimeEnd).toString() + " BUT " +  new Date(currentDate).toString()  ));              }
            }
 
            cell.appendChild(document.createElement("br"));
