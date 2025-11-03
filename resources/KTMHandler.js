@@ -262,7 +262,7 @@ function classifyVehiclesForPlotting(vehicles) {
      if ( focusVehicleIdParam > 0 && focusCount == 0 ) { // If we are in focus Mode & the focused Train has no data
      	  let focusKTMTrainInfo = KTMTrains.find(train => train.vehicleId === focusVehicleIdParam);
      	  if ( focusKTMTrainInfo ) {
-    	  	  document.getElementById("inactiveFocusTrainMesg").innerHTML = `, #${focusVehicleIdParam} (<span id="scheduleOpen" tyle="color:blue" onclick="javascript:showTrainScheduleTable(focusVehicleIdParam)">Schedule</span>) is not active, it starts from ${focusKTMTrainInfo.stationName}`;
+    	  	  document.getElementById("inactiveFocusTrainMesg").innerHTML = `, #${focusVehicleIdParam} (<span id="scheduleOpen" tyle="color:blue" onclick="javascript:showTrainScheduleTable(focusVehicleIdParam,true)">Schedule</span>) is not active, it starts from ${focusKTMTrainInfo.stationName}`;
     	  	  //document.getElementById("inactiveFocusTrainMesg").href = `javascript:showTrainScheduleTable(focusVehicleIdParam)`;         	  	  
 
      	  } else {
@@ -445,7 +445,7 @@ function showStationScheduleTable(stationName, direction) {
               if ( arrivalTimeStart <= currentDate  && currentDate <=  arrivalTimeEnd) {
               	   cell.appendChild(document.createTextNode("+"));
                }
-               //else {	                 cell.appendChild(document.createTextNode( new Date(arrivalTimeStart).toString()  + "" + new Date(arrivalTimeEnd).toString() + " BUT " +  new Date(currentDate).toString()  ));              }
+               //else {	   cell.appendChild(document.createTextNode( new Date(arrivalTimeStart).toString()  + "" + new Date(arrivalTimeEnd).toString() + " BUT " +  new Date(currentDate).toString()  ));              }
            }
 
            cell.appendChild(document.createElement("br"));
@@ -455,8 +455,6 @@ function showStationScheduleTable(stationName, direction) {
            vehicleLink.textContent = `${train.vehicleId}${train.vehicleType}`;
            cell.appendChild(vehicleLink);
            cell.appendChild(document.createTextNode(")"));
-
-
 
            // Show only the trains for last 1 hour & next 2 hours if the page is opened on a Mobile/Watch.
            if ( !(deviceType == "Desktop") && ( train.isActive  ||(diffMinutes >= -60 && diffMinutes <= 120)) ) {
@@ -522,7 +520,7 @@ function toggleStationScheduleTableVisibility() {
     }
 }
 
-function showTrainScheduleTable(vehicleId) {
+function showTrainScheduleTable(vehicleId, scrollIntoView = false) {
        let stationForTrainUnsorted = KTMTrains.filter(train => train.vehicleId === vehicleId );
        let stationForTrain = stationForTrainUnsorted.sort((trainA, trainB) => {
            let timeA = trainA.arrivalTime.split(":").map(Number);
@@ -573,18 +571,23 @@ function showTrainScheduleTable(vehicleId) {
            vehicleLink.rel = "noopener noreferrer";
            cell.appendChild(vehicleLink);        
            
-                    
            const [hours, minutes] = train.arrivalTime.split(":").map(Number);
            const arrivalTime = new Date(currentDate);
-           arrivalTime.setHours(hours, minutes, 0, 0);           
-           let diffMinutes = (arrivalTime - currentDate) / (1000 * 60);
-           if (diffMinutes < 0 && diffMinutes >= -30) {
-               cell.style.backgroundColor = "lightcoral";
-           } else if (diffMinutes >= 0 && diffMinutes <= 30) {
-               cell.style.backgroundColor = "lightgreen";
-           }                            
+           arrivalTime.setHours(hours, minutes, 0, 0);
            
+           const diffMinutes = (arrivalTime - currentDate) / (1000 * 60);           
+           if (diffMinutes >= -30 && diffMinutes <= 30) {
+               const intensity = Math.abs(diffMinutes) / 30; // 0 ? 1
+               const lightness = 85 - intensity * 35; // lighter near now, darker toward ±30
            
+               if (diffMinutes < 0) {                   
+                   cell.style.backgroundColor = `hsl(0, 70%, ${lightness}%)`;   // Past trains ? red spectrum
+               } else {                   
+                   cell.style.backgroundColor = `hsl(120, 70%, ${lightness}%)`; // Future trains ? green spectrum
+               }
+           } else {
+               cell.style.backgroundColor = "";
+           }
 
            // Show only the trains for last 1 hour & next 2 hours if the page is opened on a Mobile/Watch.
            if ( !(deviceType == "Desktop") && ( train.isActive  ||(diffMinutes >= -60 && diffMinutes <= 120)) ) {
@@ -595,7 +598,9 @@ function showTrainScheduleTable(vehicleId) {
            }
        });
        tableSchedule.appendChild(row);       
-       tableSchedule.scrollIntoView({ behavior: "smooth", block: "start" });  // Scroll to table
+       if (scrollIntoView ) {
+           tableSchedule.scrollIntoView({ behavior: "smooth", block: "start" });  // Scroll to table
+       }
 
 }
 
