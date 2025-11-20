@@ -148,7 +148,7 @@ function plotStationsOnMap() {
          stationMarker.isVehicleMarker = false;
 
          let label = `<a href="https://myrailtime.ktmb.com.my/timetable?origin=${stationInfo.stationId}" target="_blank">${stationName}</a>`;
-         label += tripDurationInMins > 0 ? `: (${tripDistanceInKms} KMs away)` : '';        
+         //label += tripDurationInMins > 0 ? `: (${tripDistanceInKms} KMs away)` : '';        
          stationMarker.bindTooltip( label, {
               permanent: true,
               direction: 'right',    
@@ -181,7 +181,7 @@ function plotStationsOnMapForVechicleId(vehicleId) {
          const tripDistanceInKms  = Math.abs(stationInfo.tripDistanceInKms - KTMStations[baseStationParam].tripDistanceInKms).toFixed(1);
          
          const ktmTrainForStation = KTMTrains.filter(train => train.stationName === stationName && train.vehicleId === vehicleId);           
-         let trainArrivalTime = (ktmTrainForStation.length < 1) ? "NA" : ktmTrainForStation[0].arrivalTime;       
+         let trainArrivalTime = (ktmTrainForStation.length < 1) ? "-N:A-" : ktmTrainForStation[0].arrivalTime;       
            
          const [hours, minutes] = trainArrivalTime.split(":").map(Number);
          const arrivalTime = new Date(currentDate);
@@ -219,7 +219,7 @@ function plotStationsOnMapForVechicleId(vehicleId) {
          stationMarker.isVehicleMarker = false;
 
          let label = `<a href="https://myrailtime.ktmb.com.my/timetable?origin=${stationInfo.stationId}" target="_blank">${stationName}</a>`;
-         label += `: ${tripDurationInMins} Mins, (${tripDistanceInKms} KMs away)` ;
+         //label += `: ${tripDurationInMins} Mins, (${tripDistanceInKms} KMs away)` ;
          stationMarker.bindTooltip( label, {
               permanent: true,
               direction: 'right',    
