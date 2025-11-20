@@ -775,7 +775,8 @@ let { filterParam, focusVehicleIdParam, baseStationParam } = initializePageParam
 const map = initializeMap(baseStationParam);
 initializeBaseStationDropdown(baseStationParam);
 
-plotStationsOnMap();
+if( focusVehicleIdParam == 0 ) // Plot when not in Focus Mode.
+   plotStationsOnMap();
 
 let displayScheduleFlag = false;
 const deviceType = findDeviceTypeBeingUsed();
