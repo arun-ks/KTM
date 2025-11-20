@@ -1,8 +1,8 @@
         body {
             font-family: 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
-            word-wrap: break-word;
+            /*word-wrap: break-word;*/
             align-items: left;
-            overflow-wrap: break-word;
+            /*overflow-wrap: break-word; */
             white-space: normal;
         }
 
@@ -16,7 +16,16 @@
             font-size: small;
             pointer-events: auto;
         }
-       .custom-station-marker .marker-container {
+        
+        .leaflet-tooltip a {
+            pointer-events: auto !important;
+        }
+        
+        .leaflet-tooltip {
+            pointer-events: auto !important;
+        }
+        
+       .custom-station-marker .marker-containerCIRCLE {
            width: 20px;
            height: 20px;
            border-radius: 50%;
@@ -30,6 +39,26 @@
            /*box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); Optional: adds a shadow */
        }
 
-       .custom-station-marker .marker-number {
+       .custom-station-marker .marker-numberCIRCLE {
+           line-height: 1;
+       }
+
+       .custom-station-marker .marker-containerRECT {
+           width: auto; /* Let width adjust based on text */
+           min-width: 30px; 
+           height: 20px;
+           border-radius: 4px; 
+           display: flex;
+           align-items: center;
+           justify-content: center;
+           padding: 0 2px; 
+           color: white;
+           font-size: 12px;
+           font-weight: bold;
+           border: 1px solid black;
+       }       
+       
+
+       .custom-station-marker .marker-numberRECT {
            line-height: 1;
        }

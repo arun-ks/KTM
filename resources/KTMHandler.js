@@ -129,7 +129,7 @@ function plotStationsOnMap() {
          const tripDurationInMins = Math.abs(stationInfo.tripDurationInMins - KTMStations[baseStationParam].tripDurationInMins);
          const tripDistanceInKms  = Math.abs(stationInfo.tripDistanceInKms - KTMStations[baseStationParam].tripDistanceInKms).toFixed(1);
          if (stationName == baseStationParam ) {
-            stationInfo.colour = 'red';
+            stationInfo.colour = 'blue'; // 'red';
             map.flyTo(stationInfo.location);  //, 14, { animation: true }) ;
          } else {
          	 stationInfo.colour = '#8b81fb';
@@ -138,8 +138,8 @@ function plotStationsOnMap() {
          const stationMarker = L.marker(stationInfo.location, {
              icon: L.divIcon({
                  className: 'custom-station-marker',
-                 html: `<div class="marker-container" style="background-color: ${stationInfo.colour};">
-                            <span class="marker-number">${tripDurationInMins}</span>
+                 html: `<div class="marker-containerCIRCLE" style="background-color: ${stationInfo.colour};">
+                            <span class="marker-numberCIRCLE">${tripDurationInMins}</span>
                         </div>`,
                  iconSize: [16, 16],
                  iconAnchor: [8, 8],
@@ -147,17 +147,94 @@ function plotStationsOnMap() {
          }).addTo(map);
          stationMarker.isVehicleMarker = false;
 
-         let label = `${stationName}: <a href="https://myrailtime.ktmb.com.my/timetable?origin=${stationInfo.stationId}" target="_blank">Schedule</a>`;
-         label += tripDurationInMins > 0 ? `, (${tripDistanceInKms} KMs away)` : '';
-         stationMarker.bindPopup(label, {
-             permanent: false,                // Cannot be true
-             direction: 'left',
-             offset: [0, 0],
-             className: 'custom-popup',
+         let label = `<a href="https://myrailtime.ktmb.com.my/timetable?origin=${stationInfo.stationId}" target="_blank">${stationName}</a>`;
+         label += tripDurationInMins > 0 ? `: (${tripDistanceInKms} KMs away)` : '';        
+         stationMarker.bindTooltip( label, {
+              permanent: true,
+              direction: 'right',    
+              offset: [12, 0]
          });
+
+         //stationMarker.bindPopup(label, {
+         //    permanent: false,                // Cannot be true
+         //    direction: 'left',
+         //    offset: [0, 0],
+         //    className: 'custom-popup',
+         //});
+         
+         
+     }
+}
+
+function plotStationsOnMapForVechicleId(vehicleId) {
+	     //Remove all stations (if any)
+	     map.eachLayer(layer => {
+         if (layer instanceof L.Marker /*&& ! layer.isVehicleMarker*/) {                	
+             map.removeLayer(layer);
+         }
+       });
+      
+       const currentDate = getCurrentDate();     
+	
+	     for (const [stationName, stationInfo] of Object.entries(KTMStations)) {
+         const tripDurationInMins = Math.abs(stationInfo.tripDurationInMins - KTMStations[baseStationParam].tripDurationInMins);
+         const tripDistanceInKms  = Math.abs(stationInfo.tripDistanceInKms - KTMStations[baseStationParam].tripDistanceInKms).toFixed(1);
+         
+         const ktmTrainForStation = KTMTrains.filter(train => train.stationName === stationName && train.vehicleId === vehicleId);           
+         let trainArrivalTime = (ktmTrainForStation.length < 1) ? "NA" : ktmTrainForStation[0].arrivalTime;       
+           
+         const [hours, minutes] = trainArrivalTime.split(":").map(Number);
+         const arrivalTime = new Date(currentDate);
+         arrivalTime.setHours(hours, minutes, 0, 0);
+          
+         const diffMinutes = (arrivalTime  - currentDate) / (1000 * 60);           
+         if (diffMinutes >= -30 && diffMinutes <= 30) {
+              const intensity = Math.abs(diffMinutes) / 30; // 0 ? 1
+              const lightness = 85 - intensity * 35; // lighter near now, darker toward ±30
+          
+              if (diffMinutes < 0) {                   
+                  stationInfo.colour = `hsl(0, 70%, ${lightness}%)`;   // Past trains ? red spectrum
+              } else {                   
+                  stationInfo.colour = `hsl(120, 70%, ${lightness}%)`; // Future trains ? green spectrum
+              }
+         } else {
+              stationInfo.colour = '#8b81fb';
+         }       
+      
+         if (stationName == baseStationParam ) {
+            stationInfo.colour = 'blue';
+            map.flyTo(stationInfo.location);  //, 14, { animation: true }) ;
+         }
+         
+         const stationMarker = L.marker(stationInfo.location, {
+             icon: L.divIcon({
+                 className: 'custom-station-marker',
+                 html: `<div class="marker-containerRECT" style="background-color: ${stationInfo.colour};">
+                            <span class="marker-numberRECT">${trainArrivalTime}</span>
+                        </div>`,
+                 iconSize: [26, 26],
+                 iconAnchor: [18, 18],
+             })
+         }).addTo(map);
+         stationMarker.isVehicleMarker = false;
+
+         let label = `<a href="https://myrailtime.ktmb.com.my/timetable?origin=${stationInfo.stationId}" target="_blank">${stationName}</a>`;
+         label += `: ${tripDurationInMins} Mins, (${tripDistanceInKms} KMs away)` ;
+         stationMarker.bindTooltip( label, {
+              permanent: true,
+              direction: 'right',    
+              offset: [18, -6]
+         });         
+         //stationMarker.bindPopup(label, {
+         //    permanent: false,                // Cannot be true
+         //    direction: 'left',
+         //    offset: [0, 0],
+         //    className: 'custom-popup',
+         //});
          //                    direction: 'left',                     offset: [-10, 0],
      }
 }
+
 
 async function fetchMtrecTrainPositionApiData() {
 	    // Function to fetch data from MTREC API
@@ -355,10 +432,22 @@ function getTypeOfDay() {
        
        const isWeekend = [0, 6].includes(new Date().getDay());
        const isPublicHoliday = malaysiaPublicHolidays.includes(todayStr);
-       const typeOfDay = (isWeekend || isPublicHoliday) ? "weekend" : "weekday";    
+       let typeOfDay = (isWeekend || isPublicHoliday) ? "weekend" : "weekday";    
+       
+       //typeOfDay = "weekday" ; // For TESTING
+       //typeOfDay = "weekday";  // For TESTING  
        return typeOfDay;	
 }
 
+function getCurrentDate() {
+	  const currentDate = new Date();
+    if (currentDate.getHours() < 5 )  // Handle times when pages is opened when there are no trains ...
+          currentDate.setHours(4);
+          
+     //currentDate.setHours(10, 32, 0, 0); //For TESTING          *************************************   
+     
+     return currentDate;
+}
 function showStationScheduleTable(stationName, direction) {
        const typeOfDay = getTypeOfDay();
 
@@ -369,12 +458,8 @@ function showStationScheduleTable(stationName, direction) {
            return timeA[0] - timeB[0] || timeA[1] - timeB[1];
        });
 
-       const currentDate = new Date();
-       if (currentDate.getHours() < 5 )  // Handle times when pages is opened when there are no trains ...
-          currentDate.setHours(4);
+       const currentDate = getCurrentDate();
           
-       //currentDate.setHours(10, 32, 0, 0); //For TESTING          *************************************   
-
        // Create table if there is none. If it has 1 row, append next row to it. If it already had 2 rows then delete the table.
        let table = document.querySelector("#stationScheduleTable");
        if (table) {
@@ -521,6 +606,9 @@ function toggleStationScheduleTableVisibility() {
 }
 
 function showTrainScheduleTable(vehicleId, scrollIntoView = false) {
+	
+	     plotStationsOnMapForVechicleId(vehicleId);
+	     
        let stationForTrainUnsorted = KTMTrains.filter(train => train.vehicleId === vehicleId );
        let stationForTrain = stationForTrainUnsorted.sort((trainA, trainB) => {
            let timeA = trainA.arrivalTime.split(":").map(Number);
@@ -601,7 +689,7 @@ function showTrainScheduleTable(vehicleId, scrollIntoView = false) {
        if (scrollIntoView ) {
            tableSchedule.scrollIntoView({ behavior: "smooth", block: "start" });  // Scroll to table
        }
-
+       
 }
 
 function calculateDistanceInKM(lat1, lon1, lat2, lon2) {
