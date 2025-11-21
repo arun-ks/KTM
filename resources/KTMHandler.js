@@ -117,7 +117,7 @@ function initializeMap(baseStation) {
      return map;
 }
 
-function plotStationsOnMap() {
+function plotStationsOnMapWithDuration() {
 	     //Remove all stations (if any)
 	     map.eachLayer(layer => {
          if (layer instanceof L.Marker && ! layer.isVehicleMarker) {                	
@@ -180,14 +180,15 @@ function plotStationsOnMapForVechicleId(vehicleId) {
          const tripDurationInMins = Math.abs(stationInfo.tripDurationInMins - KTMStations[baseStationParam].tripDurationInMins);
          const tripDistanceInKms  = Math.abs(stationInfo.tripDistanceInKms - KTMStations[baseStationParam].tripDistanceInKms).toFixed(1);
          
-         const ktmTrainForStation = KTMTrains.filter(train => train.stationName === stationName && train.vehicleId === vehicleId);           
-         let trainArrivalTime = (ktmTrainForStation.length < 1) ? "-N:A-" : ktmTrainForStation[0].arrivalTime;       
-           
-         const [hours, minutes] = trainArrivalTime.split(":").map(Number);
-         const arrivalTime = new Date(currentDate);
-         arrivalTime.setHours(hours, minutes, 0, 0);
+         const ktmTrainForStation = KTMTrains.filter(train => train.stationName === stationName && train.vehicleId === vehicleId);    
+         if ( ktmTrainForStation.length < 1) continue; //If train does not stop in Station, then do not mark the station on the map.
+         
+         let trainDepartureTime = ktmTrainForStation[0].departureTime;
+         const [hours, minutes] = trainDepartureTime.split(":").map(Number);
+         const departureTime = new Date(currentDate);
+         departureTime.setHours(hours, minutes, 0, 0);
           
-         const diffMinutes = (arrivalTime  - currentDate) / (1000 * 60);           
+         const diffMinutes = (departureTime - currentDate) / (1000 * 60);           
          if (diffMinutes >= -30 && diffMinutes <= 30) {
               const intensity = Math.abs(diffMinutes) / 30; // 0 ? 1
               const lightness = 85 - intensity * 35; // lighter near now, darker toward ±30
@@ -210,7 +211,7 @@ function plotStationsOnMapForVechicleId(vehicleId) {
              icon: L.divIcon({
                  className: 'custom-station-marker',
                  html: `<div class="marker-containerRECT" style="background-color: ${stationInfo.colour};">
-                            <span class="marker-numberRECT">${trainArrivalTime}</span>
+                            <span class="marker-numberRECT">${trainDepartureTime}</span>
                         </div>`,
                  iconSize: [26, 26],
                  iconAnchor: [18, 18],
@@ -234,7 +235,6 @@ function plotStationsOnMapForVechicleId(vehicleId) {
          //                    direction: 'left',                     offset: [-10, 0],
      }
 }
-
 
 async function fetchMtrecTrainPositionApiData() {
 	    // Function to fetch data from MTREC API
@@ -316,6 +316,7 @@ function classifyVehiclesForPlotting(vehicles) {
          if (focusVehicleIdParam > 0 ) { // If focusVehicleIdParam is used then show just 1 vehicle
             if (focusVehicleIdParam == vehicleIdNum) {
             	    focusCount++;
+            	    plotStationsOnMapForVechicleId(vehicleIdNum);
             } else {
        	        plotThisTrain = false;
             }
@@ -339,18 +340,18 @@ function classifyVehiclesForPlotting(vehicles) {
      if ( focusVehicleIdParam > 0 && focusCount == 0 ) { // If we are in focus Mode & the focused Train has no data
      	  let focusKTMTrainInfo = KTMTrains.find(train => train.vehicleId === focusVehicleIdParam);
      	  if ( focusKTMTrainInfo ) {
-    	  	  document.getElementById("inactiveFocusTrainMesg").innerHTML = `, #${focusVehicleIdParam} (<span id="scheduleOpen" tyle="color:blue" onclick="javascript:showTrainScheduleTable(focusVehicleIdParam,true)">Schedule</span>) is not active, it starts from ${focusKTMTrainInfo.stationName}`;
+    	  	  document.getElementById("inactiveFocusTrainMesg").innerHTML = `, <span id="scheduleOpen" tyle="color:blue" onclick="javascript:showTrainScheduleTable(focusVehicleIdParam,true)">#${focusVehicleIdParam}</span> is not active`; //, it starts from ${focusKTMTrainInfo.stationName};
     	  	  //document.getElementById("inactiveFocusTrainMesg").href = `javascript:showTrainScheduleTable(focusVehicleIdParam)`;         	  	  
 
      	  } else {
      	      document.getElementById("inactiveFocusTrainMesg").textContent = `,  No information on #${focusVehicleIdParam} `;	
      	  }
-     	   showTrainScheduleTable(focusVehicleIdParam);
+     	  showTrainScheduleTable(focusVehicleIdParam);
      }
 }
 
 function plotVehicleOnMap(vehicleIdNum, vehiclePosition, activeKTMTrainInfo) {
-	        vehicleIconDesign= iconDesigns[activeKTMTrainInfo.direction];
+	       vehicleIconDesign= iconDesigns[activeKTMTrainInfo.direction];
          const arrowIcon = L.divIcon({
              html: `<svg width=${vehicleIconDesign.dimensionW} height=${vehicleIconDesign.dimensionH} xmlns="http://www.w3.org/2000/svg" fill=${vehicleIconDesign.colour} viewBox="${vehicleIconDesign.viewBox}"><path d="${vehicleIconDesign.svgPathd}"/></svg>`,
              className: 'vehicle-arrow-icon',
@@ -503,10 +504,10 @@ function showStationScheduleTable(stationName, direction) {
 
            cell.appendChild(document.createTextNode(`${train.arrivalTime}`));        
            
-           const [hours, minutes] = train.arrivalTime.split(":").map(Number);
-           const arrivalTime = new Date(currentDate);
-           arrivalTime.setHours(hours, minutes, 0, 0);           
-           let diffMinutes = (arrivalTime - currentDate) / (1000 * 60);
+           const [hours, minutes] = train.departureTime.split(":").map(Number);
+           const departureTime = new Date(currentDate);
+           departureTime.setHours(hours, minutes, 0, 0);           
+           let diffMinutes = (departureTime - currentDate) / (1000 * 60);
            if (diffMinutes < 0 && diffMinutes >= -60) {
                cell.style.backgroundColor = "lightcoral";
            } else if (diffMinutes >= 0 && diffMinutes <= 120) {
@@ -566,7 +567,7 @@ function showStationScheduleTable(stationName, direction) {
                      <td style="font-size: small; border: 1px dotted black; white-space: normal;">+ Train is active on tracks, but position is unknown</td>
                  </tr>
                  <tr>
-                     <td style="font-size: small; border: 1px dotted black; white-space: normal;" colspan=4>Arrival Times on ${typeOfDay}s at ${baseStationParam}. <a href="https://www.ktmb.com.my/TrainTime.html">Schedule</a> updated on ${GTFSDataExtractDate}</td>
+                     <td style="font-size: small; border: 1px dotted black; white-space: normal;" colspan=4>Departure Times on ${typeOfDay}s at ${baseStationParam}. <a href="https://www.ktmb.com.my/TrainTime.html">Schedule</a> updated on ${GTFSDataExtractDate}</td>
                  </tr>
              `;
              document.body.appendChild(tableLegend);
@@ -659,11 +660,11 @@ function showTrainScheduleTable(vehicleId, scrollIntoView = false) {
            vehicleLink.rel = "noopener noreferrer";
            cell.appendChild(vehicleLink);        
            
-           const [hours, minutes] = train.arrivalTime.split(":").map(Number);
-           const arrivalTime = new Date(currentDate);
-           arrivalTime.setHours(hours, minutes, 0, 0);
+           const [hours, minutes] = train.departureTime.split(":").map(Number);
+           const departureTime = new Date(currentDate);
+           departureTime.setHours(hours, minutes, 0, 0);
            
-           const diffMinutes = (arrivalTime - currentDate) / (1000 * 60);           
+           const diffMinutes = (departureTime - currentDate) / (1000 * 60);           
            if (diffMinutes >= -30 && diffMinutes <= 30) {
                const intensity = Math.abs(diffMinutes) / 30; // 0 ? 1
                const lightness = 85 - intensity * 35; // lighter near now, darker toward ±30
@@ -776,7 +777,7 @@ const map = initializeMap(baseStationParam);
 initializeBaseStationDropdown(baseStationParam);
 
 if( focusVehicleIdParam == 0 ) // Plot when not in Focus Mode.
-   plotStationsOnMap();
+   plotStationsOnMapWithDuration();
 
 let displayScheduleFlag = false;
 const deviceType = findDeviceTypeBeingUsed();
