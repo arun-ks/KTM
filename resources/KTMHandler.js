@@ -277,7 +277,7 @@ async function fetchMtrecServicePositionStatusApiData() {
       
 function classifyVehiclesForPlotting(vehicles) {
      let upCount = 0,downCount = 0,naCount = 0, focusCount = 0;
-     document.getElementById("inactiveFocusTrainMesg").textContent = "";
+     document.getElementById("focusTrainMessage").textContent = "";
 
      unplotAllVechiclesOnMap();
      KTMTrains.forEach(train => train.isActive = false);
@@ -316,7 +316,10 @@ function classifyVehiclesForPlotting(vehicles) {
          if (focusVehicleIdParam > 0 ) { // If focusVehicleIdParam is used then show just 1 vehicle
             if (focusVehicleIdParam == vehicleIdNum) {
             	    focusCount++;
+            	    document.getElementById("focusTrainMessage").innerHTML = `, <span id="scheduleOpen" tyle="color:blue" onclick="javascript:showTrainScheduleTable(focusVehicleIdParam,true)">#${focusVehicleIdParam}</span> is active`; 
             	    plotStationsOnMapForVechicleId(vehicleIdNum);
+                  
+
             } else {
        	        plotThisTrain = false;
             }
@@ -324,7 +327,7 @@ function classifyVehiclesForPlotting(vehicles) {
 
          if (plotThisTrain === true) {
          	     console.debug(`Plotting Vehicle: #${vehicleIdNum}, direction ${activeKTMTrainInfo.direction} at Position:(${vehicle.position.latitude}, ${vehicle.position.longitude})`);                    	
-               plotVehicleOnMap(vehicleIdNum, vehicle.position, activeKTMTrainInfo ) ;
+               plotVehicleOnMap(vehicleIdNum, vehicle.position, activeKTMTrainInfo ) ;               
         } else {
            	  console.debug(`\tSkipping Vehicle: #${vehicleIdNum}, direction ${activeKTMTrainInfo.direction}`);
          }
@@ -340,11 +343,11 @@ function classifyVehiclesForPlotting(vehicles) {
      if ( focusVehicleIdParam > 0 && focusCount == 0 ) { // If we are in focus Mode & the focused Train has no data
      	  let focusKTMTrainInfo = KTMTrains.find(train => train.vehicleId === focusVehicleIdParam);
      	  if ( focusKTMTrainInfo ) {
-    	  	  document.getElementById("inactiveFocusTrainMesg").innerHTML = `, <span id="scheduleOpen" tyle="color:blue" onclick="javascript:showTrainScheduleTable(focusVehicleIdParam,true)">#${focusVehicleIdParam}</span> is not active`; //, it starts from ${focusKTMTrainInfo.stationName};
-    	  	  //document.getElementById("inactiveFocusTrainMesg").href = `javascript:showTrainScheduleTable(focusVehicleIdParam)`;         	  	  
+    	  	  document.getElementById("focusTrainMessage").innerHTML = `, <span id="scheduleOpen" tyle="color:blue" onclick="javascript:showTrainScheduleTable(focusVehicleIdParam,true)">#${focusVehicleIdParam}</span> is not active`; //, it starts from ${focusKTMTrainInfo.stationName};
+    	  	  //document.getElementById("focusTrainMessage").href = `javascript:showTrainScheduleTable(focusVehicleIdParam)`;         	  	  
 
      	  } else {
-     	      document.getElementById("inactiveFocusTrainMesg").textContent = `,  No information on #${focusVehicleIdParam} `;	
+     	      document.getElementById("focusTrainMessage").textContent = `,  No information on #${focusVehicleIdParam} `;	
      	  }
      	  showTrainScheduleTable(focusVehicleIdParam);
      }
