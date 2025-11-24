@@ -88,7 +88,7 @@ function handleBaseStationUpdate(newBaseStation) {
          baseStationParam = newBaseStation;
          console.log(`New Selected Station: ${newBaseStation}`);
 
-         plotStationsOnMap ();
+         plotStationsOnMapWithDuration ();
          fetchMtrecTrainPositionApiData();
          toggleStationScheduleTableVisibility();
 
@@ -316,10 +316,8 @@ function classifyVehiclesForPlotting(vehicles) {
          if (focusVehicleIdParam > 0 ) { // If focusVehicleIdParam is used then show just 1 vehicle
             if (focusVehicleIdParam == vehicleIdNum) {
             	    focusCount++;
-            	    document.getElementById("focusTrainMessage").innerHTML = `, <span id="scheduleOpen" tyle="color:blue" onclick="javascript:showTrainScheduleTable(focusVehicleIdParam,true)">#${focusVehicleIdParam}</span> is active`; 
-            	    plotStationsOnMapForVechicleId(vehicleIdNum);
-                  
-
+            	    document.getElementById("focusTrainMessage").innerHTML = `, <span id="scheduleOpen" tyle="color:blue" onclick="javascript:handleFocusTrain(focusVehicleIdParam,true)">#${focusVehicleIdParam}</span> is active`;             	             
+            	    handleFocusTrain(focusVehicleIdParam); 
             } else {
        	        plotThisTrain = false;
             }
@@ -343,13 +341,13 @@ function classifyVehiclesForPlotting(vehicles) {
      if ( focusVehicleIdParam > 0 && focusCount == 0 ) { // If we are in focus Mode & the focused Train has no data
      	  let focusKTMTrainInfo = KTMTrains.find(train => train.vehicleId === focusVehicleIdParam);
      	  if ( focusKTMTrainInfo ) {
-    	  	  document.getElementById("focusTrainMessage").innerHTML = `, <span id="scheduleOpen" tyle="color:blue" onclick="javascript:showTrainScheduleTable(focusVehicleIdParam,true)">#${focusVehicleIdParam}</span> is not active`; //, it starts from ${focusKTMTrainInfo.stationName};
-    	  	  //document.getElementById("focusTrainMessage").href = `javascript:showTrainScheduleTable(focusVehicleIdParam)`;         	  	  
+    	  	  document.getElementById("focusTrainMessage").innerHTML = `, <span id="scheduleOpen" tyle="color:blue" onclick="javascript:handleFocusTrain(focusVehicleIdParam,true)">#${focusVehicleIdParam}</span> is not active`; //, it starts from ${focusKTMTrainInfo.stationName};
+    	  	  //document.getElementById("focusTrainMessage").href = `javascript:handleFocusTrain(focusVehicleIdParam)`;         	  	  
 
      	  } else {
      	      document.getElementById("focusTrainMessage").textContent = `,  No information on #${focusVehicleIdParam} `;	
      	  }
-     	  showTrainScheduleTable(focusVehicleIdParam);
+     	  handleFocusTrain(focusVehicleIdParam);
      }
 }
 
@@ -378,7 +376,7 @@ function plotVehicleOnMap(vehicleIdNum, vehiclePosition, activeKTMTrainInfo) {
           	    map.flyTo([vehiclePosition.latitude, vehiclePosition.longitude]);  //, 14, { animation: true }) ;            	                           	
                 const trainDurationFromBaseStation = findTrainDurationInMins([vehiclePosition.latitude, vehiclePosition.longitude]);
            	    label = `${label} - ${trainDurationFromBaseStation} mins away, ${vehiclePosition.speed} km/h`;              	
-           	    label = `${label}, (<span onclick="javascript:showTrainScheduleTable(focusVehicleIdParam)">Schedule</span>)`;
+           	    label = `${label}, (<span onclick="javascript:handleFocusTrain(focusVehicleIdParam)">Schedule</span>)`;
          	      speakDistance(trainDurationFromBaseStation);
             }
             else {
@@ -432,9 +430,10 @@ function getTypeOfDay() {
          
        ];
        
-       const todayStr = new Date().toISOString().split("T")[0];   //Date as YYYY-MM-DD
+       const currentDate = getCurrentDate();
+       const todayStr = currentDate.toISOString().split("T")[0];  //Date as YYYY-MM-DD
        
-       const isWeekend = [0, 6].includes(new Date().getDay());
+       const isWeekend = [0, 6].includes(currentDate.getDay());
        const isPublicHoliday = malaysiaPublicHolidays.includes(todayStr);
        let typeOfDay = (isWeekend || isPublicHoliday) ? "weekend" : "weekday";    
        
@@ -452,6 +451,7 @@ function getCurrentDate() {
      
      return currentDate;
 }
+
 function showStationScheduleTable(stationName, direction) {
        const typeOfDay = getTypeOfDay();
 
@@ -609,9 +609,11 @@ function toggleStationScheduleTableVisibility() {
     }
 }
 
+function handleFocusTrain(vehicleId, scrollIntoView = false) {  
+	  plotStationsOnMapForVechicleId(vehicleId);
+	//  showTrainScheduleTable(vehicleId, scrollIntoView);	
+}
 function showTrainScheduleTable(vehicleId, scrollIntoView = false) {
-	
-	     plotStationsOnMapForVechicleId(vehicleId);
 	     
        let stationForTrainUnsorted = KTMTrains.filter(train => train.vehicleId === vehicleId );
        let stationForTrain = stationForTrainUnsorted.sort((trainA, trainB) => {
@@ -641,11 +643,7 @@ function showTrainScheduleTable(vehicleId, scrollIntoView = false) {
        trainCell.style.border = "1px solid black";
        row.appendChild(trainCell);
        
-       const currentDate = new Date();
-       if (currentDate.getHours() < 5 )  // Handle times when pages is opened when there are no trains ...
-          currentDate.setHours(4);
-          
-       //currentDate.setHours(10, 32, 0, 0); //For TESTING          *************************************   
+       const currentDate = getCurrentDate();  
 
        stationForTrain.forEach(train => {
        	  const cell = document.createElement("td");
