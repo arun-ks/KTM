@@ -371,22 +371,22 @@ function plotVehicleOnMap(vehicleIdNum, vehiclePosition, activeKTMTrainInfo) {
             distance = calculateDistanceInKM(vehiclePosition.latitude, vehiclePosition.longitude, KTMStations[baseStationParam].location[0], KTMStations[baseStationParam].location[1]);
             distance = distance.toFixed(2);
 
-            label = `${activeKTMTrainInfo.arrivalTime} (<a href="${window.location.pathname}?focusVehicleId=${vehicleIdNum}&baseStation=${baseStationParam}">#${vehicleIdNum}</a>)`;
+            label = `${activeKTMTrainInfo.arrivalTime} (<a href="${window.location.pathname}?focusVehicleId=${vehicleIdNum}&baseStation=${baseStationParam}">#${vehicleIdNum}</a>) - ${vehiclePosition.speed} km/h`;
             if ( vehicleIdNum === focusVehicleIdParam ) {
           	    map.flyTo([vehiclePosition.latitude, vehiclePosition.longitude]);  //, 14, { animation: true }) ;            	                           	
                 const trainDurationFromBaseStation = findTrainDurationInMins([vehiclePosition.latitude, vehiclePosition.longitude]);
-           	    label = `${label} - ${trainDurationFromBaseStation} mins away, ${vehiclePosition.speed} km/h`;              	
-           	    label = `${label}, (<span onclick="javascript:handleFocusTrain(focusVehicleIdParam)">Schedule</span>)`;
+           	    label = `${label}, ${trainDurationFromBaseStation} mins away`;              	
+           	   // label = `${label}, (<span onclick="javascript:handleFocusTrain(focusVehicleIdParam)">Schedule</span>)`;
          	      speakDistance(trainDurationFromBaseStation);
             }
-            else {
-            	      label = `${label} - ${vehiclePosition.speed} km/h.`;                   	
-            }
+//            else {
+//            	      label = `${label} - ${vehiclePosition.speed} km/h.`;                   	
+//            }
          }
          marker.bindTooltip(label, {
              permanent: true,
-             direction: 'right',
-             offset: [10, 0],
+             direction: 'left',
+             offset: [-10, 0],               //offset: [10, 0],
              className: 'vehicle-label',
              interactive: true
          });
