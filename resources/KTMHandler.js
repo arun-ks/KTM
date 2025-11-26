@@ -95,10 +95,9 @@ function handleBaseStationUpdate(newBaseStation) {
          fetchMtrecTrainPositionApiData();
          toggleStationScheduleTableVisibility();
 
-         const url = new URL(location);
-         url.searchParams.set("baseStation", newBaseStation);
-         //history.pushState({}, "", url);
-         history.pushState(null, '', url);
+         //const url = new URL(location);
+         //url.searchParams.set("baseStation", newBaseStation);
+         //history.pushState(null, '', url);
 
          document.getElementById('filterLinkBoth').href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=both`;
          document.getElementById('filterLinkUp').href   = `${window.location.pathname}?baseStation=${baseStationParam}&filter=up`;
@@ -168,11 +167,9 @@ function plotStationsOnMapWithDuration() {
          const stationMarker = L.marker(stationInfo.location, {
              icon: L.divIcon({
                  className: 'custom-station-marker',
-                 html: `<div class="marker-containerCIRCLE" style="background-color: ${stationInfo.colour};">
-                            <span class="marker-numberCIRCLE">${tripDurationInMins}</span>
-                        </div>`,
-                 iconSize: [16, 16],
-                 iconAnchor: [8, 8],
+                 html: `<div class="marker-containerCIRCLE" style="background-color: ${stationInfo.colour};"> <span class="marker-numberCIRCLE">${tripDurationInMins}</span></div>`,
+                 iconSize: [26, 26],
+                 iconAnchor: [18, 18],
              })
          }).addTo(map);
          stationMarker.isVehicleMarker = false;
@@ -183,13 +180,13 @@ function plotStationsOnMapWithDuration() {
              stationMarker.bindTooltip( label, {
                   permanent: true,
                   direction: 'right',    
-                  offset: [12, 0]
+                  offset: [10, -6]
              });
          } else {   
              stationMarker.bindPopup(label, {
                  permanent: false,                // Cannot be true
                  direction: 'right',
-                 offset: [0, 0],
+                 offset: [10, -6],
                  className: 'custom-popup',
              });
          }
@@ -211,9 +208,10 @@ function plotStationsOnMapForVechicleId(vehicleId) {
          const tripDurationInMins = Math.abs(stationInfo.tripDurationInMins - KTMStations[baseStationParam].tripDurationInMins);
          const tripDistanceInKms  = Math.abs(stationInfo.tripDistanceInKms - KTMStations[baseStationParam].tripDistanceInKms).toFixed(1);
          
+    
          const ktmTrainForStation = KTMTrains.filter(train => train.stationName === stationName && train.vehicleId === vehicleId);    
          if ( ktmTrainForStation.length < 1) continue; //If train does not stop in Station, then do not mark the station on the map.
-         
+                  
          let trainDepartureTime = ktmTrainForStation[0].departureTime;
          const [hours, minutes] = trainDepartureTime.split(":").map(Number);
          const departureTime = new Date(currentDate);
@@ -231,7 +229,7 @@ function plotStationsOnMapForVechicleId(vehicleId) {
               }
          } else {
               stationInfo.colour = '#8b81fb';
-         }       
+         }   
       
          if (stationName == baseStationParam ) {
             stationInfo.colour = 'blue';
@@ -241,9 +239,7 @@ function plotStationsOnMapForVechicleId(vehicleId) {
          const stationMarker = L.marker(stationInfo.location, {
              icon: L.divIcon({
                  className: 'custom-station-marker',
-                 html: `<div class="marker-containerRECT" style="background-color: ${stationInfo.colour};">
-                            <span class="marker-numberRECT">${trainDepartureTime}</span>
-                        </div>`,
+                 html: `<div class="marker-containerRECT" style="background-color: ${stationInfo.colour};"><span class="marker-numberRECT">${trainDepartureTime}</span></div>`,
                  iconSize: [26, 26],
                  iconAnchor: [18, 18],
              })
