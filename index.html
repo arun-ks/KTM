@@ -16,6 +16,7 @@
         <option value="" disabled selected>Select base station</option>
     </select>
     <button id="toggleStationScheduleButton" onclick="toggleStationScheduleTableVisibility()">Show Schedule</button><br>
+  
 
     <a href="" id="filterLinkBoth">Total</a>:<span id="trainCountBoth">0</span> (
     <a href="" id="filterLinkUp">Up</a>:<span id="trainCountUp">0</span>,
@@ -27,6 +28,14 @@
     <span id="system_status"></span>
 
     <button id="countdownButton" onclick="fetchMtrecTrainPositionApiData()">Refresh in 60s</button>
+    
+    <div class="toggle-wrapper">
+      <label class="switch">
+        <input type="checkbox" id="stationToggle" checked>
+        <div class="slider"><span id="toggleText">Show Station Names</span></div>
+      </label>
+    </div>
+  
     <div id="map"></div>
 
     <script>
