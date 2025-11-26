@@ -9,8 +9,8 @@
         .vehicle-arrow-icon {
             font-family: 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
         }
+        
         #map { height: 750px; width: 98%;  }
-
         .leaflet-tooltip.vehicle-label {
             white-space: nowrap;
             font-size: small;
@@ -62,3 +62,66 @@
        .custom-station-marker .marker-numberRECT {
            line-height: 1;
        }
+       
+       
+       
+ .toggle-wrapper {
+    display: inline-flex;
+    align-items: center;
+    user-select: none;
+  }
+
+  .switch {
+    position: relative;
+    display: inline-block;
+  }
+
+  .switch input {
+    display: none;
+  }
+
+  .slider {
+    position: relative;
+    background-color: #ccc;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: 0.3s;
+    display: inline-flex;
+    align-items: center;
+
+    /* ? Height now follows text naturally */
+    padding: 4px 18px;   /* ~2px above & below text */
+    font-size: 13px;
+    font-weight: bold;
+    color: black;
+  }
+
+  /* Toggle knob */
+  .slider::before {
+    content: "";
+    position: absolute;
+    height: calc(100% - 6px);
+    width: calc(100% - 6px);
+    max-width: 22px;
+    max-height: 22px;
+    left: 3px;
+    top: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.3s;
+  }
+
+  .slider span {
+    padding-left: 28px;
+    padding-right: 28px;
+    white-space: nowrap;
+  }
+
+  input:checked + .slider {
+    background-color: #4caf50;
+    color: white;
+  }
+
+  input:checked + .slider::before {
+    transform: translateX(100%);
+  }

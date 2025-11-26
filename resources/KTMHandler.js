@@ -44,13 +44,16 @@ function initializePageParameters(){
            	
         let baseStationParamRaw = urlParams.get('baseStation');
         const baseStationParam =  ((baseStationParamRaw == null) || !(baseStationParamRaw in KTMStations)) ? BASESTATION_DEFAULT : baseStationParamRaw;
+        
+        let hideStationNameParamRaw = urlParams.get('hideStationName');
+        const hideStationNameParam =  (hideStationNameParamRaw == null) ?  false : true;        
 
         //Force use or baseStation parameter
         const url = new URL(location);
         url.searchParams.set("baseStation", baseStationParam);
         history.pushState({}, "", url);
 
-        console.log(`Page Parameters: filter is ${filterParam}, focusVehicleId is ${focusVehicleIdParam} and baseStation is ${baseStationParam} `);
+        console.log(`Page Parameters: filter is ${filterParam}, focusVehicleId is ${focusVehicleIdParam}, baseStation is ${baseStationParam} & hideStationNameParam is ${hideStationNameParam} `);        
         document.getElementById('filterLinkBoth').href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=both`;       
 
         createFilterLink("filterLinkUp", "up", baseStationParam, "up");
@@ -62,7 +65,7 @@ function initializePageParameters(){
             document.getElementById("filterLinkOthers").href = "#";
         }      
 
-        return { filterParam, focusVehicleIdParam, baseStationParam};
+        return { filterParam, focusVehicleIdParam, baseStationParam, hideStationNameParam};
 }
 
 function initializeBaseStationDropdown(defaultBaseStation) {
@@ -101,6 +104,33 @@ function handleBaseStationUpdate(newBaseStation) {
          document.getElementById('filterLinkUp').href   = `${window.location.pathname}?baseStation=${baseStationParam}&filter=up`;
          document.getElementById('filterLinkDown').href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=down`;
 }
+
+function initializeShowStationNameToggle(){	
+   const toggle = document.getElementById("stationToggle");   
+   
+   toggle.addEventListener("change", handleShowStationNameUpdate);
+}
+
+function handleShowStationNameUpdate() {
+  const toggle = document.getElementById("stationToggle");
+  const toggleText = document.getElementById("toggleText");
+
+  hideStationNameParam = toggle.checked ? false: true;
+  toggleText.textContent = toggle.checked ? "Show Station Names" : "Hide Station Names";
+  // ? Hook your real station marker logic here:
+  // show ? showAllStationTooltips() : hideAllStationTooltips();
+  console.log("Hide station names:", hideStationNameParam);
+  
+  const url = new URL(location);
+  url.searchParams.set("hideStationName", hideStationNameParam);
+  history.pushState(null, '', url);      
+  
+  if( focusVehicleIdParam == 0 ) // P
+     plotStationsOnMapWithDuration();
+   else 
+      plotStationsOnMapForVechicleId  (focusVehicleIdParam);
+}
+
 
 function initializeMap(baseStation) {
 	   // Initialize the map to Location to baseStation
@@ -148,20 +178,21 @@ function plotStationsOnMapWithDuration() {
          stationMarker.isVehicleMarker = false;
 
          let label = `<a href="https://myrailtime.ktmb.com.my/timetable?origin=${stationInfo.stationId}" target="_blank">${stationName}</a>`;
-         //label += tripDurationInMins > 0 ? `: (${tripDistanceInKms} KMs away)` : '';        
-         stationMarker.bindTooltip( label, {
-              permanent: true,
-              direction: 'right',    
-              offset: [12, 0]
-         });
-
-         //stationMarker.bindPopup(label, {
-         //    permanent: false,                // Cannot be true
-         //    direction: 'left',
-         //    offset: [0, 0],
-         //    className: 'custom-popup',
-         //});
-         
+         //label += tripDurationInMins > 0 ? `: (${tripDistanceInKms} KMs away)` : '';  
+         if (stationName == baseStationParam || hideStationNameParam == false ) {
+             stationMarker.bindTooltip( label, {
+                  permanent: true,
+                  direction: 'right',    
+                  offset: [12, 0]
+             });
+         } else {   
+             stationMarker.bindPopup(label, {
+                 permanent: false,                // Cannot be true
+                 direction: 'right',
+                 offset: [0, 0],
+                 className: 'custom-popup',
+             });
+         }
          
      }
 }
@@ -221,23 +252,25 @@ function plotStationsOnMapForVechicleId(vehicleId) {
 
          let label = `<a href="https://myrailtime.ktmb.com.my/timetable?origin=${stationInfo.stationId}" target="_blank">${stationName}</a>`;
          //label += `: ${tripDurationInMins} Mins, (${tripDistanceInKms} KMs away)` ;
-         stationMarker.bindTooltip( label, {
-              permanent: true,
-              direction: 'right',    
-              offset: [18, -6]
-         });         
-         //stationMarker.bindPopup(label, {
-         //    permanent: false,                // Cannot be true
-         //    direction: 'left',
-         //    offset: [0, 0],
-         //    className: 'custom-popup',
-         //});
-         //                    direction: 'left',                     offset: [-10, 0],
+         
+         if (stationName == baseStationParam || hideStationNameParam == false ) {
+             stationMarker.bindTooltip( label, {
+                  permanent: true,
+                  direction: 'right',    
+                  offset: [18, -6]
+             });
+         } else {   
+             stationMarker.bindPopup(label, {
+                 permanent: false,                // Cannot be true
+                 direction: 'right',
+                 offset: [18, -6],
+                 className: 'custom-popup',
+             });
+         }         
+       
+
      }
 }
-
-
-
 
 async function fetchMtrecTrainPositionApiData() {
 	    // Function to fetch data from MTREC API
@@ -780,12 +813,14 @@ function speakDistance(distance) {
     }
 }
 
+
 const COUNTDOWN_SECONDS = 60;
 let countdown = COUNTDOWN_SECONDS;
 
-let { filterParam, focusVehicleIdParam, baseStationParam } = initializePageParameters();
+let { filterParam, focusVehicleIdParam, baseStationParam, hideStationNameParam } = initializePageParameters();
 const map = initializeMap(baseStationParam);
 initializeBaseStationDropdown(baseStationParam);
+initializeShowStationNameToggle();
 
 if( focusVehicleIdParam == 0 ) // Plot when not in Focus Mode.
    plotStationsOnMapWithDuration();
