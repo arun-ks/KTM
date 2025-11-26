@@ -236,6 +236,9 @@ function plotStationsOnMapForVechicleId(vehicleId) {
      }
 }
 
+
+
+
 async function fetchMtrecTrainPositionApiData() {
 	    // Function to fetch data from MTREC API
       // API       : https://www.mtrec.name.my/api.html
@@ -244,7 +247,14 @@ async function fetchMtrecTrainPositionApiData() {
      try {
          const response = await fetch('https://api.mtrec.name.my/api/position?agency=ktmb');
          //const response = await fetch('https://cors-anywhere.herokuapp.com/https://api.mtrec.name.my/api/position?agency=ktmb');
+        
          const data = await response.json();
+         //** For testing, comment above line & uncomment 2 code lines below 
+         // New value of dummyData can be obtained with  JSON.stringify(data)
+         //dummyData=  '{"IP_Address":"175.139.96.66","status":200,"message":"Request successful","timestamp":1764162153,"data":[{"trip":{"tripId":"weekday_2063"},"position":{"latitude":3.235832,"longitude":101.68106,"bearing":0,"speed":28},"timestamp":"1764162117","vehicle":{"id":"weekday_2063","label":"SCS24"}}, {"trip":{"tripId":"weekday_2054"},"position":{"latitude":3.140152,"longitude":101.69385,"bearing":0,"speed":0},"timestamp":"1764162126","vehicle":{"id":"weekday_2054","label":"SCS07"}}, {"trip":{"tripId":"2985"},"position":{"latitude":5.367928,"longitude":100.41254,"bearing":0,"speed":98},"timestamp":"1764162121","vehicle":{"id":"2985","label":"SCS12"}}, {"trip":{"tripId":"weekday_2175"},"position":{"latitude":3.0646,"longitude":101.54732,"bearing":0,"speed":67},"timestamp":"1764162118","vehicle":{"id":"weekday_2175","label":"SCS23"}}, {"trip":{"tripId":"weekday_2059"},"position":{"latitude":3.023827,"longitude":101.71571,"bearing":0,"speed":0},"timestamp":"1764162112","vehicle":{"id":"weekday_2059","label":"SCS04"}}, {"trip":{"tripId":"weekday_2062"},"position":{"latitude":2.658643,"longitude":101.99828,"bearing":0,"speed":28},"timestamp":"1764162109","vehicle":{"id":"weekday_2062","label":"SCS21"}}, {"trip":{"tripId":"60"},"position":{"latitude":5.330392,"longitude":102.12107,"bearing":0,"speed":23},"timestamp":"1764162070","vehicle":{"id":"60","label":"DMU12(D6124)"}}, {"trip":{"tripId":"weekday_2179"},"position":{"latitude":3.138645,"longitude":101.69349,"bearing":0,"speed":18},"timestamp":"1764162120","vehicle":{"id":"weekday_2179","label":"SCS19"}}, {"trip":{"tripId":"2919"},"position":{"latitude":4.607253,"longitude":101.07675,"bearing":0,"speed":23},"timestamp":"1764162106","vehicle":{"id":"2919","label":"EMU22"}}, {"trip":{"tripId":"weekday_2183"},"position":{"latitude":3.539063,"longitude":101.63529,"bearing":0,"speed":98},"timestamp":"1764162118","vehicle":{"id":"weekday_2183","label":"SCS29"}}, {"trip":{"tripId":"weekday_2174"},"position":{"latitude":3.283565,"longitude":101.56771,"bearing":0,"speed":61},"timestamp":"1764162118","vehicle":{"id":"weekday_2174","label":"EMU24"}}, {"trip":{"tripId":"9999"},"position":{"latitude":5.572193,"longitude":100.49647,"bearing":0,"speed":119},"timestamp":"1764162112","vehicle":{"id":"2987","label":"EMU31"}} ]}';     
+         //const data = JSON.parse(dummyData);        
+
+         
          console.log((new Date()).toLocaleTimeString(),'Count: ', data.data.length,', Response: ', data);
          const vehicles = data.data || [];
          if (data.data.length == 0 ) {
