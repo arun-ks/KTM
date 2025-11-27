@@ -46,12 +46,17 @@ function initializePageParameters(){
         const baseStationParam =  ((baseStationParamRaw == null) || !(baseStationParamRaw in KTMStations)) ? BASESTATION_DEFAULT : baseStationParamRaw;
         
         let hideStationNameParamRaw = urlParams.get('hideStationName');
-        const hideStationNameParam =  (hideStationNameParamRaw == null) ?  false : true;        
+        const hideStationNameParam =  (hideStationNameParamRaw == null) || (hideStationNameParamRaw == "false") ?  false : true;        
 
         //Force use or baseStation parameter
-        const url = new URL(location);
+        let url = new URL(location);
         url.searchParams.set("baseStation", baseStationParam);
         history.pushState({}, "", url);
+        
+        //Force use or hideStationNameParam parameter  
+        url = new URL(location);
+        url.searchParams.set("hideStationName", hideStationNameParam);
+        history.pushState(null, '', url);     
 
         console.log(`Page Parameters: filter is ${filterParam}, focusVehicleId is ${focusVehicleIdParam}, baseStation is ${baseStationParam} & hideStationNameParam is ${hideStationNameParam} `);        
         document.getElementById('filterLinkBoth').href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=both`;       
@@ -95,29 +100,33 @@ function handleBaseStationUpdate(newBaseStation) {
          fetchMtrecTrainPositionApiData();
          toggleStationScheduleTableVisibility();
 
-         //const url = new URL(location);
-         //url.searchParams.set("baseStation", newBaseStation);
-         //history.pushState(null, '', url);
+         const url = new URL(location);
+         url.searchParams.set("baseStation", newBaseStation);
+         history.pushState(null, '', url);
 
          document.getElementById('filterLinkBoth').href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=both`;
          document.getElementById('filterLinkUp').href   = `${window.location.pathname}?baseStation=${baseStationParam}&filter=up`;
          document.getElementById('filterLinkDown').href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=down`;
 }
 
-function initializeShowStationNameToggle(){	
+function initializeHideStationNameToggle(){	
    const toggle = document.getElementById("stationToggle");   
+   toggle.checked = hideStationNameParam; 
    
-   toggle.addEventListener("change", handleShowStationNameUpdate);
+   const toggleText = document.getElementById("toggleText");
+   toggleText.textContent = toggle.checked ? "Show Station Names" : "Hide Station Names" ;
+   //toggleText.textContent = toggle.checked ? "Hide Station Names" : "Show Station Names" ;
+   
+   toggle.addEventListener("change", handleHideStationNameUpdate);
 }
 
-function handleShowStationNameUpdate() {
+function handleHideStationNameUpdate() {
   const toggle = document.getElementById("stationToggle");
   const toggleText = document.getElementById("toggleText");
 
-  hideStationNameParam = toggle.checked ? false: true;
-  toggleText.textContent = toggle.checked ? "Show Station Names" : "Hide Station Names";
-  // ? Hook your real station marker logic here:
-  // show ? showAllStationTooltips() : hideAllStationTooltips();
+  hideStationNameParam = toggle.checked;
+  //toggleText.textContent = toggle.checked ? "Hide Station Names" : "Show Station Names" ;
+  toggleText.textContent = toggle.checked ? "Show Station Names" : "Hide Station Names" ;
   console.log("Hide station names:", hideStationNameParam);
   
   const url = new URL(location);
@@ -816,7 +825,7 @@ let countdown = COUNTDOWN_SECONDS;
 let { filterParam, focusVehicleIdParam, baseStationParam, hideStationNameParam } = initializePageParameters();
 const map = initializeMap(baseStationParam);
 initializeBaseStationDropdown(baseStationParam);
-initializeShowStationNameToggle();
+initializeHideStationNameToggle();
 
 if( focusVehicleIdParam == 0 ) // Plot when not in Focus Mode.
    plotStationsOnMapWithDuration();
