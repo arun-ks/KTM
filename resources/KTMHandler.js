@@ -127,10 +127,8 @@ function handleHideStationNameUpdate() {
   const toggleText = document.getElementById("toggleText");
 
   hideStationNameParam = toggle.checked;
-  //toggleText.textContent = toggle.checked ? "Hide Station Names" : "Show Station Names" ;
-  //toggleText.textContent = toggle.checked ? "Show Station Names" : "Hide Station Names" ;
-  console.log("Hide station names:", hideStationNameParam);
-  
+  //console.log("Hide station names Flag:", hideStationNameParam);
+   
   const url = new URL(location);
   url.searchParams.set("hideStationName", hideStationNameParam);
   history.pushState(null, '', url);      
@@ -157,7 +155,7 @@ function initializeMap(baseStation) {
 function plotStationsOnMap(vehicleId = 0) {
     // ? Remove all station markers (if any)
     map.eachLayer(layer => {
-        if (layer instanceof L.Marker && ! layer.isVehicleMarker) {   
+        if (layer instanceof L.Marker && !layer.isVehicleMarker) {   
             map.removeLayer(layer);
         }
     });
@@ -778,10 +776,8 @@ const map = initializeMap(baseStationParam);
 initializeBaseStationDropdown(baseStationParam);
 initializeHideStationNameToggle();
 
-//@if( focusVehicleIdParam == 0 ) // Plot when not in Focus Mode.
-//@   plotStationsOnMapWithDuration();
-   
- plotStationsOnMap(focusVehicleIdParam);
+ if( focusVehicleIdParam == 0 ) // Plot when not in Focus Mode.
+    plotStationsOnMap(focusVehicleIdParam);
 
 let displayScheduleFlag = false;
 const deviceType = findDeviceTypeBeingUsed();
