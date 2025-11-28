@@ -82,21 +82,18 @@
 
   .slider {
     position: relative;
-    background-color: #ccc;
+    background-color: #4caf50 ;
     border-radius: 999px;
     cursor: pointer;
     transition: 0.3s;
     display: inline-flex;
     align-items: center;
-
-    /* ? Height now follows text naturally */
     padding: 4px 18px;   /* ~2px above & below text */
     font-size: 13px;
     font-weight: bold;
     color: black;
   }
 
-  /* Toggle knob */
   .slider::before {
     content: "";
     position: absolute;
@@ -118,7 +115,7 @@
   }
 
   input:checked + .slider {
-    background-color: #4caf50;
+    background-color: #ccc;
     color: white;
   }
 

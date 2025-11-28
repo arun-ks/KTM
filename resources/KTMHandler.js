@@ -46,7 +46,7 @@ function initializePageParameters(){
         const baseStationParam =  ((baseStationParamRaw == null) || !(baseStationParamRaw in KTMStations)) ? BASESTATION_DEFAULT : baseStationParamRaw;
         
         let hideStationNameParamRaw = urlParams.get('hideStationName');
-        const hideStationNameParam =  (hideStationNameParamRaw == null) || (hideStationNameParamRaw == "false") ?  false : true;        
+        const hideStationNameParam =  (hideStationNameParamRaw == null || hideStationNameParamRaw == "false") ? false : true;        
 
         //Force use or baseStation parameter
         let url = new URL(location);
@@ -96,7 +96,8 @@ function handleBaseStationUpdate(newBaseStation) {
          baseStationParam = newBaseStation;
          console.log(`New Selected Station: ${newBaseStation}`);
 
-         plotStationsOnMapWithDuration ();
+         plotStationsOnMap(focusVehicleIdParam);
+         
          fetchMtrecTrainPositionApiData();
          toggleStationScheduleTableVisibility();
 
@@ -113,8 +114,9 @@ function initializeHideStationNameToggle(){
    const toggle = document.getElementById("stationToggle");   
    toggle.checked = hideStationNameParam; 
    
-   const toggleText = document.getElementById("toggleText");
-   toggleText.textContent = toggle.checked ? "Show Station Names" : "Hide Station Names" ;
+   //const toggleText = document.getElementById("toggleText");
+   //toggleText.textContent = toggle.checked ? "Show Station Names" : "Hide Station Names" ;
+   //toggleText.textContent = "Station Names";
    //toggleText.textContent = toggle.checked ? "Hide Station Names" : "Show Station Names" ;
    
    toggle.addEventListener("change", handleHideStationNameUpdate);
@@ -126,17 +128,14 @@ function handleHideStationNameUpdate() {
 
   hideStationNameParam = toggle.checked;
   //toggleText.textContent = toggle.checked ? "Hide Station Names" : "Show Station Names" ;
-  toggleText.textContent = toggle.checked ? "Show Station Names" : "Hide Station Names" ;
+  //toggleText.textContent = toggle.checked ? "Show Station Names" : "Hide Station Names" ;
   console.log("Hide station names:", hideStationNameParam);
   
   const url = new URL(location);
   url.searchParams.set("hideStationName", hideStationNameParam);
   history.pushState(null, '', url);      
   
-  if( focusVehicleIdParam == 0 ) // P
-     plotStationsOnMapWithDuration();
-   else 
-      plotStationsOnMapForVechicleId  (focusVehicleIdParam);
+  plotStationsOnMap(focusVehicleIdParam);   
 }
 
 
@@ -155,126 +154,78 @@ function initializeMap(baseStation) {
      return map;
 }
 
-function plotStationsOnMapWithDuration() {
-	     //Remove all stations (if any)
-	     map.eachLayer(layer => {
-         if (layer instanceof L.Marker && ! layer.isVehicleMarker) {                	
-             map.removeLayer(layer);
-         }
-      });
-	
-	     for (const [stationName, stationInfo] of Object.entries(KTMStations)) {
-         const tripDurationInMins = Math.abs(stationInfo.tripDurationInMins - KTMStations[baseStationParam].tripDurationInMins);
-         const tripDistanceInKms  = Math.abs(stationInfo.tripDistanceInKms - KTMStations[baseStationParam].tripDistanceInKms).toFixed(1);
-         if (stationName == baseStationParam ) {
-            stationInfo.colour = 'blue'; // 'red';
-            map.flyTo(stationInfo.location);  //, 14, { animation: true }) ;
-         } else {
-         	 stationInfo.colour = '#8b81fb';
-         }
+function plotStationsOnMap(vehicleId = 0) {
+    // ? Remove all station markers (if any)
+    map.eachLayer(layer => {
+        if (layer instanceof L.Marker && ! layer.isVehicleMarker) {   
+            map.removeLayer(layer);
+        }
+    });
 
-         const stationMarker = L.marker(stationInfo.location, {
-             icon: L.divIcon({
-                 className: 'custom-station-marker',
-                 html: `<div class="marker-containerCIRCLE" style="background-color: ${stationInfo.colour};"> <span class="marker-numberCIRCLE">${tripDurationInMins}</span></div>`,
-                 iconSize: [26, 26],
-                 iconAnchor: [18, 18],
-             })
-         }).addTo(map);
-         stationMarker.isVehicleMarker = false;
+    const currentDate = getCurrentDate();
+    for (const [stationName, stationInfo] of Object.entries(KTMStations)) {
 
-         let label = `<a href="https://myrailtime.ktmb.com.my/timetable?origin=${stationInfo.stationId}" target="_blank">${stationName}</a>`;
-         //label += tripDurationInMins > 0 ? `: (${tripDistanceInKms} KMs away)` : '';  
-         if (stationName == baseStationParam || hideStationNameParam == false ) {
-             stationMarker.bindTooltip( label, {
-                  permanent: true,
-                  direction: 'right',    
-                  offset: [10, -6]
-             });
-         } else {   
-             stationMarker.bindPopup(label, {
-                 permanent: false,                // Cannot be true
-                 direction: 'right',
-                 offset: [10, -6],
-                 className: 'custom-popup',
-             });
-         }
-         
-     }
-}
+        const tripDurationInMins = Math.abs(stationInfo.tripDurationInMins - KTMStations[baseStationParam].tripDurationInMins);
+        const tripDistanceInKms = Math.abs(stationInfo.tripDistanceInKms - KTMStations[baseStationParam].tripDistanceInKms).toFixed(1);
 
-function plotStationsOnMapForVechicleId(vehicleId) {
-	     //Remove all stations (if any)
-	     map.eachLayer(layer => {
-         if (layer instanceof L.Marker /*&& ! layer.isVehicleMarker*/) {                	
-             map.removeLayer(layer);
-         }
-       });
-      
-       const currentDate = getCurrentDate();     
-	
-	     for (const [stationName, stationInfo] of Object.entries(KTMStations)) {
-         const tripDurationInMins = Math.abs(stationInfo.tripDurationInMins - KTMStations[baseStationParam].tripDurationInMins);
-         const tripDistanceInKms  = Math.abs(stationInfo.tripDistanceInKms - KTMStations[baseStationParam].tripDistanceInKms).toFixed(1);
-         
-    
-         const ktmTrainForStation = KTMTrains.filter(train => train.stationName === stationName && train.vehicleId === vehicleId);    
-         if ( ktmTrainForStation.length < 1) continue; //If train does not stop in Station, then do not mark the station on the map.
-                  
-         let trainDepartureTime = ktmTrainForStation[0].departureTime;
-         const [hours, minutes] = trainDepartureTime.split(":").map(Number);
-         const departureTime = new Date(currentDate);
-         departureTime.setHours(hours, minutes, 0, 0);
-          
-         const diffMinutes = (departureTime - currentDate) / (1000 * 60);           
-         if (diffMinutes >= -30 && diffMinutes <= 30) {
-              const intensity = Math.abs(diffMinutes) / 30; // 0 ? 1
-              const lightness = 85 - intensity * 35; // lighter near now, darker toward ±30
-          
-              if (diffMinutes < 0) {                   
-                  stationInfo.colour = `hsl(0, 70%, ${lightness}%)`;   // Past trains ? red spectrum
-              } else {                   
-                  stationInfo.colour = `hsl(120, 70%, ${lightness}%)`; // Future trains ? green spectrum
-              }
-         } else {
-              stationInfo.colour = '#8b81fb';
-         }   
-      
-         if (stationName == baseStationParam ) {
-            stationInfo.colour = 'blue';
-            map.flyTo(stationInfo.location);  //, 14, { animation: true }) ;
-         }
-         
-         const stationMarker = L.marker(stationInfo.location, {
-             icon: L.divIcon({
-                 className: 'custom-station-marker',
-                 html: `<div class="marker-containerRECT" style="background-color: ${stationInfo.colour};"><span class="marker-numberRECT">${trainDepartureTime}</span></div>`,
-                 iconSize: [26, 26],
-                 iconAnchor: [18, 18],
-             })
-         }).addTo(map);
-         stationMarker.isVehicleMarker = false;
+        let markerHTML = "";
+        let offsetX = 10;
+        let label = `<a href="https://myrailtime.ktmb.com.my/timetable?origin=${stationInfo.stationId}" target="_blank">${stationName}</a>`;
 
-         let label = `<a href="https://myrailtime.ktmb.com.my/timetable?origin=${stationInfo.stationId}" target="_blank">${stationName}</a>`;
-         //label += `: ${tripDurationInMins} Mins, (${tripDistanceInKms} KMs away)` ;
-         
-         if (stationName == baseStationParam || hideStationNameParam == false ) {
-             stationMarker.bindTooltip( label, {
-                  permanent: true,
-                  direction: 'right',    
-                  offset: [18, -6]
-             });
-         } else {   
-             stationMarker.bindPopup(label, {
-                 permanent: false,                // Cannot be true
-                 direction: 'right',
-                 offset: [18, -6],
-                 className: 'custom-popup',
-             });
-         }         
-       
+        stationInfo.colour = "#8b81fb"; //Default Color (will change for nearby stations in Focus Mode & also for Base Stations)
+        if (vehicleId > 0) {  // Focus Vehicle Mode With Departure Time On Marker
+            const ktmTrainForStation = KTMTrains.filter(train => train.stationName === stationName && train.vehicleId === vehicleId);
 
-     }
+            if (ktmTrainForStation.length < 1) continue;
+
+            let trainDepartureTime = ktmTrainForStation[0].departureTime;
+            const [hours, minutes] = trainDepartureTime.split(":").map(Number);
+            const departureTime = new Date(currentDate);
+            departureTime.setHours(hours, minutes, 0, 0);
+            const diffMinutes = (departureTime - currentDate) / (1000 * 60);
+
+            if (diffMinutes >= -30 && diffMinutes <= 30) {
+                const intensity = Math.abs(diffMinutes) / 30;
+                const lightness = 85 - intensity * 35;
+                stationInfo.colour = diffMinutes < 0  ? `hsl(0, 70%, ${lightness}%)` : `hsl(120, 70%, ${lightness}%)`;
+            }
+            markerHTML = `<div class="marker-containerRECT" style="background-color:${stationInfo.colour};"><span class="marker-numberRECT">${trainDepartureTime}</span></div>`;
+            offsetX = 18;
+        }
+        else {   // Default Station Mode With Distance from Base-Station On Marker
+            markerHTML = `<div class="marker-containerCIRCLE" style="background-color:${stationInfo.colour};"><span class="marker-numberCIRCLE">${tripDurationInMins}</span></div>`;
+        }
+
+        if (stationName === baseStationParam) {
+            stationInfo.colour = "blue";
+            map.flyTo(stationInfo.location);
+        }
+
+        const stationMarker = L.marker(stationInfo.location, {
+            icon: L.divIcon({
+                className: 'custom-station-marker',
+                html: markerHTML,
+                iconSize: [26, 26],
+                iconAnchor: [18, 18],
+            })
+        }).addTo(map);
+        stationMarker.isVehicleMarker = false;
+
+        if (stationName === baseStationParam || hideStationNameParam === false) {  
+            stationMarker.bindTooltip(label, {  //Always Visible
+                permanent: true,
+                direction: 'right',
+                offset: [offsetX, -6]
+            });
+        } else {
+            stationMarker.bindPopup(label, {   //Visible on click
+                permanent: false,
+                direction: 'right',
+                offset: [offsetX, -6],
+                className: 'custom-popup'
+            });
+        }
+    }
 }
 
 async function fetchMtrecTrainPositionApiData() {
@@ -658,7 +609,7 @@ function toggleStationScheduleTableVisibility() {
 }
 
 function handleFocusTrain(vehicleId, scrollIntoView = false) {  
-	  plotStationsOnMapForVechicleId(vehicleId);
+	 plotStationsOnMap(focusVehicleIdParam);
 	//  showTrainScheduleTable(vehicleId, scrollIntoView);	
 }
 function showTrainScheduleTable(vehicleId, scrollIntoView = false) {
@@ -827,8 +778,10 @@ const map = initializeMap(baseStationParam);
 initializeBaseStationDropdown(baseStationParam);
 initializeHideStationNameToggle();
 
-if( focusVehicleIdParam == 0 ) // Plot when not in Focus Mode.
-   plotStationsOnMapWithDuration();
+//@if( focusVehicleIdParam == 0 ) // Plot when not in Focus Mode.
+//@   plotStationsOnMapWithDuration();
+   
+ plotStationsOnMap(focusVehicleIdParam);
 
 let displayScheduleFlag = false;
 const deviceType = findDeviceTypeBeingUsed();
