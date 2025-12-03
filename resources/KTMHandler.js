@@ -136,7 +136,6 @@ function handleHideStationNameUpdate() {
   plotStationsOnMap(focusVehicleIdParam);   
 }
 
-
 function initializeMap(baseStation) {
 	   // Initialize the map to Location to baseStation
      // API reference https://leafletjs.com/reference.html     
@@ -153,7 +152,7 @@ function initializeMap(baseStation) {
 }
 
 function plotStationsOnMap(vehicleId = 0) {
-    // ? Remove all station markers (if any)
+    // Remove all station markers (if any)
     map.eachLayer(layer => {
         if (layer instanceof L.Marker && !layer.isVehicleMarker) {   
             map.removeLayer(layer);
@@ -170,8 +169,9 @@ function plotStationsOnMap(vehicleId = 0) {
         let offsetX = 10;
         let label = `<a href="https://myrailtime.ktmb.com.my/timetable?origin=${stationInfo.stationId}" target="_blank">${stationName}</a>`;
 
-        stationInfo.colour = "#8b81fb"; //Default Color (will change for nearby stations in Focus Mode & also for Base Stations)
-        if (vehicleId > 0) {  // Focus Vehicle Mode With Departure Time On Marker
+        stationInfo.colour = (stationName === baseStationParam) ? "blue" : "#8b81fb"; //Color for baseStation. This will change for nearby stations in Focus Mode.
+
+        if (vehicleId > 0) {  // Focus Vehicle Mode With Departure Time On Marker & Color Coded Stations
             const ktmTrainForStation = KTMTrains.filter(train => train.stationName === stationName && train.vehicleId === vehicleId);
 
             if (ktmTrainForStation.length < 1) continue;
@@ -195,7 +195,6 @@ function plotStationsOnMap(vehicleId = 0) {
         }
 
         if (stationName === baseStationParam) {
-            stationInfo.colour = "blue";
             map.flyTo(stationInfo.location);
         }
 
