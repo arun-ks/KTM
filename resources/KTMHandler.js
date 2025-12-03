@@ -182,7 +182,7 @@ function plotStationsOnMap(vehicleId = 0) {
             departureTime.setHours(hours, minutes, 0, 0);
             const diffMinutes = (departureTime - currentDate) / (1000 * 60);
 
-            if (diffMinutes >= -30 && diffMinutes <= 30) {
+            if (diffMinutes >= -30 && diffMinutes <= 30 && !(stationName === baseStationParam)) {
                 const intensity = Math.abs(diffMinutes) / 30;
                 const lightness = 85 - intensity * 35;
                 stationInfo.colour = diffMinutes < 0  ? `hsl(0, 70%, ${lightness}%)` : `hsl(120, 70%, ${lightness}%)`;
