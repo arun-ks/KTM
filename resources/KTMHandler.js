@@ -1,6 +1,7 @@
 const iconDesigns = {
   	'up'   : { viewBox: '0 0 30 30' , dimensionW: 20, dimensionH: 20, colour:'blue'  , svgPathd: 'M15 5 L25 25 L5 25 Z'       },
   	'down' : { viewBox: '0 0 30 30' , dimensionW: 20, dimensionH: 20, colour:'red'   , svgPathd: 'M15 25 L25 5 L5 5 Z'        },
+    'both' : { viewBox: '0 0  0  0' , dimensionW:  0, dimensionH:  0, colour:'white' , svgPathd: 'M15 25 Z'                   },  	
   	'na'   : { viewBox: '0 0 30 30' , dimensionW: 20, dimensionH: 20, colour:'green' , svgPathd: 'M5 5 L25 5 L25 25 L5 25 Z'  },
   	'user' : { viewBox: '0 0 30 30' , dimensionW: 20, dimensionH: 20, colour:'green' , svgPathd: 'M12 6 A3 3 0 1 1 18 6 A3 3 0 1 1 12 6 Z  M10 9 L20 9 L20 20 L10 20 Z  M5 10 L10 10 L10 14 L5 14 Z  M20 10 L25 10 L25 14 L20 14 Z M10 20 L14 20 L14 26 L10 26 Z  M16 20 L20 20 L20 26 L16 26 Z'  }
 }
@@ -10,27 +11,6 @@ function findDeviceTypeBeingUsed() {    // Returns Watch/Mobile/Desktop
     if (/watch|samsungbrowser/i.test(userAgent.toLowerCase())) { return "Watch";}
     if (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase())) { return "Mobile"; }
     return "Desktop";
-}
-
-function createFilterLink(linkId, filterKey, baseStationParam, iconKey, includeLabel = false) {
-    const link = document.getElementById(linkId);
-    link.href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=${filterKey}`;
-
-    const design = iconDesigns[iconKey];
-    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("width", design.dimensionW);
-    svg.setAttribute("height", design.dimensionH);
-    svg.setAttribute("viewBox", design.viewBox);
-    svg.setAttribute("fill", design.colour);
-
-    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path.setAttribute("d", design.svgPathd);
-    svg.appendChild(path);
-
-    if (includeLabel) {
-        link.appendChild(document.createTextNode(iconKey));
-    }
-    link.appendChild(svg);
 }
 
 function initializePageParameters(){
@@ -58,9 +38,37 @@ function initializePageParameters(){
         url.searchParams.set("hideStationName", hideStationNameParam);
         history.pushState(null, '', url);     
 
-        console.log(`Page Parameters: filter is ${filterParam}, focusVehicleId is ${focusVehicleIdParam}, baseStation is ${baseStationParam} & hideStationNameParam is ${hideStationNameParam} `);        
-        document.getElementById('filterLinkBoth').href = `${window.location.pathname}?baseStation=${baseStationParam}&filter=both`;       
+        console.log(`Page Parameters: filter is ${filterParam}, focusVehicleId is ${focusVehicleIdParam}, baseStation is ${baseStationParam} & hideStationNameParam is ${hideStationNameParam} `);                      
 
+        return { filterParam, focusVehicleIdParam, baseStationParam, hideStationNameParam};
+}
+
+function createFilterLink(linkId, filterKey, baseStationParam, iconKey, includeLabel = false) {
+    const link = document.getElementById(linkId);
+    link.href = `${window.location.pathname}?baseStation=${baseStationParam}&hideStationName=${hideStationNameParam}&filter=${filterKey}`;
+
+    const existingSvg = link.querySelector('svg');
+    if (existingSvg) existingSvg.remove();
+
+    const design = iconDesigns[iconKey];
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("width", design.dimensionW);
+    svg.setAttribute("height", design.dimensionH);
+    svg.setAttribute("viewBox", design.viewBox);
+    svg.setAttribute("fill", design.colour);
+
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", design.svgPathd);
+    svg.appendChild(path);
+
+    if (includeLabel) {
+        link.appendChild(document.createTextNode(iconKey));
+    }
+    link.appendChild(svg);
+}
+
+function initializeAllFilterLinks() {
+	      createFilterLink("filterLinkBoth", "both", baseStationParam, "both");
         createFilterLink("filterLinkUp", "up", baseStationParam, "up");
         createFilterLink("filterLinkDown", "down", baseStationParam, "down");
         
@@ -68,9 +76,7 @@ function initializePageParameters(){
             createFilterLink("filterLinkOthers", "all", baseStationParam, "na", true);
         } else {
             document.getElementById("filterLinkOthers").href = "#";
-        }      
-
-        return { filterParam, focusVehicleIdParam, baseStationParam, hideStationNameParam};
+        } 
 }
 
 function initializeBaseStationDropdown(defaultBaseStation) {
@@ -117,8 +123,8 @@ function initializeHideStationNameToggle(){
    //const toggleText = document.getElementById("toggleText");
    //toggleText.textContent = toggle.checked ? "Show Station Names" : "Hide Station Names" ;
    //toggleText.textContent = "Station Names";
-   //toggleText.textContent = toggle.checked ? "Hide Station Names" : "Show Station Names" ;
-   
+   //toggleText.textContent = toggle.checked ? "Hide Station Names" : "Show Station Names" ;   
+
    toggle.addEventListener("change", handleHideStationNameUpdate);
 }
 
@@ -133,6 +139,7 @@ function handleHideStationNameUpdate() {
   url.searchParams.set("hideStationName", hideStationNameParam);
   history.pushState(null, '', url);      
   
+  initializeAllFilterLinks();
   plotStationsOnMap(focusVehicleIdParam);   
 }
 
@@ -536,7 +543,7 @@ function showStationScheduleTable(stationName, direction) {
            cell.appendChild(document.createElement("br"));
            cell.appendChild(document.createTextNode("("));
            const vehicleLink = document.createElement("a");
-           vehicleLink.href = `${window.location.pathname}?focusVehicleId=${train.vehicleId}&baseStation=${stationName}`;
+           vehicleLink.href = `${window.location.pathname}?focusVehicleId=${train.vehicleId}&baseStation=${stationName}&hideStationName=${hideStationNameParam}`;
            vehicleLink.textContent = `${train.vehicleId}${train.vehicleType}`;
            cell.appendChild(vehicleLink);
            cell.appendChild(document.createTextNode(")"));
@@ -771,6 +778,7 @@ const COUNTDOWN_SECONDS = 60;
 let countdown = COUNTDOWN_SECONDS;
 
 let { filterParam, focusVehicleIdParam, baseStationParam, hideStationNameParam } = initializePageParameters();
+initializeAllFilterLinks();
 const map = initializeMap(baseStationParam);
 initializeBaseStationDropdown(baseStationParam);
 initializeHideStationNameToggle();
