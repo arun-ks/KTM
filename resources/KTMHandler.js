@@ -67,6 +67,10 @@ function createFilterLink(linkId, filterKey, baseStationParam, iconKey, includeL
     link.appendChild(svg);
 }
 
+function makeLinkTODO(moreFilter) {
+//	newUrl = `${window.location.pathname}?baseStation=${baseStationParam}&hideStationName=${hideStationNameParam}&${moreFilter}`;
+}
+
 function initializeAllFilterLinks() {
 	      createFilterLink("filterLinkBoth", "both", baseStationParam, "both");
         createFilterLink("filterLinkUp", "up", baseStationParam, "up");
@@ -374,7 +378,7 @@ function plotVehicleOnMap(vehicleIdNum, vehiclePosition, activeKTMTrainInfo) {
             distance = calculateDistanceInKM(vehiclePosition.latitude, vehiclePosition.longitude, KTMStations[baseStationParam].location[0], KTMStations[baseStationParam].location[1]);
             distance = distance.toFixed(2);
 
-            label = `${activeKTMTrainInfo.arrivalTime} (<a href="${window.location.pathname}?focusVehicleId=${vehicleIdNum}&baseStation=${baseStationParam}">#${vehicleIdNum}</a>) - ${vehiclePosition.speed} km/h`;
+            label = `${activeKTMTrainInfo.arrivalTime} (<a href="${window.location.pathname}?focusVehicleId=${vehicleIdNum}&baseStation=${baseStationParam}&hideStationName=${hideStationNameParam}">#${vehicleIdNum}</a>) - ${vehiclePosition.speed} km/h`;
             if ( vehicleIdNum === focusVehicleIdParam ) {
           	    map.flyTo([vehiclePosition.latitude, vehiclePosition.longitude]);  //, 14, { animation: true }) ;            	                           	
                 const trainDurationFromBaseStation = findTrainDurationInMins([vehiclePosition.latitude, vehiclePosition.longitude]);
@@ -616,6 +620,7 @@ function handleFocusTrain(vehicleId, scrollIntoView = false) {
 	 plotStationsOnMap(focusVehicleIdParam);
 	//  showTrainScheduleTable(vehicleId, scrollIntoView);	
 }
+
 function showTrainScheduleTable(vehicleId, scrollIntoView = false) {
 	     
        let stationForTrainUnsorted = KTMTrains.filter(train => train.vehicleId === vehicleId );
