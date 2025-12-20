@@ -577,7 +577,7 @@ function showStationScheduleTable(stationName, direction) {
                      <td style="font-size: small; border: 1px dotted black; white-space: normal;">+ Train is active on tracks, but position is unknown</td>
                  </tr>
                  <tr>
-                     <td style="font-size: small; border: 1px dotted black; white-space: normal;" colspan=4>Departure Times on ${typeOfDay}s at ${baseStationParam}. <a href="https://www.ktmb.com.my/TrainTime.html">Schedule</a> updated on ${GTFSDataExtractDate}</td>
+                     <td style="font-size: small; border: 1px dotted black; white-space: normal;" colspan=4>Departure Times on ${typeOfDay}s at ${baseStationParam}. <a href="https://www.ktmb.com.my/TrainTime.html" target="_blank">Schedule</a> updated on ${GTFSDataExtractDate}</td>
                  </tr>
              `;
              document.body.appendChild(tableLegend);
