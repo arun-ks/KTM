@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+	
 <head>	
     <meta charset="UTF-8">
     <title>KTM Port Klang Train Map as Duration</title>
@@ -11,40 +12,49 @@
         %3Crect x='8' y='28' width='48' height='4' fill='%23FFD700'/%3E
         %3Ccircle cx='20' cy='48' r='4' fill='%23000'/%3E
         %3Ccircle cx='44' cy='48' r='4' fill='%23000'/%3E
-        %3C/svg%3E">    
+        %3C/svg%3E">
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="stylesheet" href="resources/KTMPageStyle.css">
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    
+    <script type="text/javascript" src="GTFSdata/KTMInfo_PortKlang.js"></script>
+
 </head>
 <body>
     <b>For</b>
     <select id="baseStationDropdown">
         <option value="" disabled selected>Select base station</option>
     </select>
-    <button id="toggleStationScheduleButton" onclick="toggleStationScheduleTableVisibility()">Show Schedule</button> <br>
-    
+    <button id="toggleStationScheduleButton" onclick="toggleStationScheduleTableVisibility()">Show Schedule</button><br>
+  
+
     <a href="" id="filterLinkBoth">Total</a>:<span id="trainCountBoth">0</span> (
-    <a href="" id="filterLinkUp">Up</a>:<span id="trainCountUp">0</span>, 
+    <a href="" id="filterLinkUp">Up</a>:<span id="trainCountUp">0</span>,
     <a href="" id="filterLinkDown">Down</a>:<span id="trainCountDown">0</span> )
     <a href="" id="filterLinkOthers"></a><span id="trainCountOthers"></span>
 
-    <span id="inactiveFocusTrainMesg"></span>.
+    <span id="focusTrainMessage"></span><span id="focusTrainLink"></span>.
+    <span id="#trainScheduleTable"></span>
     <span id="system_status"></span>
 
     <button id="countdownButton" onclick="fetchMtrecTrainPositionApiData()">Refresh in 60s</button>
-
+    
+    <div class="toggle-wrapper">
+      <label class="switch">
+        <input type="checkbox" id="stationToggle">
+        <div class="slider"><span id="toggleText">Station Names</span></div>
+      </label>
+    </div>
+  
     <div id="map"></div>
 
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script type="text/javascript" src="GTFSdata/KTMInfo_PortKlang.js"></script>
-    
-    <script>        // Data Structures
+    <script>
         let KTMStations = {
              'Tanjung Malim'   :  {stationId:15200, tripDurationInMins:   0, tripDistanceInKms:0        , location: [3.685142,101.518165 ] },
-             'Kalumpang'       :  {stationId:15400, tripDurationInMins:   3, tripDistanceInKms:5.5      , location: [3.5566,101.5612     ] },
-             'Kuala Kubu Baru' :  {stationId:16100, tripDurationInMins:  13, tripDistanceInKms:20.46    , location: [3.553215,101.639591 ] },
-             'Rasa'            :  {stationId:16300, tripDurationInMins:  18, tripDistanceInKms:26.62    , location: [3.500586,101.634113 ] },
+             'Kuala Kubu Baru' :  {stationId:16200, tripDurationInMins:  13, tripDistanceInKms:20.46    , location: [3.553215,101.639591 ] },
+             'Rasa'            :  {stationId:16400, tripDurationInMins:  18, tripDistanceInKms:26.62    , location: [3.500586,101.634113 ] },
              'Batang Kali'     :  {stationId:16500, tripDurationInMins:  21, tripDistanceInKms:30.72    , location: [3.46838,101.637759  ] },
              'Serendah'        :  {stationId:17300, tripDurationInMins:  29, tripDistanceInKms:41.62    , location: [3.376172,101.614532 ] },
              'Rawang'          :  {stationId:17800, tripDurationInMins:  38, tripDistanceInKms:52.9     , location: [3.318955,101.575012 ] },
@@ -56,7 +66,7 @@
              'Putra'           :  {stationId:18800, tripDurationInMins:  73, tripDistanceInKms:81.64    , location: [3.165399,101.691101 ] },
              'Bank Negara'     :  {stationId:18900, tripDurationInMins:  76, tripDistanceInKms:83       , location: [3.155105,101.693118 ] },
              'Kuala Lumpur'    :  {stationId:19000, tripDurationInMins:  80, tripDistanceInKms:84.72    , location: [3.139444,101.693333 ] },
-             'Kl Sentral'      :  {stationId:19100, tripDurationInMins:  84, tripDistanceInKms:85.88    , location: [3.134167,101.686111 ] },
+             'KL Sentral'      :  {stationId:19100, tripDurationInMins:  84, tripDistanceInKms:85.88    , location: [3.134167,101.686111 ] },
              'Abdullah Hukum'  :  {stationId:52700, tripDurationInMins:  97, tripDistanceInKms:88.13    , location: [3.11869,101.67293   ] },
              'Angkasapuri'     :  {stationId:52800, tripDurationInMins:  99, tripDistanceInKms:88.83    , location: [3.113212,101.673367 ] },
              'Pantai Dalam'    :  {stationId:52900, tripDurationInMins: 102, tripDistanceInKms:90.95    , location: [3.095607,101.669927 ] },
@@ -78,12 +88,12 @@
              'Pel. Klang Sel'  :  {stationId:55200, tripDurationInMins: 176, tripDistanceInKms:128.24   , location: [2.999323,101.39179  ] },
          };
         const BASESTATION_DEFAULT = "Putra";
-
     </script>
+
     <script type="text/javascript" src="resources/KTMHandler.js"></script>
 </body>
 </html>
-<!------------ Test cases 
+<!------------ Test cases
 
 up - Shows only up trains
 down - Shows only down trains
@@ -92,10 +102,17 @@ both/else - Shows up & down
 
 focus with active train : See map centered on active train & its distance
 focus without active train : See message on top that train is inactive
+focus with 2003 which does not run the entire course.
 
 change base station : Display & Distances change in map
 Show Schedule: Shows for Weekdays/weekends & Legend
-Hide Schedule: Removes schedule
+Hide Schedule: Removes schedule & Legend
 In Table Schedule: Shows active trains. Links work.
-----!-->
+In Table Schedule: See if + & * markers are shown correctly.
 
+when API down: See that status is shown in red. 
+when API is down & Focus train is picked: Ensure there is option to see schedule.
+
+hide Station Names: Check if the toggle works when focus train is selected
+hide Station Names: Check if the toggle works when direction (up/down) selected
+----!-->
