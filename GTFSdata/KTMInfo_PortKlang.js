@@ -100,7 +100,7 @@ let KTMTrains = [
     { vehicleId: 2112, typeOfDay: 'weekday', stationId: 53500, stationName: 'Seri Setia'           , arrivalTime: '08:01', departureTime: '08:01' },
     { vehicleId: 2112, typeOfDay: 'weekday', stationId: 53400, stationName: 'Kg.Datuk Harun'       , arrivalTime: '08:04', departureTime: '08:04' },
     { vehicleId: 2112, typeOfDay: 'weekday', stationId: 53100, stationName: 'Jalan Templer'        , arrivalTime: '08:10', departureTime: '08:10' },
-    { vehicleId: 2112, typeOfDay: 'weekday', stationId: 53000, stationName: 'Petaling'             , arrivalTime: 'CROSSING', departureTime: 'CROSSING' },
+    { vehicleId: 2112, typeOfDay: 'weekday', stationId: 53000, stationName: 'Petaling'             , arrivalTime: 'CROSS', departureTime: 'CROSS' },
     { vehicleId: 2112, typeOfDay: 'weekday', stationId: 52900, stationName: 'Pantai Dalam'         , arrivalTime: '08:15', departureTime: '08:15' },
     { vehicleId: 2112, typeOfDay: 'weekday', stationId: 52800, stationName: 'Angkasapuri'          , arrivalTime: '08:18', departureTime: '08:18' },
     { vehicleId: 2112, typeOfDay: 'weekday', stationId: 52700, stationName: 'Abdullah Hukum'       , arrivalTime: '08:21', departureTime: '08:21' },
@@ -1465,13 +1465,13 @@ let KTMTrains = [
     { vehicleId: 2167, typeOfDay: 'weekday', stationId: 52700, stationName: 'Abdullah Hukum'       , arrivalTime: '18:29', departureTime: '18:29' },
     { vehicleId: 2167, typeOfDay: 'weekday', stationId: 52800, stationName: 'Angkasapuri'          , arrivalTime: '18:32', departureTime: '18:32' },
     { vehicleId: 2167, typeOfDay: 'weekday', stationId: 52900, stationName: 'Pantai Dalam'         , arrivalTime: '18:34', departureTime: '18:34' },
-    { vehicleId: 2167, typeOfDay: 'weekday', stationId: 53000, stationName: 'Petaling'             , arrivalTime: 'CROSSING', departureTime: 'CROSSING' },
+    { vehicleId: 2167, typeOfDay: 'weekday', stationId: 53000, stationName: 'Petaling'             , arrivalTime: 'CROSS', departureTime: 'CROSS' },
     { vehicleId: 2167, typeOfDay: 'weekday', stationId: 53100, stationName: 'Jalan Templer'        , arrivalTime: '18:45', departureTime: '18:45' },
     { vehicleId: 2167, typeOfDay: 'weekday', stationId: 53400, stationName: 'Kg.Datuk Harun'       , arrivalTime: '18:51', departureTime: '18:51' },
     { vehicleId: 2167, typeOfDay: 'weekday', stationId: 53500, stationName: 'Seri Setia'           , arrivalTime: '18:53', departureTime: '18:53' },
     { vehicleId: 2167, typeOfDay: 'weekday', stationId: 53600, stationName: 'Setia Jaya'           , arrivalTime: '18:56', departureTime: '18:56' },
     { vehicleId: 2167, typeOfDay: 'weekday', stationId: 53700, stationName: 'Subang Jaya'          , arrivalTime: '19:04', departureTime: '19:04' },
-    { vehicleId: 2167, typeOfDay: 'weekday', stationId: 53800, stationName: 'Batu Tiga'            , arrivalTime: 'CROSSING', departureTime: 'CROSSING' },
+    { vehicleId: 2167, typeOfDay: 'weekday', stationId: 53800, stationName: 'Batu Tiga'            , arrivalTime: 'CROSS', departureTime: 'CROSS' },
     { vehicleId: 2167, typeOfDay: 'weekday', stationId: 54200, stationName: 'Shah Alam'            , arrivalTime: '19:38', departureTime: '19:38' },
     { vehicleId: 2167, typeOfDay: 'weekday', stationId: 54400, stationName: 'Padang Jawa'          , arrivalTime: '19:44', departureTime: '19:44' },
     { vehicleId: 2167, typeOfDay: 'weekday', stationId: 54500, stationName: 'Bukit Badak'          , arrivalTime: '19:50', departureTime: '19:50' },
@@ -2221,7 +2221,7 @@ let KTMTrainsSummary = [
     { vehicleId: 2107, typeOfDay: 'weekday', stationNameStart: 'Tanjung Malim'        , arrivalTimeStart: '06:02', stationNameEnd: 'KL Sentral'           , arrivalTimeEnd: '07:26' },
     { vehicleId: 2110, typeOfDay: 'weekday', stationNameStart: 'Pel. Klang Sel'       , arrivalTimeStart: '06:25', stationNameEnd: 'Tanjung Malim'        , arrivalTimeEnd: '09:33' },
     { vehicleId: 2111, typeOfDay: 'weekday', stationNameStart: 'Tanjung Malim'        , arrivalTimeStart: '06:32', stationNameEnd: 'Pel. Klang Sel'       , arrivalTimeEnd: '09:39' },
-    { vehicleId: 2112, typeOfDay: 'weekday', stationNameStart: 'Pel. Klang Sel'       , arrivalTimeStart: '06:55', stationNameEnd: 'Petaling'             , arrivalTimeEnd: 'CROSSING' },
+    { vehicleId: 2112, typeOfDay: 'weekday', stationNameStart: 'Pel. Klang Sel'       , arrivalTimeStart: '06:55', stationNameEnd: 'KL Sentral'           , arrivalTimeEnd: '08:27' },
     { vehicleId: 2113, typeOfDay: 'weekday', stationNameStart: 'Tanjung Malim'        , arrivalTimeStart: '06:47', stationNameEnd: 'KL Sentral'           , arrivalTimeEnd: '08:11' },
     { vehicleId: 2114, typeOfDay: 'weekday', stationNameStart: 'KL Sentral'           , arrivalTimeStart: '08:35', stationNameEnd: 'Tanjung Malim'        , arrivalTimeEnd: '09:59' },
     { vehicleId: 2115, typeOfDay: 'weekday', stationNameStart: 'Tanjung Malim'        , arrivalTimeStart: '07:02', stationNameEnd: 'KL Sentral'           , arrivalTimeEnd: '08:26' },
@@ -2250,7 +2250,7 @@ let KTMTrainsSummary = [
     { vehicleId: 2163, typeOfDay: 'weekday', stationNameStart: 'Tanjung Malim'        , arrivalTimeStart: '16:17', stationNameEnd: 'Pel. Klang Sel'       , arrivalTimeEnd: '19:48' },
     { vehicleId: 2165, typeOfDay: 'weekday', stationNameStart: 'Tanjung Malim'        , arrivalTimeStart: '17:02', stationNameEnd: 'KL Sentral'           , arrivalTimeEnd: '18:27' },
     { vehicleId: 2166, typeOfDay: 'weekday', stationNameStart: 'KL Sentral'           , arrivalTimeStart: '18:39', stationNameEnd: 'Tanjung Malim'        , arrivalTimeEnd: '20:03' },
-    { vehicleId: 2167, typeOfDay: 'weekday', stationNameStart: 'KL Sentral'           , arrivalTimeStart: '18:23', stationNameEnd: 'Petaling'             , arrivalTimeEnd: 'CROSSING' },
+    { vehicleId: 2167, typeOfDay: 'weekday', stationNameStart: 'KL Sentral'           , arrivalTimeStart: '18:23', stationNameEnd: 'Pel. Klang Sel'       , arrivalTimeEnd: '20:11' },
     { vehicleId: 2168, typeOfDay: 'weekday', stationNameStart: 'Pel. Klang Sel'       , arrivalTimeStart: '17:25', stationNameEnd: 'Tanjung Malim'        , arrivalTimeEnd: '20:33' },
     { vehicleId: 2171, typeOfDay: 'weekday', stationNameStart: 'Tanjung Malim'        , arrivalTimeStart: '17:22', stationNameEnd: 'Pel. Klang Sel'       , arrivalTimeEnd: '20:40' },
     { vehicleId: 2174, typeOfDay: 'weekday', stationNameStart: 'Pel. Klang Sel'       , arrivalTimeStart: '18:25', stationNameEnd: 'Tanjung Malim'        , arrivalTimeEnd: '21:23' },
@@ -2304,3 +2304,4 @@ let KTMTrainsSummary = [
 ];
  
 KTMTrainsSummary.forEach(train => train.direction   = (train.vehicleId % 2 ) ? "down" : "up");
+ 
