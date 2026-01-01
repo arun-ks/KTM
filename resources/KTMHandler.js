@@ -450,11 +450,12 @@ function getTypeOfDay() {
 }
 
 function getCurrentDate() {
-	  const currentDate = new Date();
+	  let currentDate = new Date();
     if (currentDate.getHours() < 5 )  // Handle times when pages is opened when there are no trains ...
           currentDate.setHours(4);
           
-     //currentDate.setHours(10, 32, 0, 0); //For TESTING          *************************************   
+     //currentDate.setHours(10, 32, 0, 0); //For TESTING          *************************************        
+     //currentDate.setDate(currentDate.getDate() + 1)
      
      return currentDate;
 }
