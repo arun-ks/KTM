@@ -172,9 +172,13 @@ function plotStationsOnMap(vehicleId = 0) {
 
     const currentDate = getCurrentDate();
     for (const [stationName, stationInfo] of Object.entries(KTMStations)) {
-
-        const tripDurationInMins = Math.abs(stationInfo.tripDurationInMins - KTMStations[baseStationParam].tripDurationInMins);
+        
         const tripDistanceInKms = Math.abs(stationInfo.tripDistanceInKms - KTMStations[baseStationParam].tripDistanceInKms).toFixed(1);
+        
+        let stationMarkerLabel = Math.abs(stationInfo.tripDurationInMins - KTMStations[baseStationParam].tripDurationInMins);
+        if (stationInfo.tripDurationInMins == -1) {
+        	  stationMarkerLabel=getStationNameShortCode(stationName);
+        }
 
         let markerHTML = "";
         let offsetX = 10;
@@ -198,11 +202,11 @@ function plotStationsOnMap(vehicleId = 0) {
                 const lightness = 85 - intensity * 35;
                 stationInfo.colour = diffMinutes < 0  ? `hsl(0, 70%, ${lightness}%)` : `hsl(120, 70%, ${lightness}%)`;
             }
-            markerHTML = `<div class="marker-containerRECT" style="background-color:${stationInfo.colour};"><span class="marker-numberRECT">${trainDepartureTime}</span></div>`;
+            markerHTML = `<div class="marker-containerRECT" style="background-color:${stationInfo.colour};"><span class="marker-numberRECT">${stationMarkerLabel}</span></div>`;
             offsetX = 18;
         }
         else {   // Default Station Mode With Distance from Base-Station On Marker
-            markerHTML = `<div class="marker-containerCIRCLE" style="background-color:${stationInfo.colour};"><span class="marker-numberCIRCLE">${tripDurationInMins}</span></div>`;
+            markerHTML = `<div class="marker-containerCIRCLE" style="background-color:${stationInfo.colour};"><span class="marker-numberCIRCLE">${stationMarkerLabel}</span></div>`;
         }
 
         if (stationName === baseStationParam) {
@@ -410,7 +414,6 @@ function unplotAllVechiclesOnMap() {
 
 function getTypeOfDay() {
        const malaysiaPublicHolidays = [
-         "2025-12-25", // Christmas Day
          "2026-01-01", // New Year's Day
          "2026-02-01", // Federal Territory Day
          "2026-02-01", // Thaipusam
@@ -777,6 +780,42 @@ function speakDistance(distance) {
     } else {
         console.log("Speech synthesis not supported in this browser.");
     }
+}
+
+function getStationNameShortCode(name) {  // This is used in DEBUG mode when tripDurationInMins for all KTMStations is set to -1.
+  // Normalize to words (inline):
+  if (typeof name !== 'string') return 'XxX';
+  let s = name.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); // strip diacritics
+  s = s.replace(/[^A-Za-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();   // replace non-alnum with space & collapse whitespaces
+  if (!s) return 'XxX';
+  const words = s.split(' ').filter(Boolean);
+
+  // Helper logic inline: uppercase first char if it's a letter; digits remain as-is.
+  const upperFirst = (w) => {
+    const ch = w && w[0] ? w[0] : '';
+    return /[A-Za-z]/.test(ch) ? ch.toUpperCase() : ch;
+  };
+
+  if (words.length === 1) {
+    const w = words[0];
+    const first = upperFirst(w);
+    const second = w.length > 1 ? w[1].toLowerCase() : 'x';
+    const third  = w.length > 2 ? w[2].toLowerCase()
+                : (w.length === 1 ? 'x' : w[1].toLowerCase());
+    return first + second + third;
+  }
+
+  if (words.length === 2) {
+    const [w1, w2] = words;
+    const c1 = upperFirst(w1);
+    const c2 = upperFirst(w2);
+    const c3 = w2.length > 1 ? w2[1].toLowerCase()
+             : (w1.length > 1 ? w1[1].toLowerCase() : 'x');
+    return c1 + c2 + c3;
+  }
+
+  // Three or more words: first letters of the first three words (uppercase)
+  return upperFirst(words[0]) + upperFirst(words[1]) + upperFirst(words[2]);
 }
 
 
