@@ -176,10 +176,7 @@ function plotStationsOnMap(vehicleId = 0) {
         const tripDistanceInKms = Math.abs(stationInfo.tripDistanceInKms - KTMStations[baseStationParam].tripDistanceInKms).toFixed(1);
         
         let stationMarkerLabel = Math.abs(stationInfo.tripDurationInMins - KTMStations[baseStationParam].tripDurationInMins);
-        if (stationInfo.tripDurationInMins == -1) {
-        	  stationMarkerLabel=getStationNameShortCode(stationName);
-        }
-
+        
         let markerHTML = "";
         let offsetX = 10;
         let label = `<a href="https://myrailtime.ktmb.com.my/timetable?origin=${stationInfo.stationId}" target="_blank">${stationName}</a>`;
@@ -202,10 +199,13 @@ function plotStationsOnMap(vehicleId = 0) {
                 const lightness = 85 - intensity * 35;
                 stationInfo.colour = diffMinutes < 0  ? `hsl(0, 70%, ${lightness}%)` : `hsl(120, 70%, ${lightness}%)`;
             }
-            markerHTML = `<div class="marker-containerRECT" style="background-color:${stationInfo.colour};"><span class="marker-numberRECT">${stationMarkerLabel}</span></div>`;
+            markerHTML = `<div class="marker-containerRECT" style="background-color:${stationInfo.colour};"><span class="marker-numberRECT">${trainDepartureTime}</span></div>`;
             offsetX = 18;
         }
         else {   // Default Station Mode With Distance from Base-Station On Marker
+        	  if (stationInfo.tripDurationInMins == -1) {
+        	       stationMarkerLabel=getStationNameShortCode(stationName);
+            }
             markerHTML = `<div class="marker-containerCIRCLE" style="background-color:${stationInfo.colour};"><span class="marker-numberCIRCLE">${stationMarkerLabel}</span></div>`;
         }
 
