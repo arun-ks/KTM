@@ -203,12 +203,13 @@ function plotStationsOnMap(vehicleId = 0) {
         else {  
         	
         	  if (stationInfo.tripDurationInMins == -1) {  // When using ALL Station mode for DEBUG use shortnames
-        	       stationMarkerLabel=getStationNameShortCode(stationName);
+        	       let stationShortName=getStationNameShortCode(stationName);
+        	       markerHTML = `<div class="marker-containerRECT" style="background-color:${stationInfo.colour};"><span class="marker-numberRECT">${stationShortName}</span></div>`;
             } else {   // Default Station Mode With Distance from Base-Station On Marker
-                 stationMarkerLabel = Math.abs(stationInfo.tripDurationInMins - KTMStations[baseStationParam].tripDurationInMins);
-            }
+                 stationDurationInMins = Math.abs(stationInfo.tripDurationInMins - KTMStations[baseStationParam].tripDurationInMins);
+                 markerHTML = `<div class="marker-containerCIRCLE" style="background-color:${stationInfo.colour};"><span class="marker-numberCIRCLE">${stationDurationInMins}</span></div>`;
 
-            markerHTML = `<div class="marker-containerCIRCLE" style="background-color:${stationInfo.colour};"><span class="marker-numberCIRCLE">${stationMarkerLabel}</span></div>`;
+            }
         }
 
         if (stationName === baseStationParam) {
