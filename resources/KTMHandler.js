@@ -173,9 +173,7 @@ function plotStationsOnMap(vehicleId = 0) {
     const currentDate = getCurrentDate();
     for (const [stationName, stationInfo] of Object.entries(KTMStations)) {
         
-        const tripDistanceInKms = Math.abs(stationInfo.tripDistanceInKms - KTMStations[baseStationParam].tripDistanceInKms).toFixed(1);
-        
-        let stationMarkerLabel = Math.abs(stationInfo.tripDurationInMins - KTMStations[baseStationParam].tripDurationInMins);
+        const tripDistanceInKms = Math.abs(stationInfo.tripDistanceInKms - KTMStations[baseStationParam].tripDistanceInKms).toFixed(1);        
         
         let markerHTML = "";
         let offsetX = 10;
@@ -202,10 +200,14 @@ function plotStationsOnMap(vehicleId = 0) {
             markerHTML = `<div class="marker-containerRECT" style="background-color:${stationInfo.colour};"><span class="marker-numberRECT">${trainDepartureTime}</span></div>`;
             offsetX = 18;
         }
-        else {   // Default Station Mode With Distance from Base-Station On Marker
-        	  if (stationInfo.tripDurationInMins == -1) {
+        else {  
+        	
+        	  if (stationInfo.tripDurationInMins == -1) {  // When using ALL Station mode for DEBUG use shortnames
         	       stationMarkerLabel=getStationNameShortCode(stationName);
+            } else {   // Default Station Mode With Distance from Base-Station On Marker
+                 stationMarkerLabel = Math.abs(stationInfo.tripDurationInMins - KTMStations[baseStationParam].tripDurationInMins);
             }
+
             markerHTML = `<div class="marker-containerCIRCLE" style="background-color:${stationInfo.colour};"><span class="marker-numberCIRCLE">${stationMarkerLabel}</span></div>`;
         }
 
