@@ -184,7 +184,7 @@ function plotStationsOnMap(vehicleId = 0) {
         if (vehicleId > 0) {  // Focus Vehicle Mode With Departure Time On Marker & Color Coded Stations
             const ktmTrainForStation = KTMTrains.filter(train => train.stationName === stationName && train.vehicleId === vehicleId);
 
-            if (ktmTrainForStation.length < 1) continue;
+            if (ktmTrainForStation.length < 1) continue;  //Focus Vehicle does not stop at the station, so do not mark it.
 
             let trainDepartureTime = ktmTrainForStation[0].departureTime;
             const [hours, minutes] = trainDepartureTime.split(":").map(Number);
@@ -199,16 +199,29 @@ function plotStationsOnMap(vehicleId = 0) {
             }
             markerHTML = `<div class="marker-containerRECT" style="background-color:${stationInfo.colour};"><span class="marker-numberRECT">${trainDepartureTime}</span></div>`;
             offsetX = 18;
+            
+            // Find next train in other direction from each station on the way.
+            if ( 1 == 0) {
+                   const ktmNextTrainsForStationUnsorted = KTMTrains.filter(train => train.typeOfDay === ktmTrainForStation[0].typeOfDay && train.stationName === stationName && 
+                                   train.direction != ktmTrainForStation[0].direction && train.departureTime > ktmTrainForStation[0].departureTime);
+                   if (ktmNextTrainsForStationUnsorted.length < 1) continue; 
+                   let ktmNextTrainsForStation = ktmNextTrainsForStationUnsorted.sort((trainA, trainB) => {
+                       let timeA = trainA.arrivalTime.split(":").map(Number);
+                       let timeB = trainB.arrivalTime.split(":").map(Number);
+                       return timeA[0] - timeB[0] || timeA[1] - timeB[1];
+                   });                       
+                   let trainHref = `${window.location.pathname}?focusVehicleId=${ktmNextTrainsForStation[0].vehicleId}&baseStation=${stationName}&hideStationName=false`;
+                   label = `${label} Next@ ${ktmNextTrainsForStation[0].departureTime}(<a href="${trainHref}">${ktmNextTrainsForStation[0].vehicleId}</a>)`;
+            }
+            
         }
-        else {  
-        	
+        else {          	
         	  if (stationInfo.tripDurationInMins == -1) {  // When using ALL Station mode for DEBUG use shortnames
         	       let stationShortName=getStationNameShortCode(stationName);
         	       markerHTML = `<div class="marker-containerRECT" style="background-color:${stationInfo.colour};"><span class="marker-numberRECT">${stationShortName}</span></div>`;
             } else {   // Default Station Mode With Distance from Base-Station On Marker
                  stationDurationInMins = Math.abs(stationInfo.tripDurationInMins - KTMStations[baseStationParam].tripDurationInMins);
                  markerHTML = `<div class="marker-containerCIRCLE" style="background-color:${stationInfo.colour};"><span class="marker-numberCIRCLE">${stationDurationInMins}</span></div>`;
-
             }
         }
 
