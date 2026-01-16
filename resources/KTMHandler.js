@@ -17,7 +17,9 @@ function initializePageParameters(){
         const urlParams   = new URLSearchParams(window.location.search);
 
         let filterParamRaw = urlParams.get('filter');
-        const filterParam =  (filterParamRaw == null) ?  "both" : filterParamRaw;
+        let filterParam =  (filterParamRaw == null) ?  "both" : filterParamRaw;
+        
+        if ( KTMTrains.length == 1 ) filterParam="all";    //used for DEBUG mode page which shows ALL KTM stations for all its service lines.
 
         let focusVehicleIdParamRaw = urlParams.get('focusVehicleId');
         const focusVehicleIdParam = ( (focusVehicleIdParamRaw == null) || isNaN(focusVehicleIdParamRaw) ) ? 0 : parseInt(focusVehicleIdParamRaw, 10);
