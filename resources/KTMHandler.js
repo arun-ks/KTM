@@ -6,6 +6,8 @@ const iconDesigns = {
   	'user' : { viewBox: '0 0 30 30' , dimensionW: 20, dimensionH: 20, colour:'green' , svgPathd: 'M12 6 A3 3 0 1 1 18 6 A3 3 0 1 1 12 6 Z  M10 9 L20 9 L20 20 L10 20 Z  M5 10 L10 10 L10 14 L5 14 Z  M20 10 L25 10 L25 14 L20 14 Z M10 20 L14 20 L14 26 L10 26 Z  M16 20 L20 20 L20 26 L16 26 Z'  }
 }
 
+const showNextReturnTrainFlag = false;  //Used for DEBUG mode.
+
 function findDeviceTypeBeingUsed() {    // Returns Watch/Mobile/Desktop
     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
     if (/watch|samsungbrowser/i.test(userAgent.toLowerCase())) { return "Watch";}
@@ -203,7 +205,7 @@ function plotStationsOnMap(vehicleId = 0) {
             offsetX = 18;
             
             // Find next train in other direction from each station on the way.
-            if ( 1 == 0) {
+            if ( showNextReturnTrainFlag == true ) {
                    const ktmNextTrainsForStationUnsorted = KTMTrains.filter(train => train.typeOfDay === ktmTrainForStation[0].typeOfDay && train.stationName === stationName && 
                                    train.direction != ktmTrainForStation[0].direction && train.departureTime > ktmTrainForStation[0].departureTime);
                    if (ktmNextTrainsForStationUnsorted.length < 1) continue; 
