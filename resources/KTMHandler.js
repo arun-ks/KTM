@@ -6,7 +6,8 @@ const iconDesigns = {
   	'user' : { viewBox: '0 0 30 30' , dimensionW: 20, dimensionH: 20, colour:'green' , svgPathd: 'M12 6 A3 3 0 1 1 18 6 A3 3 0 1 1 12 6 Z  M10 9 L20 9 L20 20 L10 20 Z  M5 10 L10 10 L10 14 L5 14 Z  M20 10 L25 10 L25 14 L20 14 Z M10 20 L14 20 L14 26 L10 26 Z  M16 20 L20 20 L20 26 L16 26 Z'  }
 }
 
-const showNextReturnTrainFlag = false;  //Used for DEBUG mode.
+let showNextReturnTrainFlag = false;  //Used for DEBUG mode.
+//showNextReturnTrainFlag = true;       //Used for DEBUG mode.
 
 function findDeviceTypeBeingUsed() {    // Returns Watch/Mobile/Desktop
     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
@@ -159,6 +160,7 @@ function initializeMap(baseStation) {
      const map = L.map('map').setView(KTMStations[baseStation].location, 11);
      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
          maxZoom: 18,
+         referrerPolicy: 'strict-origin-when-cross-origin',
          attribution: '&copy; OpenStreetMap contributors'
      }).addTo(map);
 
