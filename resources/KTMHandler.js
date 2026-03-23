@@ -444,8 +444,7 @@ function getTypeOfDay() {
          "2026-02-17", // Chinese New Year
          "2026-02-18", // Chinese New Year Holiday
          "2026-03-07", // Nuzul Al-Quran
-         "2026-03-21", // Hari Raya Aidilfitri
-         "2026-03-22", // Hari Raya Aidilfitri Holiday
+         "2026-03-20", // Hari Raya Aidilfitri
          "2026-03-23", // Hari Raya Aidilfitri Holiday
          "2026-05-01", // Labour Day
          "2026-05-27", // Hari Raya Haji
