@@ -7,7 +7,7 @@ const iconDesigns = {
 }
 
 let showNextReturnTrainFlag = false;  //Used for DEBUG mode.
-//showNextReturnTrainFlag = true;       //Used for DEBUG mode.
+showNextReturnTrainFlag = true;       //Used for DEBUG mode.
 
 function findDeviceTypeBeingUsed() {    // Returns Watch/Mobile/Desktop
     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
@@ -701,7 +701,7 @@ function showTrainScheduleTable(vehicleId, scrollIntoView = false) {
            const diffMinutes = (departureTime - currentDate) / (1000 * 60);           
            if (diffMinutes >= -30 && diffMinutes <= 30) {
                const intensity = Math.abs(diffMinutes) / 30; // 0 ? 1
-               const lightness = 85 - intensity * 35; // lighter near now, darker toward ±30
+               const lightness = 85 - intensity * 35; // lighter near now, darker toward Â±30
            
                if (diffMinutes < 0) {                   
                    cell.style.backgroundColor = `hsl(0, 70%, ${lightness}%)`;   // Past trains ? red spectrum
