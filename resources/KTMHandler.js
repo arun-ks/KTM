@@ -7,7 +7,7 @@ const iconDesigns = {
 }
 
 let showNextReturnTrainFlag = false;  //Used for DEBUG mode.
-showNextReturnTrainFlag = true;       //Used for DEBUG mode.
+//showNextReturnTrainFlag = true;       //Used for DEBUG mode.
 
 function findDeviceTypeBeingUsed() {    // Returns Watch/Mobile/Desktop
     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
