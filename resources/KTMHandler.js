@@ -7,7 +7,7 @@ const iconDesigns = {
 }
 
 let showNextReturnTrainFlag = false;  //Used for DEBUG mode.
-//showNextReturnTrainFlag = true;       //Used for DEBUG mode.
+showNextReturnTrainFlag = true;       //Used for DEBUG mode.
 
 function findDeviceTypeBeingUsed() {    // Returns Watch/Mobile/Desktop
     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
@@ -52,8 +52,12 @@ function createFilterLink(linkId, filterKey, baseStationParam, iconKey, includeL
     const link = document.getElementById(linkId);
     link.href = `${window.location.pathname}?baseStation=${baseStationParam}&hideStationName=${hideStationNameParam}&filter=${filterKey}`;
 
-    const existingSvg = link.querySelector('svg');
-    if (existingSvg) existingSvg.remove();
+    // Cache original label once, then rebuild content idempotently.
+    const baseLabel = link.dataset.baseLabel || link.textContent.trim();
+    link.dataset.baseLabel = baseLabel;
+
+    // Reset existing content so repeated calls do not append duplicate text/icons.
+    link.textContent = "";
 
     const design = iconDesigns[iconKey];
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -68,6 +72,8 @@ function createFilterLink(linkId, filterKey, baseStationParam, iconKey, includeL
 
     if (includeLabel) {
         link.appendChild(document.createTextNode(iconKey));
+    } else if (baseLabel) {
+        link.appendChild(document.createTextNode(baseLabel));
     }
     link.appendChild(svg);
 }
@@ -701,7 +707,7 @@ function showTrainScheduleTable(vehicleId, scrollIntoView = false) {
            const diffMinutes = (departureTime - currentDate) / (1000 * 60);           
            if (diffMinutes >= -30 && diffMinutes <= 30) {
                const intensity = Math.abs(diffMinutes) / 30; // 0 ? 1
-               const lightness = 85 - intensity * 35; // lighter near now, darker toward Â±30
+               const lightness = 85 - intensity * 35; // lighter near now, darker toward 30
            
                if (diffMinutes < 0) {                   
                    cell.style.backgroundColor = `hsl(0, 70%, ${lightness}%)`;   // Past trains ? red spectrum

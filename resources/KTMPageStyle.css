@@ -1,124 +1,289 @@
-        body {
-            font-family: 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
-            /*word-wrap: break-word;*/
-            align-items: left;
-            /*overflow-wrap: break-word; */
-            white-space: normal;
-        }
+/* =========================================================
+   1) Page base styles
+   ========================================================= */
+* {
+  box-sizing: border-box;
+}
 
-        .vehicle-arrow-icon {
-            font-family: 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
-        }
-        
-        #map { height: 750px; width: 98%;  }
-        .leaflet-tooltip.vehicle-label {
-            white-space: nowrap;
-            font-size: small;
-            pointer-events: auto;
-        }
-        
-        .leaflet-tooltip a {
-            pointer-events: auto !important;
-        }
-        
-        .leaflet-tooltip {
-            pointer-events: auto !important;
-        }
-        
-       .custom-station-marker .marker-containerCIRCLE {
-           width: 20px;
-           height: 20px;
-           border-radius: 50%;
-           display: flex;
-           align-items: center;
-           justify-content: center;
-           color: white;
-           font-size: 12px;
-           font-weight: bold;
-           border: 1px solid black;
-           /*box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); Optional: adds a shadow */
-       }
+body {
+  margin: 0;
+  padding: 14px;
+  font-family: "Segoe UI", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  font-size: 15px;
+  line-height: 1.4;
+  color: #1f2a37;
+  background: #f4f7fb;
+  white-space: normal;
+}
 
-       .custom-station-marker .marker-numberCIRCLE {
-           line-height: 1;
-       }
+a {
+  color: #0b69d1;
+  text-decoration-thickness: 1px;
+}
 
-       .custom-station-marker .marker-containerRECT {
-           width: auto; /* Let width adjust based on text */
-           min-width: 30px; 
-           height: 20px;
-           border-radius: 4px; 
-           display: flex;
-           align-items: center;
-           justify-content: center;
-           padding: 0 2px; 
-           color: white;
-           font-size: 12px;
-           font-weight: bold;
-           border: 1px solid black;
-       }       
-       
+/* =========================================================
+   2) Top controls + header message row (above map)
+   ========================================================= */
+select,
+button {
+  font: inherit;
+  border: 1px solid #b8c7d9;
+  border-radius: 8px;
+  padding: 7px 10px;
+  margin-right: 6px;
+  margin-bottom: 4px;
+}
 
-       .custom-station-marker .marker-numberRECT {
-           line-height: 1;
-       }
-       
-       
-       
- .toggle-wrapper {
-    display: inline-flex;
-    align-items: center;
-    user-select: none;
+select {
+  min-width: 200px;
+  background: #fff;
+  color: #1f2a37;
+}
+
+button {
+  background: #0b69d1;
+  border-color: #0b69d1;
+  color: #fff;
+  cursor: pointer;
+}
+
+button:hover {
+  filter: brightness(0.95);
+}
+
+/* Keep frequently visible controls compact but readable */
+#baseStationDropdown,
+#toggleStationScheduleButton {
+  padding: 4px 8px;
+  min-height: 30px;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+#baseStationDropdown {
+  min-width: 180px;
+}
+
+#countdownButton {
+  margin-top: 2px;
+  padding: 3px 8px;
+  min-height: 28px;
+  font-size: 13px;
+}
+
+/* Filter links and counts */
+#filterLinkBoth,
+#filterLinkUp,
+#filterLinkDown {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+  min-width: 44px;
+  padding: 2px 8px;
+  border: 1px solid #c8d7e8;
+  border-radius: 999px;
+  background: #e9f2ff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* Hidden unless populated (used for filter=all flow) */
+#filterLinkOthers {
+  display: none;
+}
+
+#filterLinkOthers:not(:empty) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+  min-width: 44px;
+  padding: 2px 8px;
+  border: 1px solid #c8d7e8;
+  border-radius: 999px;
+  background: #e9f2ff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+#trainCountBoth,
+#trainCountUp,
+#trainCountDown,
+#trainCountOthers {
+  font-weight: 700;
+  margin-right: 3px;
+}
+
+#focusTrainMessage,
+#focusTrainLink,
+#system_status {
+  display: inline-block;
+  margin-top: 6px;
+}
+
+#system_status {
+  margin-left: 8px;
+  font-weight: 700;
+}
+
+/* Station-name toggle */
+.toggle-wrapper {
+  display: inline-flex;
+  align-items: center;
+  user-select: none;
+  margin-left: 4px;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+}
+
+.switch input {
+  display: none;
+}
+
+.slider {
+  position: relative;
+  background-color: #4caf50;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: 0.3s;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 18px;
+  font-size: 13px;
+  font-weight: bold;
+  color: #000;
+}
+
+.slider::before {
+  content: "";
+  position: absolute;
+  height: calc(100% - 6px);
+  width: calc(100% - 6px);
+  max-width: 22px;
+  max-height: 22px;
+  left: 3px;
+  top: 3px;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+.slider span {
+  padding-left: 28px;
+  padding-right: 28px;
+  white-space: nowrap;
+}
+
+input:checked + .slider {
+  background-color: #ccc;
+  color: #fff;
+}
+
+input:checked + .slider::before {
+  transform: translateX(100%);
+}
+
+/* =========================================================
+   3) Map section
+   ========================================================= */
+#map {
+  width: 100%;
+  height: min(72vh, 760px);
+  min-height: 420px;
+  margin-top: 2px;
+  border: 1px solid #cfdae8;
+  border-radius: 10px;
+}
+
+.leaflet-tooltip.vehicle-label {
+  white-space: nowrap;
+  font-size: small;
+  pointer-events: auto;
+}
+
+.leaflet-tooltip a,
+.leaflet-tooltip {
+  pointer-events: auto !important;
+}
+
+.vehicle-arrow-icon {
+  font-family: "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+}
+
+.custom-station-marker .marker-containerCIRCLE {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  border: 1px solid #000;
+}
+
+.custom-station-marker .marker-numberCIRCLE {
+  line-height: 1;
+}
+
+.custom-station-marker .marker-containerRECT {
+  width: auto;
+  min-width: 30px;
+  height: 20px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 2px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  border: 1px solid #000;
+}
+
+.custom-station-marker .marker-numberRECT {
+  line-height: 1;
+}
+
+/* =========================================================
+   4) Schedule tables (below map)
+   ========================================================= */
+#stationScheduleTable,
+#stationScheduleLegend,
+#trainScheduleTable {
+  width: 100%;
+  margin-top: 10px;
+  background: #fff;
+  border: 1px solid #d5dee8;
+}
+
+/* =========================================================
+   5) Mobile adjustments
+   ========================================================= */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+    font-size: 14px;
   }
 
-  .switch {
-    position: relative;
-    display: inline-block;
+  select,
+  button {
+    width: 100%;
+    margin-right: 0;
   }
 
-  .switch input {
-    display: none;
+  .toggle-wrapper {
+    margin-left: 0;
+    margin-top: 6px;
   }
 
-  .slider {
-    position: relative;
-    background-color: #4caf50 ;
-    border-radius: 999px;
-    cursor: pointer;
-    transition: 0.3s;
-    display: inline-flex;
-    align-items: center;
-    padding: 4px 18px;   /* ~2px above & below text */
-    font-size: 13px;
-    font-weight: bold;
-    color: black;
+  #map {
+    height: min(66vh, 620px);
+    min-height: 360px;
   }
-
-  .slider::before {
-    content: "";
-    position: absolute;
-    height: calc(100% - 6px);
-    width: calc(100% - 6px);
-    max-width: 22px;
-    max-height: 22px;
-    left: 3px;
-    top: 3px;
-    background-color: white;
-    border-radius: 50%;
-    transition: 0.3s;
-  }
-
-  .slider span {
-    padding-left: 28px;
-    padding-right: 28px;
-    white-space: nowrap;
-  }
-
-  input:checked + .slider {
-    background-color: #ccc;
-    color: white;
-  }
-
-  input:checked + .slider::before {
-    transform: translateX(100%);
-  }
+}
