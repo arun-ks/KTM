@@ -7,7 +7,7 @@ const iconDesigns = {
 }
 
 let showNextReturnTrainFlag = false;  //Used for DEBUG mode.
-showNextReturnTrainFlag = true;       //Used for DEBUG mode.
+//showNextReturnTrainFlag = true;       //Used for DEBUG mode.
 
 function findDeviceTypeBeingUsed() {    // Returns Watch/Mobile/Desktop
     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
@@ -583,8 +583,8 @@ function showStationScheduleTable(stationName, direction) {
            cell.appendChild(vehicleLink);
            cell.appendChild(document.createTextNode(")"));
 
-           // Show only the trains for last 1 hour & next 2 hours if the page is opened on a Mobile/Watch.
-           if ( !(deviceType == "Desktop") && ( train.isActive  ||(diffMinutes >= -60 && diffMinutes <= 120)) ) {
+           // Show only the trains for last 1 hour & next 3 hours if the page is opened on a Mobile/Watch.
+           if ( !(deviceType == "Desktop") && ( train.isActive  ||(diffMinutes >= -60 && diffMinutes <= 180)) ) {
            		row.appendChild(cell);
            }
            if ( (deviceType == "Desktop")) {
