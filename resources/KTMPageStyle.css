@@ -267,23 +267,95 @@ input:checked + .slider::before {
    ========================================================= */
 @media (max-width: 768px) {
   body {
-    padding: 10px;
-    font-size: 14px;
+    padding: 6px;
+    font-size: 13px;
   }
 
   select,
   button {
-    width: 100%;
+    width: auto;
+    margin-right: 2px;
+    margin-bottom: 0;
+  }
+
+  /* Row 1: For + dropdown + Show Schedule */
+  b,
+  #baseStationDropdown,
+  #toggleStationScheduleButton {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 2px 2px 0;
+  }
+
+  #baseStationDropdown {
+    min-width: 120px;
+    max-width: 48vw;
+    padding: 2px 6px;
+    min-height: 24px;
+    font-size: 12px;
+  }
+
+  #toggleStationScheduleButton {
+    padding: 2px 6px;
+    min-height: 24px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  /* Row 2 (can wrap): keep compact, no extra buffer space */
+  #filterLinkBoth,
+  #filterLinkUp,
+  #filterLinkDown,
+  #filterLinkOthers:not(:empty) {
+    min-height: 18px;
+    min-width: 30px;
+    padding: 0 4px;
+    margin: 0;
+    font-size: 11px;
+  }
+
+  #trainCountBoth,
+  #trainCountUp,
+  #trainCountDown,
+  #trainCountOthers {
     margin-right: 0;
   }
 
+  #focusTrainMessage,
+  #focusTrainLink,
+  #system_status {
+    margin-top: 0;
+  }
+
+  #countdownButton {
+    margin: 0 2px 0 0;
+    padding: 1px 6px;
+    min-height: 22px;
+    font-size: 11px;
+  }
+
   .toggle-wrapper {
-    margin-left: 0;
-    margin-top: 6px;
+    margin: 0;
+  }
+
+  .slider {
+    padding: 1px 8px;
+    font-size: 11px;
+  }
+
+  .slider::before {
+    max-width: 16px;
+    max-height: 16px;
+  }
+
+  .slider span {
+    padding-left: 20px;
+    padding-right: 8px;
   }
 
   #map {
-    height: min(66vh, 620px);
-    min-height: 360px;
+    margin-top: 0;
+    height: min(76vh, 700px);
+    min-height: 420px;
   }
 }
