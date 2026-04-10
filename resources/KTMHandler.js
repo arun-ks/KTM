@@ -1,7 +1,7 @@
 const iconDesigns = {
   	'up'   : { viewBox: '0 0 30 30' , dimensionW: 20, dimensionH: 20, colour:'blue'  , svgPathd: 'M15 5 L25 25 L5 25 Z'       },
   	'down' : { viewBox: '0 0 30 30' , dimensionW: 20, dimensionH: 20, colour:'red'   , svgPathd: 'M15 25 L25 5 L5 5 Z'        },
-    'both' : { viewBox: '0 0  0  0' , dimensionW:  0, dimensionH:  0, colour:'white' , svgPathd: 'M15 25 Z'                   },  	
+        'both' : { viewBox: '0 0  0  0' , dimensionW:  0, dimensionH:  0, colour:'white' , svgPathd: 'M15 25 Z'                   },  	
   	'na'   : { viewBox: '0 0 30 30' , dimensionW: 20, dimensionH: 20, colour:'green' , svgPathd: 'M5 5 L25 5 L25 25 L5 25 Z'  },
   	'user' : { viewBox: '0 0 30 30' , dimensionW: 20, dimensionH: 20, colour:'green' , svgPathd: 'M12 6 A3 3 0 1 1 18 6 A3 3 0 1 1 12 6 Z  M10 9 L20 9 L20 20 L10 20 Z  M5 10 L10 10 L10 14 L5 14 Z  M20 10 L25 10 L25 14 L20 14 Z M10 20 L14 20 L14 26 L10 26 Z  M16 20 L20 20 L20 26 L16 26 Z'  }
 }
